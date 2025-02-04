@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+footer {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #000;
+    border-top: 1px solid #e5e7eb;
+}
