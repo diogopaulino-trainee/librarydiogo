@@ -7,15 +7,15 @@
     </x-section-title>
 
     <div class="mt-5 md:mt-0 md:col-span-2">
-        <form wire:submit="{{ $submit }}">
-            <div class="px-4 py-5 bg-white sm:p-6 shadow {{ isset($actions) ? 'sm:rounded-tl-md sm:rounded-tr-md' : 'sm:rounded-md' }}">
+        <form wire:submit="{{ $submit }}" class="bg-white shadow-md rounded-lg p-6 border-4 border-blue-400">
+            <div class="p-4 bg-blue-50 shadow-inner rounded-t-lg {{ isset($actions) ? '' : 'rounded-b-lg' }}">
                 <div class="grid grid-cols-6 gap-6">
                     {{ $form }}
                 </div>
             </div>
 
             @if (isset($actions))
-                <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-end sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
+                <div class="flex items-center justify-end p-4 bg-blue-100 text-end shadow-inner rounded-b-lg">
                     {{ $actions }}
                 </div>
             @endif

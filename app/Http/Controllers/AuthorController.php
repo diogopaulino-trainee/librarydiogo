@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AuthorsExport;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AuthorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $authors = Author::with('user')->get();
+        $query = Author::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('sort_by') && $request->has('order')) {
+            $query->orderBy($request->sort_by, $request->order);
+        } else {
+            $query->orderBy('name', 'asc');
+        }
+
+        $authors = $query->paginate(10);
         return view('authors.index', compact('authors'));
     }
 
@@ -85,5 +99,10 @@ class AuthorController extends Controller
     {
         $author->delete();
         return redirect()->route('authors.index')->with('success', 'author deleted successfully!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new AuthorsExport, 'authors.xlsx');
     }
 }

@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PublishersExport;
 use App\Models\Publisher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PublisherController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $publishers = Publisher::with('user')->get();
+        $query = Publisher::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('sort_by') && $request->has('order')) {
+            $query->orderBy($request->sort_by, $request->order);
+        } else {
+            $query->orderBy('name', 'asc');
+        }
+
+        $publishers = $query->paginate(10);
         return view('publishers.index', compact('publishers'));
     }
 
@@ -85,5 +99,10 @@ class PublisherController extends Controller
     {
         $publisher->delete();
         return redirect()->route('publishers.index')->with('success', 'Publisher deleted successfully!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new PublishersExport, 'publishers.xlsx');
     }
 }

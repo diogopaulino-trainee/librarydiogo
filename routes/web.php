@@ -15,7 +15,6 @@ Route::get('/aboutme', function () {
     return view('aboutme');
 })->name('about.me');
 
-// Rotas protegidas (criação, edição e eliminação)
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -27,6 +26,10 @@ Route::middleware([
     Route::resource('authors', AuthorController::class)->except(['index', 'show']);
     Route::get('publishers/{publisher}/delete', [PublisherController::class, 'delete'])->name('publishers.delete');
     Route::resource('publishers', PublisherController::class)->except(['index', 'show']);
+
+    Route::get('/books/export', [BookController::class, 'export'])->name('books.export');
+    Route::get('/authors/export', [AuthorController::class, 'export'])->name('authors.export');
+    Route::get('/publishers/export', [PublisherController::class, 'export'])->name('publishers.export');
 });
 
 // Rotas públicas (index de livros, autores e publishers)
