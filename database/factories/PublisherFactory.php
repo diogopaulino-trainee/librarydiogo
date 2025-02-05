@@ -14,7 +14,22 @@ class PublisherFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
-            'logo' => $this->faker->imageUrl(200, 100, 'logo', true),
+            'logo' => $this->downloadLogo($this->faker->imageUrl(200, 100, 'business', true)),
+            'user_id' => User::inRandomOrder()->first()?->id,
         ];
     }
-}
+
+    private function downloadLogo($url)
+    {
+        try {
+            $contents = file_get_contents($url);
+            $name = 'publisher_' . uniqid() . '.jpg';
+            $path = public_path('images/' . $name);
+
+            file_put_contents($path, $contents);
+            return 'images/' . $name;
+        } catch (\Exception $e) {
+            return 'noimage.png';
+        }
+    }
+} 

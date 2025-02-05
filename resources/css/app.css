@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 [x-cloak] {
-    display: none;
+    display: none !important;
 }
 
 body {
@@ -29,4 +29,25 @@ footer {
     font-size: 0.875rem;
     color: #000;
     border-top: 1px solid #e5e7eb;
+}
+
+h2 {
+    @apply font-bold text-3xl text-center leading-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-600 to-indigo-800 animate-pulse-gradient;
+}
+
+@keyframes pulse-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-pulse-gradient {
+    background-size: 300% 300%;
+    animation: pulse-gradient 4s ease-in-out infinite;
 }

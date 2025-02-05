@@ -17,13 +17,11 @@ class BookSeeder extends Seeder
         $users = User::all();
         $authors = Author::all();
 
-        Book::factory(20)->make()->each(function ($book) use ($publishers, $users, $authors) {
+        Book::factory(100)->make()->each(function ($book) use ($publishers, $users, $authors) {
             $book->publisher_id = $publishers->random()->id;
             $book->user_id = $users->random()->id;
+            $book->author_id = $authors->random()->id;
             $book->save();
-        
-            $randomAuthors = $authors->random(rand(1, 3))->pluck('id')->toArray();
-            $book->authors()->attach($randomAuthors);
         });
     }
 }

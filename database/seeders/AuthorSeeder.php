@@ -13,7 +13,7 @@ class AuthorSeeder extends Seeder
     {
         $users = User::all();
 
-        Author::factory(10)->make()->each(function ($author) use ($users) {
+        Author::factory(25)->make()->each(function ($author) use ($users) {
             $author->user_id = $users->random()->id;
             $author->save();
         });

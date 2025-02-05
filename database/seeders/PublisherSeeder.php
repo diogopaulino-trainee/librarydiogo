@@ -13,7 +13,7 @@ class PublisherSeeder extends Seeder
     {
         $users = User::all();
 
-        Publisher::factory(5)->make()->each(function ($publisher) use ($users) {
+        Publisher::factory(25)->make()->each(function ($publisher) use ($users) {
             $publisher->user_id = $users->random()->id;
             $publisher->save();
         });
