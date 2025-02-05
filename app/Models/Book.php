@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class Book extends Model
 {
@@ -19,6 +20,16 @@ class Book extends Model
         'publisher_id',
         'user_id',
     ];
+
+    public function setBibliographyAttribute($value)
+    {
+        $this->attributes['bibliography'] = Crypt::encryptString($value);
+    }
+
+    public function getBibliographyAttribute($value)
+    {
+        return Crypt::decryptString($value);
+    }
 
     public function publisher()
     {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class Publisher extends Model
 {
@@ -14,6 +15,16 @@ class Publisher extends Model
         'logo',
         'user_id',
     ];
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = Crypt::encryptString($value);
+    }
+
+    public function getNameAttribute($value)
+    {
+        return Crypt::decryptString($value);
+    }
 
     public function books()
     {

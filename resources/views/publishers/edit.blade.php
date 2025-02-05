@@ -26,7 +26,7 @@
                     class="file-input file-input-bordered w-full bg-blue-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
                     @error('logo') border-red-500 @enderror" accept="image/*">
                 @if ($publisher->logo)
-                    <img src="{{ asset('images/' . $publisher->logo) }}" alt="Current Logo" class="w-32 mt-2 rounded-full shadow-md">
+                    <img src="{{ asset(str_starts_with($publisher->logo, 'images/') ? $publisher->logo : 'images/' . $publisher->logo) }}" alt="Current Logo" class="w-32 mt-2 rounded-full shadow-md">
                 @endif
                 @error('logo')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

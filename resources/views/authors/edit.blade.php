@@ -26,7 +26,7 @@
                     class="file-input file-input-bordered w-full bg-blue-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
                     @error('photo') border-red-500 @enderror" accept="image/*">
                 @if ($author->photo)
-                    <img src="{{ asset('images/' . $author->photo) }}" alt="Current Photo" class="w-32 mt-2 rounded-full shadow-md">
+                    <img src="{{ asset(str_starts_with($author->photo, 'images/') ? $author->photo : 'images/' . $author->photo) }}" alt="Current Photo" class="w-32 mt-2 rounded-full shadow-md">
                 @endif
                 @error('photo')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

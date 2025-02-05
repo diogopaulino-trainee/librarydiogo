@@ -11,7 +11,7 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        User::factory(50)->create()->each(function ($user) {
+        User::factory(20)->create()->each(function ($user) {
             $seed = rand(0, 100000);
             $imageUrl = 'https://picsum.photos/seed/'.$seed.'/300/300';
             $imageData = file_get_contents($imageUrl);

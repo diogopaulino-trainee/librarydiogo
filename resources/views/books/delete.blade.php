@@ -21,7 +21,7 @@
         </p>
 
         <div class="flex justify-center my-4">
-            <img src="{{ asset('images/' . $book->cover_image) }}" alt="Cover Image" class="w-48 h-64 object-cover rounded shadow-md border-2 border-red-400">
+            <img src="{{ asset(str_starts_with($book->cover_image, 'images/') ? $book->cover_image : 'images/' . $book->cover_image) }}" alt="Cover Image" class="w-48 h-64 object-cover rounded shadow-md border-2 border-red-400">
         </div>
 
         <div class="space-y-2 text-gray-800">

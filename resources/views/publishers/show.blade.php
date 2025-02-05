@@ -7,7 +7,7 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-md rounded-lg p-6 border border-blue-500">
                 <div class="mb-4 text-center">
-                    <img src="{{ asset('images/' . $publisher->logo) }}" alt="Publisher Logo" class="w-48 h-48 mx-auto object-cover rounded-full shadow-md">
+                    <img src="{{ asset(str_starts_with($publisher->logo, 'images/') ? $publisher->logo : 'images/' . $publisher->logo) }}" alt="Publisher Logo" class="w-48 h-48 mx-auto object-cover rounded-full shadow-md">
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 text-gray-800">

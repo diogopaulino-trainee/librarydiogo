@@ -7,7 +7,9 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-md rounded-lg p-6 border border-blue-500">
                 <div class="mb-4 text-center">
-                    <img src="{{ asset('images/' . $book->cover_image) }}" alt="Cover Image" class="w-48 h-64 mx-auto object-cover rounded-lg shadow-md">
+                    <img src="{{ asset(str_starts_with($book->cover_image, 'images/') ? $book->cover_image : 'images/' . $book->cover_image) }}" 
+                         alt="Cover Image" 
+                         class="w-48 h-64 mx-auto object-cover rounded-lg shadow-md">
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 text-gray-800">

@@ -21,7 +21,7 @@
         </p>
 
         <div class="flex justify-center my-4">
-            <img src="{{ asset('images/' . $publisher->logo) }}" alt="Publisher Logo" class="w-48 h-48 object-cover rounded-full shadow-md border-2 border-red-400">
+            <img src="{{ asset(str_starts_with($publisher->logo, 'images/') ? $publisher->logo : 'images/' . $publisher->logo) }}" alt="Publisher Logo" class="w-48 h-48 object-cover rounded-full shadow-md border-2 border-red-400">
         </div>
 
         <div class="space-y-2 text-gray-800 text-center">

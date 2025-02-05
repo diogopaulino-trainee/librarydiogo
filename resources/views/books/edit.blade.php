@@ -48,7 +48,7 @@
                     class="file-input file-input-bordered w-full bg-blue-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
                     @error('cover_image') border-red-500 @enderror" accept="image/*">
                 @if ($book->cover_image)
-                    <img src="{{ asset('images/' . $book->cover_image) }}" alt="Current Cover" class="w-32 mt-2 rounded shadow-md">
+                    <img src="{{ asset(str_starts_with($book->cover_image, 'images/') ? $book->cover_image : 'images/' . $book->cover_image) }}" alt="Current Cover" class="w-32 mt-2 rounded shadow-md">
                 @endif
                 @error('cover_image')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

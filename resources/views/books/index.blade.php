@@ -87,7 +87,7 @@
                             <th class="px-4 py-2 border-b">Title</th>
                             <th class="px-4 py-2 border-b">Author</th>
                             <th class="px-4 py-2 border-b">Publisher</th>
-                            <th class="px-4 py-2 border-b text-center">Price (€)</th>
+                            <th class="px-4 py-2 border-b text-center">Price&nbsp;(€)</th>
                             <th class="px-4 py-2 border-b text-center">Actions</th>
                         </tr>
                     </thead>
@@ -98,7 +98,7 @@
                             <td class="px-4 py-2">{{ $book->title }}</td>
                             <td class="px-4 py-2">{{ $book->author->name ?? 'N/A' }}</td>
                             <td class="px-4 py-2">{{ $book->publisher->name ?? 'N/A' }}</td>
-                            <td class="px-4 py-2 text-center">{{ number_format($book->price, 2, ',', '.') }} €</td>
+                            <td class="px-4 py-2 text-center">{{ number_format($book->price, 2, ',', '.') }}&nbsp;€</td>
                             <td class="px-4 py-2 text-center">
                                 <div class="flex items-center justify-center space-x-2">
                                     <a href="{{ route('books.show', $book) }}" title="View Details" class="text-blue-500 group-hover:text-white transition duration-200">
