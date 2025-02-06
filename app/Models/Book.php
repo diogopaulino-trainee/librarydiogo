@@ -16,29 +16,18 @@ class Book extends Model
         'bibliography',
         'cover_image',
         'price',
-        'author_id', 
         'publisher_id',
         'user_id',
     ];
-
-    public function setBibliographyAttribute($value)
-    {
-        $this->attributes['bibliography'] = Crypt::encryptString($value);
-    }
-
-    public function getBibliographyAttribute($value)
-    {
-        return Crypt::decryptString($value);
-    }
 
     public function publisher()
     {
         return $this->belongsTo(Publisher::class);
     }
 
-    public function author()
+    public function authors()
     {
-        return $this->belongsTo(Author::class);
+        return $this->belongsToMany(Author::class, 'author_book');
     }
 
     public function user()

@@ -14,12 +14,12 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Book::with(['author', 'publisher']);
+        $query = Book::with(['authors', 'publisher']);
 
         if ($request->has('search') && $request->search != '') {
             $query->where('title', 'like', '%' . $request->search . '%')
                 ->orWhere('isbn', 'like', '%' . $request->search . '%')
-                ->orWhereHas('author', function ($q) use ($request) {
+                ->orWhereHas('authors', function ($q) use ($request) {
                     $q->where('name', 'like', '%' . $request->search . '%');
                 })
                 ->orWhereHas('publisher', function ($q) use ($request) {
@@ -76,12 +76,13 @@ class BookController extends Controller
         $request->validate([
             'isbn' => 'required|unique:books,isbn',
             'title' => 'required',
-            'author_id' => 'required|exists:authors,id',
+            'authors' => 'required|array',
+            'authors.*' => 'exists:authors,id',
             'publisher_id' => 'required|exists:publishers,id',
             'price' => 'required|numeric|min:0',
             'cover_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-    
+
         if ($request->hasFile('cover_image')) {
             $image = $request->file('cover_image');
             $imageName = time() . '_' . $image->getClientOriginalName();
@@ -89,19 +90,19 @@ class BookController extends Controller
         } else {
             $imageName = 'noimage.png';
         }
-    
-        $book = new Book([
+
+        $book = Book::create([
             'isbn' => $request->isbn,
             'title' => $request->title,
             'bibliography' => $request->bibliography,
             'cover_image' => $imageName,
             'price' => $request->price,
-            'author_id' => $request->author_id,
             'publisher_id' => $request->publisher_id,
             'user_id' => Auth::id(),
         ]);
-        $book->save();
-    
+
+        $book->authors()->attach($request->authors);
+
         return redirect()->route('books.index')->with('success', 'Book created successfully!');
     }
 
@@ -117,7 +118,8 @@ class BookController extends Controller
         $request->validate([
             'isbn' => 'required|unique:books,isbn,' . $book->id,
             'title' => 'required',
-            'author_id' => 'required|exists:authors,id',
+            'authors' => 'required|array',
+            'authors.*' => 'exists:authors,id',
             'publisher_id' => 'required|exists:publishers,id',
             'price' => 'required|numeric|min:0',
             'cover_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
@@ -141,9 +143,10 @@ class BookController extends Controller
             'bibliography' => $request->bibliography,
             'cover_image' => $imageName,
             'price' => $request->price,
-            'author_id' => $request->author_id,
             'publisher_id' => $request->publisher_id,
         ]);
+
+        $book->authors()->sync($request->authors);
 
         return redirect()->route('books.index')->with('success', 'Book updated successfully!');
     }
@@ -155,7 +158,9 @@ class BookController extends Controller
     
     public function destroy(Book $book)
     {
+        $book->authors()->detach();
         $book->delete();
+
         return redirect()->route('books.index')->with('success', 'Book deleted successfully!');
     }
 

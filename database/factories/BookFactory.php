@@ -7,7 +7,6 @@ use App\Models\Book;
 use App\Models\Publisher;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class BookFactory extends Factory
@@ -22,10 +21,17 @@ class BookFactory extends Factory
             'bibliography' => $this->faker->paragraph,
             'cover_image' => $this->downloadImage('https://picsum.photos/seed/' . rand(0, 100000) . '/150/150'),
             'price' => $this->faker->randomFloat(2, 10, 100),
-            'author_id' => Author::inRandomOrder()->first()?->id,
             'publisher_id' => Publisher::inRandomOrder()->first()?->id,
             'user_id' => User::inRandomOrder()->first()?->id,
         ];
+    }
+
+    protected static function newFactory()
+    {
+        return parent::newFactory()->afterCreating(function (Book $book) {
+            $authors = Author::inRandomOrder()->take(rand(1, 3))->pluck('id');
+            $book->authors()->attach($authors);
+        });
     }
 
     private function downloadImage($url)

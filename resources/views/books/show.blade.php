@@ -15,9 +15,27 @@
                 <div class="grid grid-cols-1 gap-4 text-gray-800">
                     <div><strong>ISBN:</strong> {{ $book->isbn }}</div>
                     <div><strong>Title:</strong> {{ $book->title }}</div>
-                    <div><strong>Author:</strong> {{ $book->author->name ?? 'N/A' }}</div>
+                    <div>
+                        <strong>Authors:</strong> 
+                        @if($book->authors->isNotEmpty())
+                            @foreach ($book->authors as $author)
+                                {{ $author->name }}{{ !$loop->last ? ', ' : '' }}
+                            @endforeach
+                        @else
+                            N/A
+                        @endif
+                    </div>
                     <div><strong>Publisher:</strong> {{ $book->publisher->name ?? 'N/A' }}</div>
-                    <div><strong>Bibliography:</strong> {{ $book->bibliography ?? 'N/A' }}</div>
+                    <div>
+                        <strong>Bibliography:</strong>
+                        @auth
+                            {{ $book->bibliography }}
+                        @endauth
+                        @guest
+                            {{ \Illuminate\Support\Str::limit($book->bibliography, 20) }} 
+                            <span class="text-gray-500 italic">Available only for registered users</span>
+                        @endguest
+                    </div>
                     <div><strong>Price:</strong> {{ number_format($book->price, 2, ',', '.') }} €</div>
                     <div class="text-sm italic text-gray-600">
                         <strong>Added By:</strong> {{ $book->user->name }}

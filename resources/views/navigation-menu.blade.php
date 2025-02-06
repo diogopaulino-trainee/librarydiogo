@@ -74,9 +74,9 @@
                             <div class="border-t border-gray-200 my-2"></div>
                         
                             <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" x-data>
                                 @csrf
-                                <x-dropdown-link href="{{ route('logout') }}" @click.prevent="this.closest('form').submit();">
+                                <x-dropdown-link href="#" @click.prevent="$root.submit();">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m6-6l-6 6 6 6M21 4v16" />
                                     </svg>

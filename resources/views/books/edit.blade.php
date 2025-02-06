@@ -83,19 +83,20 @@
                 @enderror
             </div>
 
-            <!-- Author -->
+            <!-- Authors -->
             <div class="form-control">
-                <label for="author_id" class="label text-blue-500 font-semibold">Author</label>
-                <select name="author_id" id="author_id"
+                <label for="authors" class="label text-blue-500 font-semibold">Authors</label>
+                <select name="authors[]" id="authors" multiple
                     class="w-full p-3 rounded-md bg-blue-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
-                    @error('author_id') border-red-500 @enderror">
+                    @error('authors') border-red-500 @enderror">
                     @foreach ($authors as $author)
-                        <option value="{{ $author->id }}" {{ old('author_id', $book->author_id) == $author->id ? 'selected' : '' }}>
+                        <option value="{{ $author->id }}" 
+                            {{ (in_array($author->id, old('authors', $book->authors->pluck('id')->toArray()))) ? 'selected' : '' }}>
                             {{ $author->name }}
                         </option>
                     @endforeach
                 </select>
-                @error('author_id')
+                @error('authors')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

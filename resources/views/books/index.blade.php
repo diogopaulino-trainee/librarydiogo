@@ -35,7 +35,7 @@
 
             <div class="max-full mx-auto mt-8 p-8 bg-white shadow-md rounded-lg border border-blue-500">
                 <div class="flex justify-between items-center mb-4">
-                    <form action="{{ route('books.index') }}" method="GET" class="flex items-center space-x-2 w-full">
+                    <form id="searchForm" action="{{ route('books.index') }}" method="GET" class="flex items-center space-x-2 w-full">
                         <div class="flex items-center space-x-2 w-2/3">
                             <div class="relative w-1/2">
                                 <input type="text" name="search" placeholder="Search by ISBN, Title, Author, or Publisher" value="{{ request('search') }}" class="input input-bordered input-primary w-full pl-10 pr-4 py-2 rounded-md shadow-md" />
@@ -96,7 +96,13 @@
                         <tr class="hover:bg-blue-500 hover:text-white group">
                             <td class="px-4 py-2">{{ $book->isbn }}</td>
                             <td class="px-4 py-2">{{ $book->title }}</td>
-                            <td class="px-4 py-2">{{ $book->author->name ?? 'N/A' }}</td>
+                            <td class="px-4 py-2">
+                                @forelse ($book->authors as $author)
+                                    {{ $author->name }}{{ !$loop->last ? ', ' : '' }}
+                                @empty
+                                    N/A
+                                @endforelse
+                            </td>
                             <td class="px-4 py-2">{{ $book->publisher->name ?? 'N/A' }}</td>
                             <td class="px-4 py-2 text-center">{{ number_format($book->price, 2, ',', '.') }}&nbsp;€</td>
                             <td class="px-4 py-2 text-center">
@@ -176,16 +182,11 @@
         }
 
         function clearSearch() {
-            const form = document.querySelector('form');
-            const searchInput = form.querySelector('[name="search"]');
-            const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-            const select = form.querySelector('select[name="filter"]');
-
-            searchInput.value = '';
-            checkboxes.forEach(checkbox => checkbox.checked = false);
-            select.selectedIndex = 0;
+            const form = document.getElementById('searchForm');
+            form.querySelector('[name="search"]').value = '';
+            form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+            form.querySelector('select[name="filter"]').value = '';
             form.submit();
         }
-
     </script>
 </x-app-layout>

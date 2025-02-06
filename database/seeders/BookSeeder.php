@@ -20,11 +20,12 @@ class BookSeeder extends Seeder
         $users = User::all();
         $authors = Author::all();
 
-        Book::factory(50)->make()->each(function ($book) use ($publishers, $users, $authors) {
+        Book::factory(50)->create()->each(function ($book) use ($publishers, $users, $authors) {
             $book->publisher_id = $publishers->random()->id;
             $book->user_id = $users->random()->id;
-            $book->author_id = $authors->random()->id;
             $book->save();
+        
+            $book->authors()->attach($authors->random(rand(1, 3))->pluck('id'));
         });
     }
 

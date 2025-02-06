@@ -16,16 +16,6 @@ class Publisher extends Model
         'user_id',
     ];
 
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = Crypt::encryptString($value);
-    }
-
-    public function getNameAttribute($value)
-    {
-        return Crypt::decryptString($value);
-    }
-
     public function books()
     {
         return $this->hasMany(Book::class);

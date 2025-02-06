@@ -12,13 +12,13 @@ class BooksExport implements FromCollection, WithHeadings, WithStyles
 {
     public function collection()
     {
-        return Book::with(['author', 'publisher', 'user'])
+        return Book::with(['authors', 'publisher', 'user'])
             ->get()
             ->map(function ($book) {
                 return [
                     'ISBN' => "'" . $book->isbn,
                     'Title' => $book->title,
-                    'Author' => $book->author->name ?? 'N/A',
+                    'Authors' => $book->authors->pluck('name')->join(', ') ?: 'N/A',
                     'Publisher' => $book->publisher->name ?? 'N/A',
                     'Price (€)' => number_format($book->price, 2, ',', '.'),
                     'Cover Image' => asset('images/' . $book->cover_image),
@@ -29,7 +29,7 @@ class BooksExport implements FromCollection, WithHeadings, WithStyles
 
     public function headings(): array
     {
-        return ['ISBN', 'Title', 'Author', 'Publisher', 'Price (€)', 'Cover Image', 'Added By'];
+        return ['ISBN', 'Title', 'Authors', 'Publisher', 'Price (€)', 'Cover Image', 'Added By'];
     }
 
     public function styles(Worksheet $sheet)
