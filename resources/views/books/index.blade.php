@@ -83,6 +83,7 @@
                 <table class="min-w-full bg-white border border-blue-500 shadow-md rounded-lg">
                     <thead class="bg-blue-600 text-white">
                         <tr>
+                            <th class="px-4 py-2 border-b">Favorite</th>
                             <th class="px-4 py-2 border-b">ISBN</th>
                             <th class="px-4 py-2 border-b">Title</th>
                             <th class="px-4 py-2 border-b">Author</th>
@@ -94,6 +95,22 @@
                     <tbody>
                         @foreach ($books as $book)
                         <tr class="hover:bg-blue-500 hover:text-white group">
+                            <td class="px-4 py-2 text-center">
+                                @auth
+                                    <button id="favorite-btn-{{ $book->id }}" 
+                                        class="p-2 rounded-full transition duration-300 group"
+                                        onclick="toggleFavorite({{ $book->id }})">
+                                        <svg id="favorite-icon-{{ $book->id }}" xmlns="http://www.w3.org/2000/svg" 
+                                            class="h-8 w-8 transition duration-300 group-hover:fill-red-500" 
+                                            viewBox="0 0 24 24" 
+                                            fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
+                                            stroke="black" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" 
+                                                d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
+                                        </svg>
+                                    </button>
+                                @endauth
+                            </td>
                             <td class="px-4 py-2">{{ $book->isbn }}</td>
                             <td class="px-4 py-2">{{ $book->title }}</td>
                             <td class="px-4 py-2">
@@ -171,6 +188,22 @@
     </div>
 
     <script>
+        function toggleFavorite(bookId) {
+            fetch(`/favorites/toggle/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let icon = document.getElementById(`favorite-icon-${bookId}`);
+                icon.setAttribute("fill", data.favorited ? "red" : "none");
+            })
+            .catch(error => console.error('Erro ao marcar/desmarcar favorito:', error));
+        }
+        
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
             document.getElementById(id).classList.add('flex');

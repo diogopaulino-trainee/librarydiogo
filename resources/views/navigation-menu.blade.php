@@ -1,6 +1,6 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -43,7 +43,7 @@
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                 <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                    <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                                    <img class="size-10 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
                                 </button>
                             @else
                                 <span class="inline-flex rounded-md">
@@ -58,9 +58,9 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <!-- Account Management -->
-                            <div class="block px-4 py-2 text-sm text-gray-400">
-                                {{ __('Manage Account') }}
+                            <div class="px-4 py-2 text-gray-800 text-sm border-b">
+                                <p class="font-semibold">{{ Auth::user()->name }}</p>
+                                <p class="text-gray-500">{{ Auth::user()->email }}</p>
                             </div>
                         
                             <!-- Profile Link -->
@@ -71,16 +71,16 @@
                                 <span>{{ __('Profile') }}</span>
                             </x-dropdown-link>
                         
-                            <div class="border-t border-gray-200 my-2"></div>
+                            <div class="border-t border-gray-200"></div>
                         
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}" x-data>
                                 @csrf
                                 <x-dropdown-link href="#" @click.prevent="$root.submit();">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m6-6l-6 6 6 6M21 4v16" />
                                     </svg>
-                                    <span>{{ __('Log Out') }}</span>
+                                    <span class="text-red-500">{{ __('Log Out') }}</span>
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
@@ -108,7 +108,7 @@
             </div>
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-blue-500 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-blue-600 transition duration-150 ease-in-out">
                     <svg class="size-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -174,10 +174,10 @@
 
                     <x-responsive-nav-link href="{{ route('logout') }}"
                                 @click.prevent="$root.submit();">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-red-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m6-6l-6 6 6 6M21 4v16" />
                         </svg>
-                        <span>{{ __('Log Out') }}</span>
+                        <span class="text-red-500">{{ __('Log Out') }}</span>
                     </x-responsive-nav-link>
                 </form>
             </div>
