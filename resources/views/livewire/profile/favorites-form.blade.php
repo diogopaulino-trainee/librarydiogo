@@ -80,14 +80,21 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const enableDeleteToggle = document.getElementById("enable-delete");
-        const deleteButtons = document.querySelectorAll(".delete-btn");
 
-        enableDeleteToggle.addEventListener("change", function() {
-            if (this.checked) {
-                deleteButtons.forEach(btn => btn.classList.remove("hidden"));
-            } else {
-                deleteButtons.forEach(btn => btn.classList.add("hidden"));
-            }
-        });
+        function updateDeleteButtons() {
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+            deleteButtons.forEach(btn => {
+                if (enableDeleteToggle.checked) {
+                    btn.classList.remove("hidden");
+                } else {
+                    btn.classList.add("hidden");
+                }
+            });
+        }
+
+        enableDeleteToggle.addEventListener("change", updateDeleteButtons);
+
+        const observer = new MutationObserver(updateDeleteButtons);
+        observer.observe(document.getElementById("favorite-books-container"), { childList: true, subtree: true });
     });
 </script>
