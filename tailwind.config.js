@@ -22,6 +22,9 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            backgroundImage: {
+                'custom-gradient': 'linear-gradient(to bottom, #EFF6FF, #C7D2FE)',
+            },
         },
     },
 

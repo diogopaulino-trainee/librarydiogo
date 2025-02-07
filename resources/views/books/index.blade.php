@@ -97,18 +97,19 @@
                         <tr class="hover:bg-blue-500 hover:text-white group">
                             <td class="px-4 py-2 text-center">
                                 @auth
-                                    <button id="favorite-btn-{{ $book->id }}" 
-                                        class="p-2 rounded-full transition duration-300 group"
+                                <button id="favorite-btn-{{ $book->id }}" 
+                                        class="p-2 rounded-full transition duration-300"
                                         onclick="toggleFavorite({{ $book->id }})">
-                                        <svg id="favorite-icon-{{ $book->id }}" xmlns="http://www.w3.org/2000/svg" 
-                                            class="h-8 w-8 transition duration-300 group-hover:fill-red-500" 
-                                            viewBox="0 0 24 24" 
-                                            fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
-                                            stroke="black" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" 
-                                                d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
-                                        </svg>
-                                    </button>
+                                    <svg id="favorite-icon-{{ $book->id }}" 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        class="h-8 w-8 transition duration-300 hover:fill-red-500"
+                                        viewBox="0 0 24 24" 
+                                        fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
+                                        stroke="black" stroke-width="1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" 
+                                            d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
+                                    </svg>
+                                </button>
                                 @endauth
                             </td>
                             <td class="px-4 py-2">{{ $book->isbn }}</td>
@@ -124,18 +125,24 @@
                             <td class="px-4 py-2 text-center">{{ number_format($book->price, 2, ',', '.') }}&nbsp;€</td>
                             <td class="px-4 py-2 text-center">
                                 <div class="flex items-center justify-center space-x-2">
-                                    <a href="{{ route('books.show', $book) }}" title="View Details" class="text-blue-500 group-hover:text-white transition duration-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <a href="{{ route('books.show', $book) }}" title="View Details" class="text-blue-500 group-hover:text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 3.866-4.03 7-9 7s-9-3.134-9-7 4.03-7 9-7 9 3.134 9 7z" />
                                         </svg>
                                     </a>
-                                    <button onclick="openModal('modal-{{ $book->id }}')" title="View Timestamps" class="text-gray-500 group-hover:text-white transition duration-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10m-10 4h10m-9 4h8" />
+                                    <button onclick="openModal('modal-{{ $book->id }}')"
+                                            class="relative text-gray-700 hover:text-blue-600 transition duration-200 group flex items-center justify-center p-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-6.32-8.59"/>
                                         </svg>
+                                        <span class="absolute bottom-full mb-2 hidden group-hover:flex items-center 
+                                                    bg-white text-black text-xs font-semibold px-2 py-1 rounded-md shadow-md
+                                                    border border-gray-400 z-50">
+                                            View Timestamps
+                                        </span>
                                     </button>
-                                    <a href="{{ route('books.edit', $book) }}" class="text-yellow-400 hover:text-yellow-800">Edit</a>
-                                    <a href="{{ route('books.delete', $book) }}" class="text-red-600 hover:text-red-800">Delete</a>
+                                    <a href="{{ route('books.edit', $book) }}" class="text-yellow-400 font-semibold hover:text-white transition duration-200">Edit</a>
+                                    <a href="{{ route('books.delete', $book) }}" class="text-red-500 font-semibold hover:text-white transition duration-200">Delete</a>
                                 </div>
                             </td>
                         </tr>
@@ -173,15 +180,36 @@
                     {{ $books->appends(request()->query())->links() }}
                 </div>
                 
-                <div class="flex justify-end mt-6">
-                    <a href="{{ route('books.export') }}" 
-                       class="btn bg-green-500 text-white hover:bg-green-700 transition duration-300 shadow-md">
+                <div x-data="{ open: false }" class="relative flex justify-end mt-6">
+                    <button @click="open = !open" 
+                            class="btn bg-green-500 text-white hover:bg-green-700 transition duration-300 shadow-md flex items-center px-4 py-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M4 4h16v16H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M4 8h16M4 16h16M4 12h16M8 4v16M16 4v16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M5 20h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        Export to Excel
-                    </a>
+                        Export
+                    </button>
+                
+                    <div x-show="open" @click.away="open = false" 
+                         x-transition.origin-bottom
+                         class="absolute bottom-14 right-0 w-40 bg-white border border-gray-300 shadow-lg rounded-md z-10">
+                        <a href="{{ route('books.export', ['format' => 'excel']) }}" 
+                           class="block px-4 py-2 text-gray-800 hover:bg-green-100 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M4 4h16v16H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 4v16M16 4v16M4 8h16M4 16h16M4 12h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Export to Excel
+                        </a>
+                        <a href="{{ route('books.export', ['format' => 'pdf']) }}" 
+                           class="block px-4 py-2 text-gray-800 hover:bg-red-100 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M6 2h12l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 2v4h4M9 11h6M9 15h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Export to PDF
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

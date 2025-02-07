@@ -5,9 +5,11 @@
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-md rounded-lg p-6 border border-blue-500">
+            <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 300)" x-show="show" x-transition class="bg-white shadow-md rounded-lg p-6 border border-blue-500">
                 <div class="mb-4 text-center">
-                    <img src="{{ asset('images/profile_picture.png') }}" alt="Profile Picture" class="w-48 h-48 mx-auto object-cover rounded-full shadow-md">
+                    <div class="w-48 h-48 mx-auto rounded-full p-1 bg-gradient-to-r from-blue-500 to-purple-500 pulse-animation">
+                        <img src="{{ asset('images/profile_picture.png') }}" alt="Profile Picture" class="w-full h-full rounded-full object-cover shadow-lg">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 text-gray-800 text-center">
@@ -30,7 +32,22 @@
                         GitHub
                     </a>
                 </div>
+                <div class="mt-6 text-center text-gray-600 italic">
+                    "The only way to do great work is to love what you do." — Steve Jobs
+                </div>
             </div>
         </div>
     </div>
+    
+    <style>
+        @keyframes pulse-scale {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-animation {
+            animation: pulse-scale 2s infinite ease-in-out;
+        }
+    </style>
 </x-app-layout>

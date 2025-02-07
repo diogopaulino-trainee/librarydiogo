@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-200">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in">
         <div class="flex justify-between h-16">
@@ -28,7 +28,7 @@
 
                     <x-nav-link href="{{ route('publishers.index') }}" :active="request()->routeIs('publishers.*')" class="flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M4 22V10L12 2L20 10V22H15V15H9V22H4Z" />
+                            <path d="M6 6V2H18V6H21C22.1 6 23 6.9 23 8V16C23 17.1 22.1 18 21 18H18V22H6V18H3C1.9 18 1 17.1 1 16V8C1 6.9 1.9 6 3 6H6ZM6 8H18V4H6V8ZM3 16H6V12H18V16H21V8H3V16ZM16 14H8V20H16V14Z"/>
                         </svg>
                         <span>{{ __('Publishers') }}</span>
                     </x-nav-link>
@@ -43,7 +43,7 @@
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                 <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                    <img class="size-10 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
+                                    <img class="size-12 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
                                 </button>
                             @else
                                 <span class="inline-flex rounded-md">
@@ -137,8 +137,7 @@
 
             <x-responsive-nav-link href="{{ route('publishers.index') }}" :active="request()->routeIs('publishers.*')">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M4 22V10L12 2L20 10V22H15V15H9V22H4Z" />
-                </svg>
+                    <path d="M6 6V2H18V6H21C22.1 6 23 6.9 23 8V16C23 17.1 22.1 18 21 18H18V22H6V18H3C1.9 18 1 17.1 1 16V8C1 6.9 1.9 6 3 6H6ZM6 8H18V4H6V8ZM3 16H6V12H18V16H21V8H3V16ZM16 14H8V20H16V14Z"/>                </svg>
                 <span>{{ __('Publishers') }}</span>
             </x-responsive-nav-link>
         </div>      

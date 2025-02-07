@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\PublishersExport;
 use App\Models\Publisher;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -101,8 +102,16 @@ class PublisherController extends Controller
         return redirect()->route('publishers.index')->with('success', 'Publisher deleted successfully!');
     }
 
-    public function export()
+    public function export(Request $request)
     {
+        $format = $request->query('format', 'excel');
+
+        if ($format === 'pdf') {
+            $publishers = Publisher::all();
+            $pdf = Pdf::loadView('exports.publishers_pdf', compact('publishers'));
+            return $pdf->download('publishers.pdf');
+        }
+
         return Excel::download(new PublishersExport, 'publishers.xlsx');
     }
 }

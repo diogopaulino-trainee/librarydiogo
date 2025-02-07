@@ -14,7 +14,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
-<body class="font-sans antialiased bg-gray-50">
+<body class="font-sans antialiased bg-custom-gradient">
     @include('navigation-menu')
 
     <div class="wrapper py-10 px-4 lg:px-16">
@@ -121,10 +121,11 @@
         </main>
     </div>
 
-    <footer class="text-center py-4 text-gray-500">
-        <p>
+    <footer class="text-center py-6 bg-gradient-to-r from-blue-600 to-indigo-800 text-white mt-12">
+        <p class="text-lg font-semibold">
             Want to know more about me? 
-            <a href="{{ route('about.me') }}" class="text-blue-600 hover:text-blue-800 font-semibold underline transition duration-300">
+            <a href="{{ route('about.me') }}" 
+               class="underline hover:text-white transition duration-300 hover:opacity-80">
                 Click here to learn more!
             </a>
         </p>

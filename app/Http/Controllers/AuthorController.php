@@ -7,6 +7,7 @@ use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AuthorController extends Controller
 {
@@ -101,8 +102,16 @@ class AuthorController extends Controller
         return redirect()->route('authors.index')->with('success', 'author deleted successfully!');
     }
 
-    public function export()
+    public function export(Request $request)
     {
+        $format = $request->query('format', 'excel');
+
+        if ($format === 'pdf') {
+            $authors = Author::all();
+            $pdf = Pdf::loadView('exports.authors_pdf', compact('authors'));
+            return $pdf->download('authors.pdf');
+        }
+
         return Excel::download(new AuthorsExport, 'authors.xlsx');
     }
 }

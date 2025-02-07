@@ -87,23 +87,28 @@
                     <tbody>
                         @foreach ($authors as $author)
                         <tr class="hover:bg-blue-500 hover:text-white group">
-                            <td class="px-4 py-2 border-b">{{ $author->name }}</td>
-                            <td class="px-4 py-2 border-b text-center whitespace-nowrap space-x-2">
-                                <a href="{{ route('authors.show', $author) }}" title="View more details" 
-                                   class="text-blue-500 group-hover:text-white transition duration-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 3.866-4.03 7-9 7s-9-3.134-9-7 4.03-7 9-7 9 3.134 9 7z" />
+                            <td class="px-4 py-2">{{ $author->name }}</td>
+                            <td class="px-4 py-2 text-center whitespace-nowrap flex items-center justify-center space-x-4">
+                                <a href="{{ route('authors.show', $author) }}" title="View more details"
+                                class="text-blue-500 group-hover:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 3.866-4.03 7-9 7s-9-3.134-9-7 4.03-7 9-7 9 3.134 9 7z" />
                                     </svg>
                                 </a>
-                                <button onclick="openModal('modal-{{ $author->id }}')" 
-                                        title="View Timestamps" 
-                                        class="text-gray-500 group-hover:text-white transition duration-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10m-10 4h10m-9 4h8" />
+                                <button onclick="openModal('modal-{{ $author->id }}')"
+                                        class="relative text-gray-700 hover:text-blue-600 transition duration-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-6.32-8.59"/>
                                     </svg>
+                                    <span class="absolute bottom-full mb-2 hidden group-hover:flex items-center 
+                                                 bg-white text-black text-xs font-semibold px-2 py-1 rounded-md shadow-md
+                                                 border border-gray-400 z-50">
+                                        View Timestamps
+                                    </span>
                                 </button>
-                                <a href="{{ route('authors.edit', $author) }}" class="text-yellow-400 hover:text-yellow-800">Edit</a>
-                                <a href="{{ route('authors.delete', $author) }}" class="text-red-600 hover:text-red-800">Delete</a>
+                                <a href="{{ route('authors.edit', $author) }}" class="text-yellow-400 font-semibold hover:text-white transition duration-200">Edit</a>
+                                <a href="{{ route('authors.delete', $author) }}" class="text-red-500 font-semibold hover:text-white transition duration-200">Delete</a>
                             </td>
                         </tr>
 
@@ -141,15 +146,36 @@
                     {{ $authors->appends(request()->query())->links() }}
                 </div>
                 
-                <div class="flex justify-end mt-6">
-                    <a href="{{ route('authors.export') }}" 
-                       class="btn bg-green-500 text-white hover:bg-green-700 transition duration-300 shadow-md">
+                <div x-data="{ open: false }" class="relative flex justify-end mt-6">
+                    <button @click="open = !open" 
+                            class="btn bg-green-500 text-white hover:bg-green-700 transition duration-300 shadow-md flex items-center px-4 py-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M4 4h16v16H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M4 8h16M4 16h16M4 12h16M8 4v16M16 4v16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M5 20h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        Export to Excel
-                    </a>
+                        Export
+                    </button>
+                
+                    <div x-show="open" @click.away="open = false" 
+                         x-transition.origin-bottom
+                         class="absolute bottom-14 right-0 w-40 bg-white border border-gray-300 shadow-lg rounded-md z-10">
+                        <a href="{{ route('authors.export', ['format' => 'excel']) }}" 
+                           class="block px-4 py-2 text-gray-800 hover:bg-green-100 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M4 4h16v16H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 4v16M16 4v16M4 8h16M4 16h16M4 12h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Export to Excel
+                        </a>
+                        <a href="{{ route('authors.export', ['format' => 'pdf']) }}" 
+                           class="block px-4 py-2 text-gray-800 hover:bg-red-100 transition flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M6 2h12l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 2v4h4M9 11h6M9 15h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Export to PDF
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

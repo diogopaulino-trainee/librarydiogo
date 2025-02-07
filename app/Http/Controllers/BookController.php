@@ -6,6 +6,7 @@ use App\Exports\BooksExport;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Publisher;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -164,8 +165,16 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', 'Book deleted successfully!');
     }
 
-    public function export()
+    public function export(Request $request)
     {
+        $format = $request->query('format', 'excel');
+
+        if ($format === 'pdf') {
+            $books = Book::with(['authors', 'publisher'])->get();
+            $pdf = Pdf::loadView('exports.books_pdf', compact('books'));
+            return $pdf->download('books.pdf');
+        }
+
         return Excel::download(new BooksExport, 'books.xlsx');
     }
 }

@@ -7,8 +7,6 @@ use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
-
-
 // Página inicial acessível a todos
 Route::get('/', function () {
     return view('homepage');
