@@ -32,6 +32,7 @@
                         </svg>
                         <span>{{ __('Publishers') }}</span>
                     </x-nav-link>
+                    
                 </div>
             </div>
 
@@ -71,6 +72,17 @@
                                 <span>{{ __('Profile') }}</span>
                             </x-dropdown-link>
                         
+                            <div class="border-t border-gray-200"></div>
+
+                            @role('Admin') 
+                            <x-dropdown-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5s-3 1.34-3 3 1.34 3 3 3zm8 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zM8 13c-2.67 0-8 1.34-8 4v2h6v-2c0-2.66 5.33-4 8-4h-6z" />
+                                </svg>
+                                <span>{{ __('Manage Users') }}</span>
+                            </x-dropdown-link>
+                            @endrole
+
                             <div class="border-t border-gray-200"></div>
                         
                             <!-- Authentication -->
@@ -166,6 +178,15 @@
                     </svg>
                     <span>{{ __('Profile') }}</span>
                 </x-responsive-nav-link>
+
+                @role('Admin') 
+                <x-responsive-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5s-3 1.34-3 3 1.34 3 3 3zm8 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zM8 13c-2.67 0-8 1.34-8 4v2h6v-2c0-2.66 5.33-4 8-4h-6z" />
+                    </svg>
+                    <span>{{ __('Manage Users') }}</span>
+                </x-responsive-nav-link>
+                @endrole
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}" x-data>

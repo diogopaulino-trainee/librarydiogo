@@ -36,11 +36,15 @@ class AuthorController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('authors.create');
     }
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $request->validate([
             'name' => 'required|unique:authors,name',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -65,11 +69,15 @@ class AuthorController extends Controller
 
     public function edit(Author $author)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('authors.edit', compact('author'));
     }
 
     public function update(Request $request, Author $author)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $request->validate([
             'name' => 'required|string|max:255',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -93,11 +101,15 @@ class AuthorController extends Controller
 
     public function delete(Author $author)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('authors.delete', compact('author'));
     }
     
     public function destroy(Author $author)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $author->delete();
         return redirect()->route('authors.index')->with('success', 'author deleted successfully!');
     }

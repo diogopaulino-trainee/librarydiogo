@@ -4,11 +4,13 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
+use App\Mail\UserRegisteredMail;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -34,7 +36,11 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
+        $user->assignRole('Citizen');
+
         $this->downloadPlaceholderImage($user);
+
+        Mail::to($user->email)->send(new UserRegisteredMail($user));
 
         return $user;
     }

@@ -17,7 +17,7 @@
 <body class="font-sans antialiased bg-custom-gradient">
     @include('navigation-menu')
 
-    <div class="wrapper py-10 px-4 lg:px-16">
+    <div class="wrapper py-10 px-4 lg:px-16 mt-16">
         <h1 class="text-4xl font-bold text-center text-blue-700 mb-8 mr-10 fade-in">Welcome to the Library Management System</h1>
 
         <main>
@@ -29,7 +29,7 @@
                         </svg>
                         <h2 class="text-2xl font-semibold text-blue-700 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]">Books</h2>
                         <p class="text-gray-600 min-h-[48px] relative">
-                            <span class="invisible absolute">Explore, add, and manage the library's collection of books.</span> <!-- Placeholder -->
+                            <span class="invisible absolute">Explore, add, and manage the library's collection of books.</span>
                             <span x-data="{ text: '', fullText: 'Explore, add, and manage the library\'s collection of books.', i: 0 }"
                                   x-init="let interval = setInterval(() => { 
                                       if (i < fullText.length) { 
@@ -50,7 +50,7 @@
                         </svg>
                         <h2 class="text-2xl font-semibold text-green-700 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]">Authors</h2>
                         <p class="text-gray-600 min-h-[48px] relative">
-                            <span class="invisible absolute">Manage information about book authors and their works.</span> <!-- Placeholder -->
+                            <span class="invisible absolute">Manage information about book authors and their works.</span>
                             <span x-data="{ text: '', fullText: 'Manage information about book authors and their works.', i: 0 }"
                                   x-init="let interval = setInterval(() => { 
                                       if (i < fullText.length) { 
@@ -71,7 +71,7 @@
                         </svg>
                         <h2 class="text-2xl font-semibold text-purple-700 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]">Publishers</h2>
                         <p class="text-gray-600 min-h-[48px] relative">
-                            <span class="invisible absolute">View and manage publisher details for library resources.</span> <!-- Placeholder -->
+                            <span class="invisible absolute">View and manage publisher details for library resources.</span>
                             <span x-data="{ text: '', fullText: 'View and manage publisher details for library resources.', i: 0 }"
                                   x-init="let interval = setInterval(() => { 
                                       if (i < fullText.length) { 

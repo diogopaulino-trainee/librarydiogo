@@ -67,6 +67,8 @@ class BookController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $authors = Author::all();
         $publishers = Publisher::all();
         return view('books.create', compact('authors', 'publishers'));
@@ -74,6 +76,8 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $request->validate([
             'isbn' => 'required|unique:books,isbn',
             'title' => 'required',
@@ -109,6 +113,8 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $authors = Author::all();
         $publishers = Publisher::all();
         return view('books.edit', compact('book', 'authors', 'publishers'));
@@ -116,6 +122,8 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $request->validate([
             'isbn' => 'required|unique:books,isbn,' . $book->id,
             'title' => 'required',
@@ -154,11 +162,15 @@ class BookController extends Controller
 
     public function delete(Book $book)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('books.delete', compact('book'));
     }
     
     public function destroy(Book $book)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $book->authors()->detach();
         $book->delete();
 

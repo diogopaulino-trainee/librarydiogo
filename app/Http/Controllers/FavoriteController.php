@@ -14,6 +14,8 @@ class FavoriteController extends Controller
     {
         $user = Auth::user();
 
+        abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Access denied.');
+
         if ($user->favorites()->where('book_id', $book->id)->exists()) {
             $user->favorites()->detach($book->id);
             return response()->json(['favorited' => false]);
@@ -26,6 +28,8 @@ class FavoriteController extends Controller
     public function removeFavorite($bookId)
     {
         $user = Auth::user();
+
+        abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Access denied.');
 
         if (!method_exists($user, 'favorites')) {
             throw new \Exception('Método favorites() não existe no modelo User');
