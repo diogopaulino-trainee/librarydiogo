@@ -101,11 +101,15 @@
                                         </span>
                                     </button>
                 
-                                    <a href="{{ route('publishers.edit', $publisher) }}" 
-                                       class="text-yellow-400 font-semibold hover:text-white transition duration-200">Edit</a>
-                
-                                    <a href="{{ route('publishers.delete', $publisher) }}" 
-                                       class="text-red-500 font-semibold hover:text-white transition duration-200">Delete</a>
+                                    @auth
+                                        @if(auth()->user()->hasRole('Admin'))
+                                            <a href="{{ route('publishers.edit', $publisher) }}" 
+                                            class="text-yellow-400 font-semibold hover:text-white transition duration-200">Edit</a>
+                        
+                                            <a href="{{ route('publishers.delete', $publisher) }}" 
+                                            class="text-red-500 font-semibold hover:text-white transition duration-200">Delete</a>
+                                       @endif
+                                    @endauth
                                 </div>
                             </td>
                         </tr>

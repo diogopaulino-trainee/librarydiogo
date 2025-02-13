@@ -5,8 +5,10 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PublisherController;
+use App\Http\Controllers\RequestController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
+
 
 
 // Página inicial acessível a todos
@@ -25,6 +27,7 @@ Route::prefix('api')->group(function () {
     Route::get('/authors/count', [StatsController::class, 'countAuthors'])->name('api.authors.count');
     Route::get('/publishers/count', [StatsController::class, 'countPublishers'])->name('api.publishers.count');
     Route::get('/users/count', [StatsController::class, 'countUsers'])->name('api.users.count');
+    Route::get('/books/covers', [BookController::class, 'getBookCovers'])->name('api.books.covers');
 });
 
 // Grupo de rotas protegidas por autenticação
@@ -47,9 +50,20 @@ Route::middleware([
 
         // Rotas para administração de utilizadores (Admin apenas)
         Route::get('/admin/users', [AdminController::class, 'index'])->name('admin.users.index');
+        Route::get('admin/users/{user}/show', [AdminController::class, 'show'])->name('admin.users.show');
         Route::post('/admin/users/{user}/change-role', [AdminController::class, 'changeRole'])->name('admin.users.change-role');
         Route::get('/admin/users/create', [AdminController::class, 'create'])->name('admin.users.create');
         Route::post('/admin/users/store', [AdminController::class, 'store'])->name('admin.users.store');
+    });
+
+    // Rotas de Requisições
+    Route::prefix('requests')->group(function () {
+        Route::get('/', [RequestController::class, 'index'])->name('requests.index');
+        Route::post('/{book}', [RequestController::class, 'store'])->name('requests.store');
+        Route::post('/{book}/admin', [RequestController::class, 'storeByAdmin'])->name('requests.store.admin');
+        Route::get('/{request}', [RequestController::class, 'show'])->name('requests.show');
+        Route::post('/{request}/confirm-return', [RequestController::class, 'confirmReturn'])->name('requests.confirm_return');
+        Route::get('/citizens/search', [RequestController::class, 'searchCitizens'])->name('citizens.search');
     });
 
     // Exportação de dados - Disponível para todos os utilizadores autenticados

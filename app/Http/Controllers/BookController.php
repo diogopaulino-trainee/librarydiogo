@@ -6,7 +6,9 @@ use App\Exports\BooksExport;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Publisher;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -62,7 +64,27 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        return view('books.show', compact('book'));
+        // Apenas Admins podem ver a lista de cidadãos para solicitar livros
+        $citizens = auth()->check() && auth()->user()->hasRole('Admin') 
+            ? User::whereHas('roles', function($query) {
+                $query->where('name', 'Citizen');
+            })
+            ->orderBy('name', 'asc')
+            ->get()
+            : collect();
+
+        // Requisição pendente mais recente do livro
+        $pendingRequest = $book->requests()
+            ->where('status', 'pending')
+            ->orderBy('expected_return_date', 'desc')
+            ->first();
+
+        foreach ($citizens as $citizen) {
+            $pendingCount = $citizen->requests()->where('status', 'pending')->count();
+            $citizen->requests_left = max(0, 3 - $pendingCount);
+        }
+
+        return view('books.show', compact('book', 'citizens', 'pendingRequest'));
     }
 
     public function create()
@@ -188,5 +210,10 @@ class BookController extends Controller
         }
 
         return Excel::download(new BooksExport, 'books.xlsx');
+    }
+
+    public function getBookCovers(): JsonResponse
+    {
+        return response()->json(Book::whereNotNull('cover_image')->select('id', 'cover_image')->get());
     }
 }

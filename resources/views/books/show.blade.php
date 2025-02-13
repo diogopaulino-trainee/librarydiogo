@@ -1,11 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2>{{ ('Book Details') }}</h2>
+        <h2>{{ __('Book Details') }}</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-md rounded-lg p-6 border border-blue-500 relative">
+
                 @auth
                     <button id="favorite-btn" 
                         class="absolute top-3 right-3 bg-white p-4 rounded-full shadow-xl transition duration-300 group"
@@ -57,9 +58,151 @@
                     </div>
                 </div>
 
+                <div class="mt-6">
+                    @if(!$pendingRequest) 
+                    @if(auth()->check() && auth()->user()->hasRole('Citizen'))
+                            <form action="{{ route('requests.store', $book) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 w-full">
+                                    Request This Book
+                                </button>
+                            </form>
+                        @elseif(auth()->check() && auth()->user()->hasRole('Admin') && $citizens->isNotEmpty())
+                        <form action="{{ route('requests.store.admin', $book) }}" method="POST">
+                            @csrf
+                            <label for="citizen_id" class="block text-sm font-medium text-gray-700">Select Citizen:</label>
+                            <select name="citizen_id" id="citizen_id" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                                <option value="" disabled selected>Choose a Citizen</option>
+                                @foreach($citizens as $citizen)
+                                    @php
+                                        $textColor = '';
+                                        if ($citizen->requests_left == 0 || $citizen->requests_left == 1) {
+                                            $textColor = 'text-red-500';
+                                        } elseif ($citizen->requests_left == 2) {
+                                            $textColor = 'text-orange-500';
+                                        } elseif ($citizen->requests_left == 3) {
+                                            $textColor = 'text-green-500';
+                                        }
+                                    @endphp
+                                    <option value="{{ $citizen->id }}" class="{{ $textColor }}">
+                                        {{ $citizen->name }} ({{ $citizen->requests_left }} request{{ $citizen->requests_left > 1 ? 's' : '' }} remaining)
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 w-full mt-2">
+                                Request for Citizen
+                            </button>
+                        </form>
+                        @elseif(auth()->check())
+                            <p class="text-gray-500 italic">No citizens available for selection.</p>
+                        @else
+                            <p class="text-gray-500 italic">
+                                Please <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-700">log in</a> to make a request.
+                            </p>
+                        @endif
+                    @else
+                        <p class="text-red-500 font-bold mt-4">
+                            This book is currently unavailable.
+                            <br>
+                            <span class="text-gray-700 font-medium">
+                                Expected to be available by: 
+                                <strong>
+                                    {{ \Carbon\Carbon::parse($pendingRequest->expected_return_date)->format('d M, Y') }}
+                                </strong>
+                            </span>
+                        </p>
+                    @endif
+                </div>
+
+                @if (session('success'))
+                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                </svg>
+                                <strong class="font-bold text-green-800">Success!</strong>
+                                <span class="ml-2">{{ session('success') }}</span>
+                            </div>
+                            <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg class="fill-current h-6 w-6 text-green-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
+
+                @if (session('error')) 
+                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <strong class="font-bold text-red-800">Error!</strong>
+                                <span class="ml-2">{{ session('error') }}</span>
+                            </div>    
+                            <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg class="fill-current h-6 w-6 text-red-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="mt-6 flex justify-between">
                     <a href="{{ route('books.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Back to List</a>
-                    <a href="{{ route('books.edit', $book) }}" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit Book</a>
+                    
+                    @auth
+                        @if(auth()->user()->hasRole('Admin'))
+                            <a href="{{ route('books.edit', $book) }}" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit Book</a>
+                        @endif
+                    @endauth
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold text-gray-800">Request History</h3>
+                
+                    @if($book->requests->isEmpty())
+                        <p class="text-gray-500">No requests have been made for this book yet.</p>
+                    @else
+                        <table class="min-w-full table-auto mt-4 border border-gray-300 rounded-lg shadow-md">
+                            <thead class="bg-blue-600 text-white">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Request Date</th>
+                                    <th class="px-4 py-2 text-left">Returned Date</th>
+                                    <th class="px-4 py-2 text-left">Status</th>
+                                    <th class="px-4 py-2 text-left">User</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($book->requests as $request)
+                                    <tr class="border-b">
+                                        <td class="px-4 py-2 text-left">{{ \Carbon\Carbon::parse($request->created_at)->format('d M, Y') }}</td>
+                                        <td class="px-4 py-2 text-left">
+                                            @if($request->actual_return_date)
+                                                {{ \Carbon\Carbon::parse($request->actual_return_date)->format('d M, Y') }}
+                                            @else
+                                                <span class="text-red-500">Not returned</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-2 text-left">
+                                            @if($request->actual_return_date)
+                                                <span class="text-green-600">Returned</span>
+                                            @else
+                                                <span class="text-red-600">Pending</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-2 text-left">{{ $request->user->name ?? 'N/A' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>

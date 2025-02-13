@@ -19,10 +19,11 @@ class BookFactory extends Factory
             'isbn' => $this->faker->unique()->isbn13,
             'title' => $this->faker->sentence,
             'bibliography' => $this->faker->paragraph,
-            'cover_image' => $this->downloadImage('https://picsum.photos/seed/' . rand(0, 100000) . '/150/150'),
+            'cover_image' => $this->downloadImage('https://picsum.photos/seed/' . rand(0, 100000) . '/1200/1200'),
             'price' => $this->faker->randomFloat(2, 10, 100),
             'publisher_id' => Publisher::inRandomOrder()->first()?->id,
             'user_id' => User::inRandomOrder()->first()?->id,
+            'status' => 'available',
         ];
     }
 

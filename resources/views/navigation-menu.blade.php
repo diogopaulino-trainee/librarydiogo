@@ -33,6 +33,14 @@
                         <span>{{ __('Publishers') }}</span>
                     </x-nav-link>
                     
+                    @auth
+                        <x-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')" class="flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 2L2 7v14h20V7l-7-5H9zm0 2h6l5 3H4l5-3zm-5 5h16v10H4V9zm7 1v6h2v-6h-2zm-4 0v6h2v-6H7zm8 0v6h2v-6h-2z"/>
+                            </svg>
+                            <span>{{ __('Requests') }}</span>
+                        </x-nav-link> 
+                    @endauth
                 </div>
             </div>
 
@@ -152,6 +160,15 @@
                     <path d="M6 6V2H18V6H21C22.1 6 23 6.9 23 8V16C23 17.1 22.1 18 21 18H18V22H6V18H3C1.9 18 1 17.1 1 16V8C1 6.9 1.9 6 3 6H6ZM6 8H18V4H6V8ZM3 16H6V12H18V16H21V8H3V16ZM16 14H8V20H16V14Z"/>                </svg>
                 <span>{{ __('Publishers') }}</span>
             </x-responsive-nav-link>
+
+            @auth
+                <x-responsive-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 2L2 7v14h20V7l-7-5H9zm0 2h6l5 3H4l5-3zm-5 5h16v10H4V9zm7 1v6h2v-6h-2zm-4 0v6h2v-6H7zm8 0v6h2v-6h-2z"/>
+                    </svg>
+                    <span>{{ __('Requests') }}</span>
+                </x-responsive-nav-link>
+            @endauth
         </div>      
 
         <!-- Responsive Settings Options -->

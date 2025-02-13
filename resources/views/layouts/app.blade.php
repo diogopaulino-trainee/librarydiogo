@@ -40,5 +40,14 @@
 
         @livewireScripts    
 
+        <footer class="text-center py-6 bg-gradient-to-r from-blue-600 to-indigo-800 text-white mt-12">
+            <p class="text-lg font-semibold">
+                Want to know more about me? 
+                <a href="{{ route('about.me') }}" 
+                   class="underline hover:text-white transition duration-300 hover:opacity-80">
+                    Click here to learn more!
+                </a>
+            </p>
+        </footer>
     </body>
 </html>

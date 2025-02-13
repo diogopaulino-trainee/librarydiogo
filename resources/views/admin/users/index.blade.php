@@ -88,6 +88,9 @@
                                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-md transition duration-200 ease-in-out shadow-md min-w-[100px]">
                                         Update
                                     </button>
+                                    <a href="{{ route('admin.users.show', $user) }}" class="text-blue-500 group-hover:text-white">
+                                        View Details
+                                    </a>
                                 </form>
                             </td>
                         </tr>

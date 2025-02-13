@@ -53,7 +53,11 @@
                                     class="w-20 h-24 object-cover rounded-md shadow-sm me-4">
 
                                 <div class="flex-grow">
-                                    <p class="font-semibold text-gray-900 text-lg">{{ $book->title }}</p>
+                                    <p class="font-semibold text-gray-900 text-lg">
+                                        <a href="{{ route('books.show', $book->id) }}" class="hover:underline">
+                                            {{ $book->title ?? 'Unknown Book' }}
+                                        </a>
+                                    </p>
                                     <p class="text-sm text-gray-700">
                                         <strong>Authors:</strong> {{ $book->authors->pluck('name')->implode(', ') ?: 'Unknown Author' }}
                                     </p>

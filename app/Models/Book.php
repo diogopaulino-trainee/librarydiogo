@@ -19,6 +19,7 @@ class Book extends Model
         'price',
         'publisher_id',
         'user_id',
+        'status',
     ];
 
     public function publisher()
@@ -39,5 +40,10 @@ class Book extends Model
     public function favoritedBy(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'favorites', 'book_id', 'user_id')->withTimestamps();
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class, 'book_id');
     }
 }

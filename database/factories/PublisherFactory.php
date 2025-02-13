@@ -16,7 +16,7 @@ class PublisherFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
-            'logo' => $this->downloadLogo('https://picsum.photos/seed/' . rand(0, 100000) . '/150/150'),
+            'logo' => $this->downloadLogo('https://picsum.photos/seed/' . rand(0, 100000) . '/500/500'),
             'user_id' => User::inRandomOrder()->first()?->id,
         ];
     }

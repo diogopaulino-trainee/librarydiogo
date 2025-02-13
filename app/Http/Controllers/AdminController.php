@@ -22,6 +22,13 @@ class AdminController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public function show(User $user)
+    {
+        $requests = $user->requests;
+
+        return view('admin.users.show', compact('user', 'requests'));
+    }
+
     public function changeRole(Request $request, User $user)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Only Admins can assign roles.');

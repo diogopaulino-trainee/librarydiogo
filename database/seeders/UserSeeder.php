@@ -12,6 +12,9 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        Storage::disk('public')->deleteDirectory('profile-photos');
+        Storage::disk('public')->makeDirectory('profile-photos');
+        
         Role::firstOrCreate(['name' => 'Admin']);
         Role::firstOrCreate(['name' => 'Citizen']);
 
@@ -22,7 +25,7 @@ class UserSeeder extends Seeder
         ]);
 
         $seed = rand(0, 100000);
-        $imageUrl = 'https://picsum.photos/seed/'.$seed.'/300/300';
+        $imageUrl = 'https://picsum.photos/seed/'.$seed.'/500/500';
         $imageData = file_get_contents($imageUrl);
 
         $filename = Str::uuid().'.jpg';
@@ -37,7 +40,7 @@ class UserSeeder extends Seeder
 
         User::factory(20)->create()->each(function ($user) {
             $seed = rand(0, 100000);
-            $imageUrl = 'https://picsum.photos/seed/'.$seed.'/300/300';
+            $imageUrl = 'https://picsum.photos/seed/'.$seed.'/500/500';
             $imageData = file_get_contents($imageUrl);
 
             $filename = Str::uuid().'.jpg';

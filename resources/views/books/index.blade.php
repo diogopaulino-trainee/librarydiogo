@@ -34,6 +34,25 @@
                         </div>
                     </div>
                 @endif
+                @if (session('error')) 
+                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <strong class="font-bold text-red-800">Error!</strong>
+                                <span class="ml-2">{{ session('error') }}</span>
+                            </div>    
+                            <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg class="fill-current h-6 w-6 text-red-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
                 <div class="flex justify-between items-center mb-4">
                     <form id="searchForm" action="{{ route('books.index') }}" method="GET" class="flex items-center space-x-2 w-full">
                         <div class="flex items-center space-x-2 w-2/3">
@@ -83,7 +102,15 @@
                 <table class="min-w-full bg-white border border-blue-500 shadow-md rounded-lg">
                     <thead class="bg-blue-600 text-white">
                         <tr>
-                            <th class="px-4 py-2 border-b">Favorite</th>
+                            @auth
+                                @if(auth()->user()->hasRole('Citizen'))
+                                    <th class="px-4 py-2 border-b">Favorite</th>
+                                    <th class="px-4 py-2 border-b">Availability</th>
+                                @endif
+                                @if(auth()->user()->hasRole('Admin'))
+                                    <th class="px-4 py-2 border-b">Availability</th>
+                                @endif
+                            @endauth
                             <th class="px-4 py-2 border-b">ISBN</th>
                             <th class="px-4 py-2 border-b">Title</th>
                             <th class="px-4 py-2 border-b">Author</th>
@@ -95,23 +122,50 @@
                     <tbody>
                         @foreach ($books as $book)
                         <tr class="hover:bg-blue-500 hover:text-white group">
-                            <td class="px-4 py-2 text-center">
-                                @auth
-                                <button id="favorite-btn-{{ $book->id }}" 
-                                        class="p-2 rounded-full transition duration-300"
-                                        onclick="toggleFavorite({{ $book->id }})">
-                                    <svg id="favorite-icon-{{ $book->id }}" 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        class="h-8 w-8 transition duration-300 hover:fill-red-500"
-                                        viewBox="0 0 24 24" 
-                                        fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
-                                        stroke="black" stroke-width="1">
-                                        <path stroke-linecap="round" stroke-linejoin="round" 
-                                            d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
-                                    </svg>
-                                </button>
-                                @endauth
-                            </td>
+                            @auth
+                                @if(auth()->user()->hasRole('Citizen'))
+                                    <td class="px-4 py-2 text-center">
+                                        <button id="favorite-btn-{{ $book->id }}" 
+                                                class="p-2 rounded-full transition duration-300"
+                                                onclick="toggleFavorite({{ $book->id }})">
+                                            <svg id="favorite-icon-{{ $book->id }}" 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                class="h-8 w-8 transition duration-300 hover:fill-red-500"
+                                                viewBox="0 0 24 24" 
+                                                fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
+                                                stroke="black" stroke-width="1">
+                                                <path stroke-linecap="round" stroke-linejoin="round" 
+                                                    d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                @endif
+                            @endauth
+
+                            @auth
+                                @if(auth()->user()->hasRole('Citizen'))
+                                    <td class="px-4 py-2">
+                                        @if($book->status === 'available')
+                                            <button onclick="openRequestModal({{ $book->id }})" class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                                Request
+                                            </button>
+                                        @else
+                                            <span class="text-gray-500">Not available</span>
+                                        @endif
+                                    </td>
+                                @endif
+                            @endauth
+
+                            @auth
+                                @if(auth()->user()->hasRole('Admin'))
+                                    <td class="px-4 py-2">
+                                        <span class="{{ $book->status === 'available' ? 'text-green-400' : 'text-red-600' }}">
+                                            {{ ucfirst($book->status) }}
+                                        </span>
+                                    </td>
+                                @endif
+                            @endauth
+
                             <td class="px-4 py-2">{{ $book->isbn }}</td>
                             <td class="px-4 py-2">{{ $book->title }}</td>
                             <td class="px-4 py-2">
@@ -122,7 +176,7 @@
                                 @endforelse
                             </td>
                             <td class="px-4 py-2">{{ $book->publisher->name ?? 'N/A' }}</td>
-                            <td class="px-4 py-2 text-center">{{ number_format($book->price, 2, ',', '.') }}&nbsp;€</td>
+                            <td class="px-4 py-2 text-center">{{ number_format($book->price, 2, ',', '.') }}&nbsp;€</td>                            
                             <td class="px-4 py-2 text-center">
                                 <div class="flex items-center justify-center space-x-2">
                                     <a href="{{ route('books.show', $book) }}" title="View Details" class="text-blue-500 group-hover:text-white">
@@ -130,7 +184,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 3.866-4.03 7-9 7s-9-3.134-9-7 4.03-7 9-7 9 3.134 9 7z" />
                                         </svg>
                                     </a>
-                                    <button onclick="openModal('modal-{{ $book->id }}')"
+                                    <button onclick="openTimestampsModal({{ $book->id }})"
                                             class="relative text-gray-700 hover:text-blue-600 transition duration-200 group flex items-center justify-center p-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-6.32-8.59"/>
@@ -141,15 +195,53 @@
                                             View Timestamps
                                         </span>
                                     </button>
-                                    <a href="{{ route('books.edit', $book) }}" class="text-yellow-400 font-semibold hover:text-white transition duration-200">Edit</a>
-                                    <a href="{{ route('books.delete', $book) }}" class="text-red-500 font-semibold hover:text-white transition duration-200">Delete</a>
+                                    @auth
+                                        @if(auth()->user()->hasRole('Admin'))
+                                            <a href="{{ route('books.edit', $book) }}" class="text-yellow-400 font-semibold hover:text-white transition duration-200">Edit</a>
+                                            <a href="{{ route('books.delete', $book) }}" class="text-red-500 font-semibold hover:text-white transition duration-200">Delete</a>
+                                        @endif
+                                    @endauth
                                 </div>
                             </td>
                         </tr>
 
-                        <div id="modal-{{ $book->id }}" class="fixed inset-0 bg-blue-900 bg-opacity-55 hidden items-center justify-center z-50">
+                        <div id="request-modal-{{ $book->id }}" class="fixed inset-0 bg-blue-900 bg-opacity-55 hidden items-center justify-center z-50">
                             <div class="bg-white rounded-lg shadow-md border border-blue-200 max-w-sm w-full p-6 relative">
-                                <button onclick="closeModal('modal-{{ $book->id }}')" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
+                                <button onclick="closeModal('request-modal-{{ $book->id }}')" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+
+                                <div class="text-lg font-semibold text-blue-700 flex items-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 102 0zm0 6a1 1 0 11-2 0v-4a1 1 0 112 0v4z" clip-rule="evenodd" />
+                                    </svg>
+                                    Confirm Request
+                                </div>
+
+                                <div class="text-sm text-gray-600">
+                                    <p><strong>Book:</strong> {{ $book->title }}</p>
+                                    <p><strong>Are you sure you want to request this book?</strong></p>
+                                </div>
+
+                                <div class="flex justify-end mt-4">
+                                    <form id="requestForm-{{ $book->id }}" action="{{ route('requests.store', $book) }}" method="POST" class="hidden">
+                                        @csrf
+                                        <button type="submit" id="submitRequest" class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-700">
+                                            Confirm
+                                        </button>
+                                    </form>
+                                    <button onclick="closeModal('request-modal-{{ $book->id }}')" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="timestamps-modal-{{ $book->id }}" class="fixed inset-0 bg-blue-900 bg-opacity-55 hidden items-center justify-center z-50">
+                            <div class="bg-white rounded-lg shadow-md border border-blue-200 max-w-sm w-full p-6 relative">
+                                <button onclick="closeModal('timestamps-modal-{{ $book->id }}')" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -168,7 +260,7 @@
                                 </div>
 
                                 <div class="flex justify-end mt-4">
-                                    <button onclick="closeModal('modal-{{ $book->id }}')" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Close</button>
+                                    <button onclick="closeModal('timestamps-modal-{{ $book->id }}')" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -242,11 +334,30 @@
             document.getElementById(id).classList.remove('flex');
         }
 
+        function openRequestModal(bookId) {
+            document.getElementById(`request-modal-${bookId}`).classList.remove('hidden');
+            document.getElementById(`request-modal-${bookId}`).classList.add('flex');
+        }
+
+        function confirmRequest(bookId) {
+            closeModal(`request-modal-${bookId}`);
+        }
+
+        function openTimestampsModal(bookId) {
+            document.getElementById(`timestamps-modal-${bookId}`).classList.remove('hidden');
+            document.getElementById(`timestamps-modal-${bookId}`).classList.add('flex');
+        }
+
         function clearSearch() {
             const form = document.getElementById('searchForm');
             form.querySelector('[name="search"]').value = '';
             form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
             form.querySelector('select[name="filter"]').value = '';
+            form.submit();
+        }
+
+        function submitRequestForm(bookId) {
+            let form = document.getElementById(`requestForm-${bookId}`);
             form.submit();
         }
     </script>

@@ -10,6 +10,13 @@
 
             @if(auth()->user()->hasRole('Citizen'))
                 <div class="mt-10 sm:mt-0">
+                    @livewire('profile.requests-form')
+                </div>
+                <x-section-border />
+            @endif
+
+            @if(auth()->user()->hasRole('Citizen'))
+                <div class="mt-10 sm:mt-0">
                     @livewire('profile.favorites-form')
                 </div>
                 <x-section-border />

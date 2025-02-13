@@ -31,6 +31,13 @@
                         </svg>
                         GitHub
                     </a>
+                    <a href="https://github.com/diogopaulino-trainee" target="_blank" 
+                    class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="h-5 w-5">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.38.6.1.82-.26.82-.58v-2.02c-3.34.72-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.1-.76.08-.75.08-.75 1.22.08 1.86 1.25 1.86 1.25 1.08 1.85 2.84 1.32 3.53 1.01.1-.78.42-1.32.76-1.63-2.67-.3-5.47-1.34-5.47-5.97 0-1.32.47-2.4 1.24-3.24-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0C17.9 6.73 18.91 7.05 18.91 7.05c.66 1.65.24 2.87.12 3.17.77.84 1.24 1.92 1.24 3.24 0 4.64-2.8 5.66-5.47 5.96.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.58C20.57 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/>
+                        </svg>
+                        GitHub Inovcorp
+                    </a>
                 </div>
                 <div class="mt-6 text-center text-gray-600 italic">
                     "The only way to do great work is to love what you do." — Steve Jobs

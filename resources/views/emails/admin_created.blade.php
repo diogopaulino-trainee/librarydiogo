@@ -57,7 +57,7 @@
         <p>Please log in using the button below and change your password as soon as possible:</p>
         <p><a href="{{ $loginUrl }}" class="btn">Login Here</a></p>
 
-        <p class="footer">Thank you,<br>Library Paulino</p>
+        <p class="footer">Best regards,<br><strong>Library Paulino</strong></p>
     </div>
 </body>
 </html>

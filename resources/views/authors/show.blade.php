@@ -21,7 +21,11 @@
 
                 <div class="mt-6 flex justify-between">
                     <a href="{{ route('authors.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Back to List</a>
-                    <a href="{{ route('authors.edit', $author) }}" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit Author</a>
+                    @auth
+                        @if(auth()->user()->hasRole('Admin'))
+                            <a href="{{ route('authors.edit', $author) }}" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit Author</a>
+                        @endif
+                    @endauth
                 </div>
             </div>
         </div>
