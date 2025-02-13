@@ -164,15 +164,17 @@
                     @endauth
                 </div>
 
+                @if(auth()->user()->hasRole('Admin'))
                 <div class="mt-6">
                     <h3 class="text-xl font-semibold text-gray-800">Request History</h3>
                 
-                    @if($book->requests->isEmpty())
+                    @if($requests->isEmpty())
                         <p class="text-gray-500">No requests have been made for this book yet.</p>
                     @else
                         <table class="min-w-full table-auto mt-4 border border-gray-300 rounded-lg shadow-md">
                             <thead class="bg-blue-600 text-white">
                                 <tr>
+                                    <th class="px-4 py-2 border-b text-center">Request Number</th>
                                     <th class="px-4 py-2 text-left">Request Date</th>
                                     <th class="px-4 py-2 text-left">Returned Date</th>
                                     <th class="px-4 py-2 text-left">Status</th>
@@ -180,8 +182,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($book->requests as $request)
+                                @foreach($requests as $request)
                                     <tr class="border-b">
+                                        <td class="px-4 py-2 text-center">{{ $request->request_number }}</td>
                                         <td class="px-4 py-2 text-left">{{ \Carbon\Carbon::parse($request->created_at)->format('d M, Y') }}</td>
                                         <td class="px-4 py-2 text-left">
                                             @if($request->actual_return_date)
@@ -204,6 +207,7 @@
                         </table>
                     @endif
                 </div>
+                @endif
             </div>
         </div>
     </div>

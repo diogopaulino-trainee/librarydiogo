@@ -1,6 +1,18 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-200">
+<nav x-data="{ open: false }" class="relative bg-white border-b border-gray-200">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in">
+    <div class="absolute bottom-0 left-0 w-[62%] h-1 bg-gradient-to-r from-transparent via-blue-700 to-transparent animate-glowing"></div>
+    <style>
+        @keyframes glowing {
+            0% { transform: translateX(-100%); opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0.3; }
+        }
+    
+        .animate-glowing {
+            animation: glowing 2.5s infinite linear;
+        }
+    </style> 
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -13,21 +25,21 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 4v16c0 .55.45 1 1 1h13v-2H8V4H6zm3 0v14h11V4H9zM4 2h13c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H4V2z" />
                         </svg>
                         <span>{{ __('Books') }}</span>
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('authors.index') }}" :active="request()->routeIs('authors.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 12c2.67 0 8 1.34 8 4v2H4v-2c0-2.66 5.33-4 8-4zm0-2a4 4 0 100-8 4 4 0 000 8z" />
                         </svg>
                         <span>{{ __('Authors') }}</span>
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('publishers.index') }}" :active="request()->routeIs('publishers.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 6V2H18V6H21C22.1 6 23 6.9 23 8V16C23 17.1 22.1 18 21 18H18V22H6V18H3C1.9 18 1 17.1 1 16V8C1 6.9 1.9 6 3 6H6ZM6 8H18V4H6V8ZM3 16H6V12H18V16H21V8H3V16ZM16 14H8V20H16V14Z"/>
                         </svg>
                         <span>{{ __('Publishers') }}</span>
@@ -35,7 +47,7 @@
                     
                     @auth
                         <x-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')" class="flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M9 2L2 7v14h20V7l-7-5H9zm0 2h6l5 3H4l5-3zm-5 5h16v10H4V9zm7 1v6h2v-6h-2zm-4 0v6h2v-6H7zm8 0v6h2v-6h-2z"/>
                             </svg>
                             <span>{{ __('Requests') }}</span>

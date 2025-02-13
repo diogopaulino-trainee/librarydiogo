@@ -16,7 +16,7 @@ class AuthorFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'photo' => $this->downloadImage('https://picsum.photos/seed/' . rand(0, 100000) . '/500/500'),
+            'photo' => $this->downloadImage('https://picsum.photos/seed/' . rand(0, 100000) . '/1200/1200'),
             'user_id' => User::inRandomOrder()->first()?->id,
         ];
     }

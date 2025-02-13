@@ -84,7 +84,9 @@ class BookController extends Controller
             $citizen->requests_left = max(0, 3 - $pendingCount);
         }
 
-        return view('books.show', compact('book', 'citizens', 'pendingRequest'));
+        $requests = $book->requests()->orderBy('created_at', 'desc')->get();
+
+        return view('books.show', compact('book', 'citizens', 'pendingRequest', 'requests'));
     }
 
     public function create()
@@ -214,6 +216,9 @@ class BookController extends Controller
 
     public function getBookCovers(): JsonResponse
     {
-        return response()->json(Book::whereNotNull('cover_image')->select('id', 'cover_image')->get());
+        return response()->json(Book::with('authors', 'publisher')
+            ->whereNotNull('cover_image')
+            ->select('id', 'cover_image', 'title', 'isbn', 'status', 'publisher_id')
+            ->get());
     }
 }

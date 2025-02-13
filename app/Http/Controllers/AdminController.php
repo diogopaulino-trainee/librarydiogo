@@ -24,7 +24,9 @@ class AdminController extends Controller
 
     public function show(User $user)
     {
-        $requests = $user->requests;
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        $requests = $user->requests()->orderBy('created_at', 'desc')->get();
 
         return view('admin.users.show', compact('user', 'requests'));
     }

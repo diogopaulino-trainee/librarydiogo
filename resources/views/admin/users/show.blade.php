@@ -35,6 +35,7 @@
                     <table class="min-w-full table-auto mt-4 border border-gray-300 rounded-lg shadow-md">
                         <thead class="bg-blue-600 text-white">
                                 <tr class="border-b">
+                                    <th class="px-4 py-2 border-b text-center">Request Number</th>
                                     <th class="px-4 py-2 border-b text-left">Book</th>
                                     <th class="px-4 py-2 border-b whitespace-nowrap text-left">Request Date</th>
                                     <th class="px-4 py-2 border-b whitespace-nowrap text-left">User Photo (At Request Time)</th>
@@ -48,6 +49,7 @@
                             <tbody>
                                 @foreach($requests as $request)
                                     <tr class="border-b">
+                                        <td class="px-4 py-2 text-center">{{ $request->request_number }}</td>
                                         <td class="px-4 py-2 text-left">
                                             @if($request->book)
                                                 <a href="{{ route('books.show', $request->book->id) }}" class="text-blue-600 hover:underline">
@@ -80,11 +82,12 @@
                                             @endif
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap text-left">
-                                            @if($request->actual_return_date)
-                                                <span class="text-green-600">Returned</span>
-                                            @else
-                                                <span class="text-red-600">Pending</span>
-                                            @endif
+                                            <span class="px-3 py-1 rounded-md text-white
+                                                {{ $request->status == 'pending' ? 'bg-yellow-500' : '' }}
+                                                {{ $request->status == 'returned' ? 'bg-green-500' : '' }}
+                                                {{ $request->status == 'overdue' ? 'bg-red-500' : '' }}">
+                                                {{ ucfirst($request->status) }}
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach

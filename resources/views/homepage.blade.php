@@ -19,39 +19,175 @@
 
         <div class="wrapper py-10 px-4 lg:px-16 mt-0 flex flex-col justify-start items-center">
             <div class="text-center flex-grow">
-                <h1 class="text-4xl font-bold text-blue-700 fade-in mb-24 mt-4">Welcome to the Library Management System</h1>
+                <h2 class="text-3xl font-bold mb-20 mt-8">Welcome to the Library Management System</h2>
             </div>
+
+                @if (session('success'))
+                    <div class="w-2/4 mx-auto mt-2 mb-4">
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                </svg>
+                                <strong class="font-bold text-green-800">Success!</strong>
+                                <span class="ml-2">{{ session('success') }}</span>
+                            </div>
+                            <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg class="fill-current h-6 w-6 text-green-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
+                @if (session('error')) 
+                    <div class="w-2/4 mx-auto mt-2 mb-4">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <strong class="font-bold text-red-800">Error!</strong>
+                                <span class="ml-2">{{ session('error') }}</span>
+                            </div>    
+                            <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg class="fill-current h-6 w-6 text-red-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
     
             <div x-data="{ books: [], currentIndex: 0 }"
                 x-init="fetch('/api/books/covers')
-                        .then(response => response.json())
-                        .then(data => books = data)" 
-                class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-lg border border-blue-300 bg-gray-50 mb-24">
+                    .then(response => response.json())
+                    .then(data => {
+                        books = data;
+                        console.log(books);
+                        setInterval(() => {
+                        currentIndex = (currentIndex + 1) % books.length;
+                        }, 3000);
+                    })"
 
-                <div class="relative w-full flex justify-center items-center overflow-hidden h-[500px]">
+                class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-lg border border-blue-300 bg-gray-50 mb-16">
+
+                <div class="relative w-full flex justify-start items-center overflow-hidden h-[600px]">
                     <template x-for="(book, index) in books" :key="book.id">
                         <div x-show="index === currentIndex"
                             :style="{
                                 transform: 'translateX(' + (index - currentIndex) * -100 + '%)',
                                 opacity: index === currentIndex ? 1 : 0.7
                             }"
-                            class="transition-all duration-500 ease-in-out w-1/4 h-full mx-2">
-                            <a :href="'/books/' + book.id" class="block w-full h-full">
-                                <img :src="(book.cover_image.startsWith('images/') ? 'images/' + book.cover_image : 'images/' + book.cover_image)" 
-                                    alt="Book Cover" 
-                                    class="w-full h-full object-cover rounded-lg">
-                            </a>
+                            class="transition-all duration-500 ease-in-out w-full h-full mx-0 flex items-center">
+                            
+                            <div class="w-3/4 h-full flex justify-center items-center">
+                                <a :href="'/books/' + book.id" class="block w-full h-full">
+                                    <img :src="(book.cover_image.startsWith('images/') ? 'images/' + book.cover_image : 'images/' + book.cover_image)" 
+                                        alt="Book Cover" 
+                                        class="w-auto h-full object-cover rounded-lg">
+                                </a>
+                            </div>
+
+                            <div class="w-2/3 p-8 mr-20">
+                                <h3 class="text-3xl font-bold text-blue-700 mb-2">
+                                    <a :href="'/books/' + book.id" class="hover:underline" x-text="book.title"></a>
+                                </h3>
+                                
+                                <div class="text-lg text-gray-700 space-y-2">
+                                    <p><span class="font-semibold">ISBN:</span> <span x-text="book.isbn || 'N/A'"></span></p>
+                                    
+                                    <p>
+                                        <span class="font-semibold">Author(s):</span> 
+                                        <span class="text-blue-600">
+                                            <template x-for="(author, index) in book.authors" :key="author.id">
+                                                <span>
+                                                    <a :href="'/authors/' + author.id" class="hover:underline" x-text="author.name"></a>
+                                                    <span x-text="index < book.authors.length - 1 ? ', ' : ''"></span>
+                                                </span>
+                                            </template>
+                                        </span>
+                                    </p>
+                            
+                                    <p>
+                                        <span class="font-semibold">Publisher:</span> 
+                                        <a :href="'/publishers/' + book.publisher?.id" 
+                                           class="text-blue-600 hover:underline" 
+                                           x-text="book.publisher?.name || 'Unknown'">
+                                        </a>
+                                    </p>
+                            
+                                    <p>
+                                        <span class="font-semibold">Availability:</span> 
+                                        <span :class="book.status === 'available' ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'" 
+                                              x-text="book.status === 'available' ? 'Available' : 'Unavailable'">
+                                        </span>
+                                    </p>
+
+                                    <div class="mt-4">
+                                        <template x-if="book.status === 'available' && {{ auth()->check() ? (auth()->user()->hasRole('Citizen') ? 'true' : 'false') : 'false' }}">
+                                            <button @click="openRequestModal(book.id)"
+                                                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                                Request
+                                            </button>
+                                        </template>
+                                        
+                                        <template x-if="book.status !== 'available' || {{ auth()->check() ? (auth()->user()->hasRole('Citizen') ? 'false' : 'true') : 'true' }}">
+                                            <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
+                                                Request
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div :id="'request-modal-' + book.id" class="fixed inset-0 bg-blue-900 bg-opacity-55 hidden items-center justify-center z-50">
+                                <div class="bg-white rounded-lg shadow-md border border-blue-200 max-w-sm w-full p-6 relative">
+                                    <button @click="closeModal(book.id)" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                            
+                                    <div class="text-lg font-semibold text-blue-700 flex items-center mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 102 0zm0 6a1 1 0 11-2 0v-4a1 1 0 112 0v4z" clip-rule="evenodd" />
+                                        </svg>
+                                        Confirm Request
+                                    </div>
+                            
+                                    <div class="text-sm text-gray-600">
+                                        <p><strong>Book:</strong> <span x-text="book.title"></span></p>
+                                        <p><strong>Are you sure you want to request this book?</strong></p>
+                                    </div>
+                            
+                                    <div class="flex justify-end mt-4">
+                                        <form :id="'requestForm-' + book.id" :action="'{{ route('requests.store', ':id') }}'.replace(':id', book.id)" method="POST">
+                                            @csrf
+                                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-700">
+                                                Confirm
+                                            </button>
+                                        </form>
+                                        <button @click="closeModal(book.id)" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </template>
                 </div>
 
                 <button @click="currentIndex = (currentIndex === 0) ? books.length - 1 : currentIndex - 1"
-                        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-700 transition">
+                        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transition transform duration-200">
                     ❮
                 </button>
 
                 <button @click="currentIndex = (currentIndex === books.length - 1) ? 0 : currentIndex + 1"
-                        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-700 transition">
+                        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transition transform duration-200">
                     ❯
                 </button>
             </div>
@@ -187,5 +323,17 @@
             </a>
         </p>
     </footer>
+
+    <script>
+        function openRequestModal(bookId) {
+            document.getElementById(`request-modal-${bookId}`).classList.remove('hidden');
+            document.getElementById(`request-modal-${bookId}`).classList.add('flex');
+        }
+    
+        function closeModal(bookId) {
+            document.getElementById(`request-modal-${bookId}`).classList.add('hidden');
+            document.getElementById(`request-modal-${bookId}`).classList.remove('flex');
+        }
+    </script>
 </body>
 </html>
