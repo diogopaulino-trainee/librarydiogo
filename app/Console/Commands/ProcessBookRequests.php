@@ -19,7 +19,7 @@ class ProcessBookRequests extends Command
         $tomorrow = Carbon::tomorrow();
 
         $requestsDueTomorrow = Request::whereDate('expected_return_date', $tomorrow)
-            ->where('status', 'pending')
+            ->where('status', 'borrowed')
             ->get();
 
         Log::info("Processing reminders for {$requestsDueTomorrow->count()} requests due tomorrow.");
@@ -29,7 +29,7 @@ class ProcessBookRequests extends Command
             sleep(2);
         }
 
-        $overdueRequests = Request::where('status', 'pending')
+        $overdueRequests = Request::where('status', 'borrowed')
             ->whereDate('expected_return_date', '<', $today)
             ->update(['status' => 'overdue']);
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->date('request_date');
             $table->date('expected_return_date');
             $table->date('actual_return_date')->nullable();
-            $table->enum('status', ['pending', 'returned', 'overdue'])->default('pending');
+            $table->enum('status', ['borrowed', 'returned', 'overdue'])->default('borrowed');
             $table->integer('request_number')->unique();
             $table->string('user_name_at_request');
             $table->string('user_email_at_request');

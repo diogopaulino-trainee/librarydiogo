@@ -279,35 +279,35 @@
                     </x-panel>
                 </div>
                 <div class="mt-12 text-center fade-in">
-                    <p class="text-xl text-gray-700 italic mb-8">📖 "A library is not a luxury but one of the necessities of life." — Henry Ward Beecher</p>
+                    <p class="text-xl text-white font-bold italic mb-8">📖 "A library is not a luxury but one of the necessities of life." — Henry Ward Beecher</p>
                 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 justify-center mt-2">
                         <div x-data="{ count: 0 }" x-init="fetch('/api/books/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
                             <span class="text-2xl font-semibold text-blue-700 leading-tight" x-text="count"></span>
-                            <p class="text-gray-500 text-sm mt-0">Books Available</p>
+                            <p class="text-white text-sm mt-0">Books Available</p>
                         </div>
                 
                         <div x-data="{ count: 0 }" x-init="fetch('/api/authors/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
                             <span class="text-2xl font-semibold text-green-700 leading-tight" x-text="count"></span>
-                            <p class="text-gray-600 text-sm mt-0">Authors Registered</p>
+                            <p class="text-white text-sm mt-0">Authors Registered</p>
                         </div>
                 
                         <div x-data="{ count: 0 }" x-init="fetch('/api/publishers/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
                             <span class="text-2xl font-semibold text-purple-700 leading-tight" x-text="count"></span>
-                            <p class="text-gray-600 text-sm mt-0">Publishers</p>
+                            <p class="text-white text-sm mt-0">Publishers</p>
                         </div>
                 
                         <div x-data="{ count: 0 }" x-init="fetch('/api/users/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
                             <span class="text-2xl font-semibold text-orange-700 leading-tight" x-text="count"></span>
-                            <p class="text-gray-600 text-sm mt-0">Users Registered</p>
+                            <p class="text-white text-sm mt-0">Users Registered</p>
                         </div>
                     </div>
                 </div>

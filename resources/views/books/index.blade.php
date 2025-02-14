@@ -56,8 +56,8 @@
                 <div class="flex justify-between items-center mb-4">
                     <form id="searchForm" action="{{ route('books.index') }}" method="GET" class="flex items-center space-x-2 w-full">
                         <div class="flex items-center space-x-2 w-2/3">
-                            <div class="relative w-1/2">
-                                <input type="text" name="search" placeholder="Search by ISBN, Title, Author, or Publisher" value="{{ request('search') }}" class="input input-bordered input-primary w-full pl-10 pr-4 py-2 rounded-md shadow-md" />
+                            <div class="relative w-full max-w-[400px]">
+                                <input type="text" name="search" placeholder="Search by ISBN, Title, Author, or Publisher" value="{{ request('search') }}" class="border border-blue-500 px-4 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 py-2 rounded-md shadow-md text-lg" />
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />

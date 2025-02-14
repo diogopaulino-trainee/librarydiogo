@@ -12,7 +12,7 @@
                         class="absolute top-3 right-3 bg-white border border-red-500 p-4 rounded-full shadow-xl transition duration-300 group"
                         onclick="toggleFavorite({{ $book->id }})">
                         <svg id="favorite-icon" xmlns="http://www.w3.org/2000/svg" 
-                            class="h-8 w-8 transition duration-300 group-hover:fill-red-600" 
+                            class="h-10 w-10 transition duration-300 group-hover:fill-red-600" 
                             viewBox="0 0 24 24" 
                             fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
                             stroke="red" stroke-width="1">
@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="mt-6">
-                    @if(!$pendingRequest) 
+                    @if(!$borrowedRequest) 
                     @if(auth()->check() && auth()->user()->hasRole('Citizen'))
                             <form action="{{ route('requests.store', $book) }}" method="POST">
                                 @csrf
@@ -146,7 +146,7 @@
                             <span class="text-gray-700 text-lg font-medium">
                                 Expected to be available by: 
                                 <strong>
-                                    {{ \Carbon\Carbon::parse($pendingRequest->expected_return_date)->format('d M, Y') }}
+                                    {{ \Carbon\Carbon::parse($borrowedRequest->expected_return_date)->format('d M, Y') }}
                                 </strong>
                             </span>
                         </p>
@@ -203,7 +203,7 @@
                     @endauth
                 </div>
 
-                @if(auth()->user()->hasRole('Admin'))
+                @if(auth()->check() && auth()->user()->hasRole('Admin'))
                 <div class="mt-6">
                     <h3 class="text-lg font-semibold text-gray-800">Request History</h3>
                 
@@ -214,10 +214,10 @@
                             <thead class="bg-blue-600 text-white">
                                 <tr>
                                     <th class="px-4 py-2 border-b text-center">Request Number</th>
-                                    <th class="px-4 py-2 text-left">Request Date</th>
-                                    <th class="px-4 py-2 text-left">Returned Date</th>
-                                    <th class="px-4 py-2 text-left">Status</th>
-                                    <th class="px-4 py-2 text-left">User</th>
+                                    <th class="px-4 py-2 text-center">Request Date</th>
+                                    <th class="px-4 py-2 text-center">Returned Date</th>
+                                    <th class="px-4 py-2 text-center">Status</th>
+                                    <th class="px-4 py-2 text-center">User</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -236,7 +236,7 @@
                                             @if($request->actual_return_date)
                                                 <span class="text-green-600">Returned</span>
                                             @else
-                                                <span class="text-red-600">Pending</span>
+                                                <span class="text-red-600">Borrowed</span>
                                             @endif
                                         </td>
                                         <td class="px-4 py-2 text-left">{{ $request->user->name ?? 'N/A' }}</td>

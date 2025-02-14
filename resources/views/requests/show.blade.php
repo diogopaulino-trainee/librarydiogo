@@ -157,7 +157,7 @@
                     </a>
                     
                     @auth
-                        @if(auth()->user()->hasRole('Admin') && $request->status == 'pending')
+                        @if(auth()->user()->hasRole('Admin') && $request->status == 'borrowed')
                             <form action="{{ route('requests.confirm_return', $request) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition">

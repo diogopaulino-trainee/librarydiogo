@@ -36,7 +36,7 @@
             <div class="bg-white overflow-x-auto shadow-xl sm:rounded-lg p-6 border border-blue-500 w-full">
                 <div class="flex justify-between items-center mb-4">
                     <form action="{{ route('requests.index') }}" method="GET" class="flex items-center space-x-2">
-                        <select name="status" class="input input-bordered input-primary text-lg">
+                        <select name="status" class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg">
                             <option value="">All</option>
                             <option value="borrowed" {{ request('status') == 'borrowed' ? 'selected' : '' }}>Borrowed</option>
                             <option value="overdue" {{ request('status') == 'overdue' ? 'selected' : '' }}>Overdue</option>
@@ -46,7 +46,7 @@
                         <div class="relative">
                             <input type="text" name="search" placeholder="{{ auth()->user()->hasRole('Admin') ? 'Search by book or user' : 'Search by book' }}"
                                    value="{{ request('search') }}"
-                                   class="input input-bordered input-primary w-64 pl-10 text-lg" />
+                                   class="border border-blue-500 px-4 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-64 pl-10 text-lg" />
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
@@ -131,10 +131,10 @@
                             </td>
                             <td class="px-4 py-2 text-left">
                                 <span class="px-3 py-1 rounded-md text-white
-                                    {{ $request->status == 'pending' ? 'bg-yellow-500' : '' }}
+                                    {{ $request->status == 'borrowed' ? 'bg-yellow-500' : '' }}
                                     {{ $request->status == 'returned' ? 'bg-green-500' : '' }}
                                     {{ $request->status == 'overdue' ? 'bg-red-500' : '' }}">
-                                    {{ $request->status == 'pending' ? 'Borrowed' : ucfirst($request->status) }}
+                                    {{ ucfirst($request->status) }}
                                 </span>
                             </td>
                             <td class="px-4 py-2 text-center flex items-center justify-left space-x-4 whitespace-nowrap flex-nowrap">                                
@@ -144,7 +144,7 @@
                                     </svg>
                                 </a>
                             
-                                @if(auth()->user()->hasRole('Admin') && $request->status === 'pending')
+                                @if(auth()->user()->hasRole('Admin') && $request->status === 'borrowed')
                                     <button onclick="openModal('modal-{{ $request->id }}')" 
                                             class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition mt-2">
                                         Confirm Return

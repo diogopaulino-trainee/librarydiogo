@@ -112,10 +112,10 @@
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap text-left">
                                             <span class="px-3 py-1 rounded-md text-white
-                                                {{ $request->status == 'pending' ? 'bg-yellow-500' : '' }}
+                                                {{ $request->status == 'borrowed' ? 'bg-yellow-500' : '' }}
                                                 {{ $request->status == 'returned' ? 'bg-green-500' : '' }}
                                                 {{ $request->status == 'overdue' ? 'bg-red-500' : '' }}">
-                                                {{ $request->status == 'pending' ? 'Borrowed' : ucfirst($request->status) }}
+                                                {{ ucfirst($request->status) }}
                                             </span>
                                         </td>
                                     </tr>

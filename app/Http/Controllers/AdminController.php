@@ -14,11 +14,28 @@ use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
-        $users = User::orderBy('name', 'asc')->paginate(10);
+        $query = User::query();
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('role') && !empty($request->role)) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        $users = $query->orderBy('name', 'asc')->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 

@@ -74,14 +74,14 @@ class BookController extends Controller
             : collect();
 
         // Requisição pendente mais recente do livro
-        $pendingRequest = $book->requests()
-            ->where('status', 'pending')
+        $borrowedRequest = $book->requests()
+            ->where('status', 'borrowed')
             ->orderBy('expected_return_date', 'desc')
             ->first();
 
         foreach ($citizens as $citizen) {
-            $pendingCount = $citizen->requests()->where('status', 'pending')->count();
-            $citizen->requests_left = max(0, 3 - $pendingCount);
+            $borrowedCount = $citizen->requests()->where('status', 'borrowed')->count();
+            $citizen->requests_left = max(0, 3 - $borrowedCount);
         }
 
         $requests = $book->requests()->orderBy('created_at', 'desc')->get();
@@ -89,7 +89,7 @@ class BookController extends Controller
         $previousBook = Book::where('id', '<', $book->id)->orderBy('id', 'desc')->first();
         $nextBook = Book::where('id', '>', $book->id)->orderBy('id', 'asc')->first();
 
-        return view('books.show', compact('book', 'citizens', 'pendingRequest', 'requests', 'previousBook', 'nextBook'));
+        return view('books.show', compact('book', 'citizens', 'borrowedRequest', 'requests', 'previousBook', 'nextBook'));
     }
 
     public function create()

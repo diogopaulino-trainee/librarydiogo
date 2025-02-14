@@ -6,8 +6,41 @@
     <div class="py-6 text-lg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="flex justify-end mb-4">
-                <a href="{{ route('admin.users.create') }}" class="btn btn-primary bg-blue-500 text-white text-lg hover:bg-blue-700 transition duration-300 shadow-md">
+            <div class="flex justify-between items-center mb-4">
+                <form action="{{ route('admin.users.index') }}" method="GET" class="flex items-center space-x-2">
+                    <select name="role" class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg">
+                        <option value="">All Roles</option>
+                        <option value="Citizen" {{ request('role') == 'Citizen' ? 'selected' : '' }}>Citizen</option>
+                        <option value="Admin" {{ request('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                    </select>
+
+                    <div class="relative">
+                        <input type="text" name="search" placeholder="Search by name or email"
+                               value="{{ request('search') }}"
+                               class="border border-blue-500 px-4 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-64 pl-10 text-lg" />
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="bg-blue-600 text-white text-lg hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        Search
+                    </button>
+
+                    <button type="button" onclick="clearSearch()" class="bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Clear
+                    </button>
+                </form>
+
+                <a href="{{ route('admin.users.create') }}" class="btn btn-primary bg-blue-500 text-white text-lg hover:bg-blue-700 transition duration-300 shadow-md px-4 py-2 rounded-md flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -102,4 +135,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function clearSearch() {
+            document.querySelector('[name=search]').value = '';
+            document.querySelector('[name=role]').value = '';
+            window.location.href = "{{ route('admin.users.index') }}";
+        }
+    </script>
 </x-app-layout>

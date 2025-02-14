@@ -34,10 +34,10 @@
                             </div>
                             <div class="mt-2 sm:mt-0 text-sm font-semibold text-white px-3 py-1 rounded-md w-fit"
                                 style="background-color:
-                                    {{ $request->status === 'pending' ? '#facc15' : '' }}
+                                    {{ $request->status === 'borrowed' ? '#facc15' : '' }}
                                     {{ $request->status === 'returned' ? '#10b981' : '' }}
                                     {{ $request->status === 'overdue' ? '#ef4444' : '' }}">
-                                {{ $request->status === 'pending' ? 'Borrowed' : ucfirst($request->status) }}
+                                {{ ucfirst($request->status) }}
                             </div>
                         </li>
                     @empty

@@ -50,7 +50,7 @@ class RequestController extends Controller
 
         $requests = $query->orderBy($sortBy, $order)->paginate(10);
 
-        $activeRequests = Request::where('status', 'pending')->count();
+        $activeRequests = Request::where('status', 'borrowed')->count();
         $last30DaysRequests = Request::where('request_date', '>=', now()->subDays(30))->count();
         $returnedToday = Request::whereNotNull('actual_return_date')
                                 ->whereDate('actual_return_date', now())
@@ -64,12 +64,12 @@ class RequestController extends Controller
         $user = Auth::user();
 
         // Verifica se o livro já está emprestado
-        if (Request::where('book_id', $book->id)->where('status', 'pending')->exists()) {
+        if (Request::where('book_id', $book->id)->where('status', 'borrowed')->exists()) {
             return back()->with('error', 'This book is currently unavailable.');
         }
 
         // Verifica se o cidadão já tem 3 livros requisitados
-        if ($user->requests()->where('status', 'pending')->count() >= 3) {
+        if ($user->requests()->where('status', 'borrowed')->count() >= 3) {
             return back()->with('error', 'You can only have up to 3 active book requests.');
         }
 
@@ -81,7 +81,7 @@ class RequestController extends Controller
             'user_id' => $user->id,
             'request_date' => now(),
             'expected_return_date' => now()->addDays(5),
-            'status' => 'pending',
+            'status' => 'borrowed',
             'request_number' => (Request::max('request_number') ?? 0) + 1,
             'user_name_at_request' => $user->name,
             'user_email_at_request' => $user->email,
@@ -113,7 +113,7 @@ class RequestController extends Controller
 
         $citizen = User::find($requestData->citizen_id);
 
-        if ($citizen->requests()->where('status', 'pending')->count() >= 3) {
+        if ($citizen->requests()->where('status', 'borrowed')->count() >= 3) {
             return back()->with('error', "{$citizen->name} already has 3 active book requests.");
         }
 
@@ -126,7 +126,7 @@ class RequestController extends Controller
             'user_id' => $citizen->id,
             'request_date' => now(),
             'expected_return_date' => now()->addDays(5),
-            'status' => 'pending',
+            'status' => 'borrowed',
             'request_number' => (Request::max('request_number') ?? 0) + 1,
             'user_name_at_request' => $citizen->name,
             'user_email_at_request' => $citizen->email,
