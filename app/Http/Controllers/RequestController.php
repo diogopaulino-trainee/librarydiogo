@@ -50,11 +50,24 @@ class RequestController extends Controller
 
         $requests = $query->orderBy($sortBy, $order)->paginate(10);
 
-        $activeRequests = Request::where('status', 'borrowed')->count();
-        $last30DaysRequests = Request::where('request_date', '>=', now()->subDays(30))->count();
-        $returnedToday = Request::whereNotNull('actual_return_date')
-                                ->whereDate('actual_return_date', now())
-                                ->count();
+        // Contagem de requisições com base no role
+        if ($user->hasRole('Admin')) {
+            $activeRequests = Request::where('status', 'borrowed')->count();
+            $last30DaysRequests = Request::where('request_date', '>=', now()->subDays(30))->count();
+            $returnedToday = Request::whereNotNull('actual_return_date')
+                                    ->whereDate('actual_return_date', now())
+                                    ->count();
+        } else {
+            // Se for Citizen, contar apenas as requisições deste user
+            $activeRequests = Request::where('status', 'borrowed')->where('user_id', $user->id)->count();
+            $last30DaysRequests = Request::where('request_date', '>=', now()->subDays(30))
+                                         ->where('user_id', $user->id)
+                                         ->count();
+            $returnedToday = Request::whereNotNull('actual_return_date')
+                                    ->whereDate('actual_return_date', now())
+                                    ->where('user_id', $user->id)
+                                    ->count();
+        }
 
         return view('requests.index', compact('requests', 'activeRequests', 'last30DaysRequests', 'returnedToday'));
     }

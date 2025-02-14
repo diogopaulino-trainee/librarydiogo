@@ -53,23 +53,34 @@
                         </div>
                     </div>
                 @endif
-                <div class="flex justify-between items-center mb-4">
-                    <form id="searchForm" action="{{ route('books.index') }}" method="GET" class="flex items-center space-x-2 w-full">
-                        <div class="flex items-center space-x-2 w-2/3">
+                <div class="flex items-center w-full justify-between mb-4">
+                    <form id="searchForm" action="{{ route('books.index') }}" method="GET" class="flex items-center w-full">
+                        <div class="flex space-x-2 w-full">
+                            <select name="availability" onchange="this.form.submit()"
+                                class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg">
+                                <option value="">All Books</option>
+                                <option value="available" {{ request('availability') == 'available' ? 'selected' : '' }}>Available</option>
+                                <option value="unavailable" {{ request('availability') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
+                            </select>
+                
                             <div class="relative w-full max-w-[400px]">
-                                <input type="text" name="search" placeholder="Search by ISBN, Title, Author, or Publisher" value="{{ request('search') }}" class="border border-blue-500 px-4 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 py-2 rounded-md shadow-md text-lg" />
+                                <input type="text" name="search" placeholder="Search by ISBN, Title, Author, or Publisher" 
+                                    value="{{ request('search') }}" 
+                                    class="border border-blue-500 px-4 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 py-2 rounded-md shadow-md text-lg" />
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
                                     </svg>
                                 </div>
                             </div>
+                
                             <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 Search
                             </button>
+                
                             <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -77,27 +88,19 @@
                                 Clear
                             </button>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <label class="flex items-center bg-gray-100 px-4 py-2 rounded-md shadow-md h-12 whitespace-nowrap">
-                                <input type="checkbox" name="price_below_25" onchange="this.form.submit()" {{ request('price_below_25') ? 'checked' : '' }} class="mr-2 w-5 h-5">
-                                <span class="text-lg font-medium">&lt; 25&nbsp;€</span>
-                            </label>
-                        
-                            <label class="flex items-center bg-gray-100 px-4 py-2 rounded-md shadow-md h-12 whitespace-nowrap">
-                                <input type="checkbox" name="price_above_25" onchange="this.form.submit()" {{ request('price_above_25') ? 'checked' : '' }} class="mr-2 w-5 h-5">
-                                <span class="text-lg font-medium">&gt;= 25&nbsp;€</span>
-                            </label>
-                        
-                            <select name="filter" onchange="this.form.submit()" class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12 flex items-center">
+                
+                        <div class="w-auto">
+                            <select name="filter" onchange="this.form.submit()" 
+                                class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12">
                                 <option value="" {{ request('filter') == '' ? 'selected' : '' }}>All</option>
                                 <option value="price_asc" {{ request('filter') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
                                 <option value="price_desc" {{ request('filter') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
-                                <option value="newest" {{ request('filter') == 'newest' ? 'selected' : '' }}>Newest</option>
-                                <option value="oldest" {{ request('filter') == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                <option value="az" {{ request('filter') == 'az' ? 'selected' : '' }}>Title: A to Z</option>
+                                <option value="za" {{ request('filter') == 'za' ? 'selected' : '' }}>Title: Z to A</option>
                             </select>
                         </div>
                     </form>
-                </div>                
+                </div>
 
                 <table class="min-w-full bg-white text-lg border border-blue-500 shadow-md rounded-lg">
                     <thead class="bg-blue-600 text-white">
@@ -130,7 +133,7 @@
                                                 onclick="toggleFavorite({{ $book->id }})">
                                             <svg id="favorite-icon-{{ $book->id }}" 
                                                 xmlns="http://www.w3.org/2000/svg" 
-                                                class="h-8 w-8 transition duration-300 hover:fill-red-500"
+                                                class="h-9 w-9 transition duration-300 hover:fill-red-500"
                                                 viewBox="0 0 24 24" 
                                                 fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
                                                 stroke="red" stroke-width="1">
@@ -146,6 +149,12 @@
                                 @if(auth()->user()->hasRole('Citizen'))
                                     <td class="px-4 py-2">
                                         @if($book->status === 'available')
+                                            <span class="text-green-500 font-semibold flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Available
+                                            </span>
                                             <button onclick="openRequestModal({{ $book->id }})" class="btn bg-blue-500 text-lg text-white px-4 py-2 rounded hover:bg-blue-700">
                                                 Request
                                             </button>
@@ -359,9 +368,16 @@
 
         function clearSearch() {
             const form = document.getElementById('searchForm');
-            form.querySelector('[name="search"]').value = '';
-            form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-            form.querySelector('select[name="filter"]').value = '';
+
+            const searchInput = form.querySelector('[name="search"]');
+            if (searchInput) searchInput.value = '';
+
+            const availabilitySelect = form.querySelector('select[name="availability"]');
+            if (availabilitySelect) availabilitySelect.value = '';
+
+            const filterSelect = form.querySelector('select[name="filter"]');
+            if (filterSelect) filterSelect.value = '';
+            
             form.submit();
         }
 

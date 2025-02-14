@@ -118,7 +118,16 @@
                                     N/A
                                 @endif
                             </td>
-                            <td class="px-4 py-2 whitespace-nowrap text-left">{{ $request->user_name_at_request }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap text-left">
+                                @if(auth()->user()->hasRole('Admin'))
+                                    <a href="{{ route('admin.users.show', ['user' => $request->user_id]) }}" 
+                                       class="hover:underline font-medium group-hover:text-white">
+                                        {{ $request->user_name_at_request }}
+                                    </a>
+                                @else
+                                    {{ $request->user_name_at_request }}
+                                @endif
+                            </td>
                             <td class="px-4 py-2 whitespace-nowrap text-left">{{ $request->user_email_at_request }}</td>
                             <td class="px-4 py-2 whitespace-nowrap text-left">{{ $request->request_date ? \Carbon\Carbon::parse($request->request_date)->format('Y-m-d') : 'N/A' }}</td>
                             <td class="px-4 py-2 whitespace-nowrap text-left">{{ $request->expected_return_date ? \Carbon\Carbon::parse($request->expected_return_date)->format('Y-m-d') : 'N/A' }}</td>

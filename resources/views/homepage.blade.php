@@ -61,16 +61,28 @@
                     </div>
                 @endif
     
-            <div x-data="{ books: [], currentIndex: 0 }"
-                x-init="fetch('/api/books/covers')
-                    .then(response => response.json())
-                    .then(data => {
-                        books = data;
-                        console.log(books);
-                        setInterval(() => {
-                        currentIndex = (currentIndex + 1) % books.length;
+                <div x-data="{ 
+                    books: [], 
+                    currentIndex: 0, 
+                    intervalId: null, 
+                    startRotation() { 
+                        this.intervalId = setInterval(() => {
+                            this.currentIndex = (this.currentIndex + 1) % this.books.length;
                         }, 3000);
-                    })"
+                    }, 
+                    stopRotation() { 
+                        clearInterval(this.intervalId); 
+                    } 
+                }"
+                x-init="
+                    fetch('/api/books/covers')
+                        .then(response => response.json())
+                        .then(data => {
+                            books = data;
+                            startRotation();
+                        });
+
+                    window.startRotation = () => startRotation();"
 
                 class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-lg shadow-lg border border-blue-300 bg-gray-50 mb-16">
 
@@ -128,7 +140,7 @@
 
                                     <div class="mt-4">
                                         <template x-if="book.status === 'available' && {{ auth()->check() ? (auth()->user()->hasRole('Citizen') ? 'true' : 'false') : 'false' }}">
-                                            <button @click="openRequestModal(book.id)"
+                                            <button @click="stopRotation(); openRequestModal(book.id)"
                                                     class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
                                                 Request
                                             </button>
@@ -145,20 +157,20 @@
 
                             <div :id="'request-modal-' + book.id" class="fixed inset-0 bg-blue-900 bg-opacity-55 hidden items-center justify-center z-50">
                                 <div class="bg-white rounded-lg shadow-md border border-blue-200 max-w-sm w-full p-6 relative">
-                                    <button @click="closeModal(book.id)" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
+                                    <button @click="startRotation(); closeModal(book.id)" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
                             
-                                    <div class="text-lg font-semibold text-blue-700 flex items-center mb-4">
+                                    <div class="text-xl font-semibold text-blue-700 flex items-center mb-4">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 102 0zm0 6a1 1 0 11-2 0v-4a1 1 0 112 0v4z" clip-rule="evenodd" />
                                         </svg>
                                         Confirm Request
                                     </div>
                             
-                                    <div class="text-sm text-gray-600">
+                                    <div class="text-base text-gray-600">
                                         <p><strong>Book:</strong> <span x-text="book.title"></span></p>
                                         <p><strong>Are you sure you want to request this book?</strong></p>
                                     </div>
@@ -199,7 +211,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-blue-600 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h7a2 2 0 012 2v12a2 2 0 00-2-2H3V5zm11 0h7v12h-7a2 2 0 00-2 2V7a2 2 0 012-2z" />
                             </svg>
-                            <h2 class="text-2xl font-semibold text-blue-700 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]">Books</h2>
+                            <h2 class="text-3xl font-semibold text-blue-700 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]">Books</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">Explore, add, and manage the library's collection of books.</span>
                                 <span x-data="{ text: '', fullText: 'Explore, add, and manage the library\'s collection of books.', i: 0 }"
@@ -220,7 +232,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-green-600 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 00-8 0v2H6a2 2 0 00-2 2v7h16v-7a2 2 0 00-2-2h-2V7z" />
                             </svg>
-                            <h2 class="text-2xl font-semibold text-green-700 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]">Authors</h2>
+                            <h2 class="text-3xl font-semibold text-green-700 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]">Authors</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">Manage information about book authors and their works.</span>
                                 <span x-data="{ text: '', fullText: 'Manage information about book authors and their works.', i: 0 }"
@@ -241,7 +253,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-purple-600 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 21V8h6v13M6 21v-6h3v6M15 21v-4h3v4M3 21v-2h18v2M9 8h6M9 12h6M9 16h6" />
                             </svg>
-                            <h2 class="text-2xl font-semibold text-purple-700 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]">Publishers</h2>
+                            <h2 class="text-3xl font-semibold text-purple-700 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]">Publishers</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">View and manage publisher details for library resources.</span>
                                 <span x-data="{ text: '', fullText: 'View and manage publisher details for library resources.', i: 0 }"
@@ -262,7 +274,7 @@
                             <svg class="h-24 w-24 text-orange-600" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                             </svg>
-                            <h2 class="text-2xl font-semibold text-orange-700 group-hover:text-orange-800 transition duration-300 hover:translate-y-[-4px]">Requests</h2>
+                            <h2 class="text-3xl font-semibold text-orange-700 group-hover:text-orange-800 transition duration-300 hover:translate-y-[-4px]">Requests</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">Manage book requests and library inquiries.</span>
                                 <span x-data="{ text: '', fullText: 'Manage book requests and library inquiries.', i: 0 }"
@@ -279,35 +291,35 @@
                     </x-panel>
                 </div>
                 <div class="mt-12 text-center fade-in">
-                    <p class="text-xl text-white font-bold italic mb-8">📖 "A library is not a luxury but one of the necessities of life." — Henry Ward Beecher</p>
+                    <p class="text-3xl text-white font-bold italic mb-8">📖 "A library is not a luxury but one of the necessities of life." — Henry Ward Beecher</p>
                 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 justify-center mt-2">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 justify-center mt-2 text-base">
                         <div x-data="{ count: 0 }" x-init="fetch('/api/books/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
-                            <span class="text-2xl font-semibold text-blue-700 leading-tight" x-text="count"></span>
-                            <p class="text-white text-sm mt-0">Books Available</p>
+                            <span class="text-4xl font-semibold text-blue-700 leading-tight" x-text="count"></span>
+                            <p class="text-white text-xl mt-0">Books Available</p>
                         </div>
                 
                         <div x-data="{ count: 0 }" x-init="fetch('/api/authors/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
-                            <span class="text-2xl font-semibold text-green-700 leading-tight" x-text="count"></span>
-                            <p class="text-white text-sm mt-0">Authors Registered</p>
+                            <span class="text-4xl font-semibold text-green-700 leading-tight" x-text="count"></span>
+                            <p class="text-white text-xl mt-0">Authors Registered</p>
                         </div>
                 
                         <div x-data="{ count: 0 }" x-init="fetch('/api/publishers/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
-                            <span class="text-2xl font-semibold text-purple-700 leading-tight" x-text="count"></span>
-                            <p class="text-white text-sm mt-0">Publishers</p>
+                            <span class="text-4xl font-semibold text-purple-700 leading-tight" x-text="count"></span>
+                            <p class="text-white text-xl mt-0">Publishers</p>
                         </div>
                 
                         <div x-data="{ count: 0 }" x-init="fetch('/api/users/count')
                             .then(response => response.json())
                             .then(data => count = data.count)">
-                            <span class="text-2xl font-semibold text-orange-700 leading-tight" x-text="count"></span>
-                            <p class="text-white text-sm mt-0">Users Registered</p>
+                            <span class="text-4xl font-semibold text-orange-700 leading-tight" x-text="count"></span>
+                            <p class="text-white text-xl mt-0">Users Registered</p>
                         </div>
                     </div>
                 </div>
@@ -329,10 +341,14 @@
             document.getElementById(`request-modal-${bookId}`).classList.remove('hidden');
             document.getElementById(`request-modal-${bookId}`).classList.add('flex');
         }
-    
+
         function closeModal(bookId) {
             document.getElementById(`request-modal-${bookId}`).classList.add('hidden');
             document.getElementById(`request-modal-${bookId}`).classList.remove('flex');
+            
+            if (typeof window.startRotation === "function") {
+                window.startRotation();
+            }
         }
     </script>
 </body>

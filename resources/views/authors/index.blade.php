@@ -106,7 +106,16 @@
                     <tbody>
                         @foreach ($authors as $author)
                         <tr class="hover:bg-blue-500 hover:text-white group">
-                            <td class="px-4 py-2">{{ $author->name }}</td>
+                            <td class="px-4 py-2">
+                                @if($author)
+                                    <a href="{{ route('authors.show', $author->id) }}" 
+                                       class="hover:underline group-hover:text-white">
+                                        {{ $author->name }}
+                                    </a>
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                             <td class="px-4 py-2 text-center whitespace-nowrap flex items-center justify-center space-x-4">
                                 <a href="{{ route('authors.show', $author) }}" title="View more details"
                                 class="text-blue-500 group-hover:text-white">

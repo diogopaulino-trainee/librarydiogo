@@ -30,11 +30,12 @@ class BookController extends Controller
                 });
         }
 
-        if ($request->has('price_below_25')) {
-            $query->where('price', '<', 25);
-        }
-        if ($request->has('price_above_25')) {
-            $query->where('price', '>=', 25);
+        if ($request->has('availability')) {
+            if ($request->availability == 'available') {
+                $query->where('status', 'available');
+            } elseif ($request->availability == 'unavailable') {
+                $query->where('status', 'unavailable');
+            }
         }
 
         if ($request->has('filter')) {
@@ -45,11 +46,11 @@ class BookController extends Controller
                 case 'price_desc':
                     $query->orderBy('price', 'desc');
                     break;
-                case 'newest':
-                    $query->orderBy('created_at', 'desc');
+                case 'az':
+                    $query->orderBy('title', 'asc');
                     break;
-                case 'oldest':
-                    $query->orderBy('created_at', 'asc');
+                case 'za':
+                    $query->orderBy('title', 'desc');
                     break;
                 default:
                     $query->orderBy('title', 'asc');
