@@ -3,7 +3,7 @@
         <h2>{{ ('Edit Publisher') }}</h2>
     </x-slot>
 
-    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg border border-blue-200">
+    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg border border-blue-200 text-lg">
         <form action="{{ route('publishers.update', $publisher->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
@@ -26,7 +26,7 @@
                     class="file-input file-input-bordered w-full bg-blue-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
                     @error('logo') border-red-500 @enderror" accept="image/*">
                 @if ($publisher->logo)
-                    <img src="{{ asset(str_starts_with($publisher->logo, 'images/') ? $publisher->logo : 'images/' . $publisher->logo) }}" alt="Current Logo" class="w-32 mt-2 rounded-full shadow-md">
+                    <img src="{{ asset(str_starts_with($publisher->logo, 'images/') ? $publisher->logo : 'images/' . $publisher->logo) }}" alt="Current Logo" class="w-48 mt-8 rounded-full shadow-md">
                 @endif
                 @error('logo')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

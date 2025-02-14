@@ -23,7 +23,7 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             backgroundImage: {
-                'custom-gradient': 'linear-gradient(to bottom, #EFF6FF, #C7D2FE)',
+                'custom-gradient': 'linear-gradient(to bottom, #DBEAFE, #60A5FA)',
             },
         },
     },

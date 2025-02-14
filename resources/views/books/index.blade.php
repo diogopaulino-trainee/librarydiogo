@@ -6,8 +6,8 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex justify-end mb-4">
-                <a href="{{ route('books.create') }}" class="btn btn-primary bg-blue-500 text-white hover:bg-blue-700 transition duration-300 shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <a href="{{ route('books.create') }}" class="btn btn-primary bg-blue-500 text-lg text-white hover:bg-blue-700 transition duration-300 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     Create Book
@@ -16,7 +16,7 @@
 
             <div class="max-full mx-auto mt-8 p-8 bg-white shadow-md rounded-lg border border-blue-500">
                 @if (session('success'))
-                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                    <div class="max-w-4xl mx-auto mt-2 mb-6 text-lg">
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,7 +35,7 @@
                     </div>
                 @endif
                 @if (session('error')) 
-                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                    <div class="max-w-4xl mx-auto mt-2 mb-6 text-lg">
                         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,14 +64,14 @@
                                     </svg>
                                 </div>
                             </div>
-                            <button type="submit" class="btn bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
+                            <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 Search
                             </button>
-                            <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                                 Clear
@@ -80,15 +80,15 @@
                         <div class="flex items-center gap-4">
                             <label class="flex items-center bg-gray-100 px-4 py-2 rounded-md shadow-md h-12 whitespace-nowrap">
                                 <input type="checkbox" name="price_below_25" onchange="this.form.submit()" {{ request('price_below_25') ? 'checked' : '' }} class="mr-2 w-5 h-5">
-                                <span class="text-sm font-medium">&lt; 25&nbsp;€</span>
+                                <span class="text-lg font-medium">&lt; 25&nbsp;€</span>
                             </label>
                         
                             <label class="flex items-center bg-gray-100 px-4 py-2 rounded-md shadow-md h-12 whitespace-nowrap">
                                 <input type="checkbox" name="price_above_25" onchange="this.form.submit()" {{ request('price_above_25') ? 'checked' : '' }} class="mr-2 w-5 h-5">
-                                <span class="text-sm font-medium">&gt;= 25&nbsp;€</span>
+                                <span class="text-lg font-medium">&gt;= 25&nbsp;€</span>
                             </label>
                         
-                            <select name="filter" onchange="this.form.submit()" class="border border-blue-500 rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12 flex items-center">
+                            <select name="filter" onchange="this.form.submit()" class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12 flex items-center">
                                 <option value="" {{ request('filter') == '' ? 'selected' : '' }}>All</option>
                                 <option value="price_asc" {{ request('filter') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
                                 <option value="price_desc" {{ request('filter') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
@@ -99,7 +99,7 @@
                     </form>
                 </div>                
 
-                <table class="min-w-full bg-white border border-blue-500 shadow-md rounded-lg">
+                <table class="min-w-full bg-white text-lg border border-blue-500 shadow-md rounded-lg">
                     <thead class="bg-blue-600 text-white">
                         <tr>
                             @auth
@@ -133,7 +133,7 @@
                                                 class="h-8 w-8 transition duration-300 hover:fill-red-500"
                                                 viewBox="0 0 24 24" 
                                                 fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
-                                                stroke="black" stroke-width="1">
+                                                stroke="red" stroke-width="1">
                                                 <path stroke-linecap="round" stroke-linejoin="round" 
                                                     d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
                                             </svg>
@@ -146,11 +146,11 @@
                                 @if(auth()->user()->hasRole('Citizen'))
                                     <td class="px-4 py-2">
                                         @if($book->status === 'available')
-                                            <button onclick="openRequestModal({{ $book->id }})" class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                            <button onclick="openRequestModal({{ $book->id }})" class="btn bg-blue-500 text-lg text-white px-4 py-2 rounded hover:bg-blue-700">
                                                 Request
                                             </button>
                                         @else
-                                            <span class="text-gray-500">Not available</span>
+                                            <span class="text-gray-500 group-hover:text-white">Not available</span>
                                         @endif
                                     </td>
                                 @endif
@@ -159,7 +159,7 @@
                             @auth
                                 @if(auth()->user()->hasRole('Admin'))
                                     <td class="px-4 py-2">
-                                        <span class="{{ $book->status === 'available' ? 'text-green-400' : 'text-red-600' }}">
+                                        <span class="{{ $book->status === 'available' ? 'text-green-500' : 'text-red-600' }}">
                                             {{ ucfirst($book->status) }}
                                         </span>
                                     </td>
@@ -167,7 +167,16 @@
                             @endauth
 
                             <td class="px-4 py-2">{{ $book->isbn }}</td>
-                            <td class="px-4 py-2">{{ $book->title }}</td>
+                            <td class="px-4 py-2">
+                                @if($book)
+                                    <a href="{{ route('books.show', $book->id) }}" 
+                                       class="hover:underline group-hover:text-white">
+                                        {{ $book->title }}
+                                    </a>
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                             <td class="px-4 py-2">
                                 @forelse ($book->authors as $author)
                                     {{ $author->name }}{{ !$loop->last ? ', ' : '' }}
@@ -213,19 +222,19 @@
                                     </svg>
                                 </button>
 
-                                <div class="text-lg font-semibold text-blue-700 flex items-center mb-4">
+                                <div class="text-xl font-semibold text-blue-700 flex items-center mb-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 102 0zm0 6a1 1 0 11-2 0v-4a1 1 0 112 0v4z" clip-rule="evenodd" />
                                     </svg>
                                     Confirm Request
                                 </div>
 
-                                <div class="text-sm text-gray-600">
+                                <div class="text-base text-gray-600">
                                     <p><strong>Book:</strong> {{ $book->title }}</p>
                                     <p><strong>Are you sure you want to request this book?</strong></p>
                                 </div>
 
-                                <div class="flex justify-end mt-4">
+                                <div class="flex justify-end mt-4 text-lg">
                                     <form id="requestForm-{{ $book->id }}" action="{{ route('requests.store', $book) }}" method="POST" class="hidden">
                                         @csrf
                                         <button type="submit" id="submitRequest" class="bg-blue-500 text-white px-4 py-2 mr-2 rounded-md hover:bg-blue-700">
@@ -247,20 +256,20 @@
                                     </svg>
                                 </button>
 
-                                <div class="text-lg font-semibold text-blue-700 flex items-center mb-4">
+                                <div class="text-xl font-semibold text-blue-700 flex items-center mb-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 102 0zm0 6a1 1 0 11-2 0v-4a1 1 0 112 0v4z" clip-rule="evenodd" />
                                     </svg>
                                     Timestamps
                                 </div>
 
-                                <div class="text-sm text-gray-600">
+                                <div class="text-base text-gray-600">
                                     <p><strong>Created At:</strong> {{ $book->created_at->format('d/m/Y H:i') }}</p>
                                     <p><strong>Updated At:</strong> {{ $book->updated_at->format('d/m/Y H:i') }}</p>
                                 </div>
 
                                 <div class="flex justify-end mt-4">
-                                    <button onclick="closeModal('timestamps-modal-{{ $book->id }}')" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Close</button>
+                                    <button onclick="closeModal('timestamps-modal-{{ $book->id }}')" class="bg-blue-500 text-lg text-white px-4 py-2 rounded-md hover:bg-blue-700">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -274,8 +283,8 @@
                 
                 <div x-data="{ open: false }" class="relative flex justify-end mt-6">
                     <button @click="open = !open" 
-                            class="btn bg-green-500 text-white hover:bg-green-700 transition duration-300 shadow-md flex items-center px-4 py-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            class="btn bg-green-500 text-lg text-white hover:bg-green-700 transition duration-300 shadow-md flex items-center px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M5 20h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -286,16 +295,16 @@
                          x-transition.origin-bottom
                          class="absolute bottom-14 right-0 w-40 bg-white border border-gray-300 shadow-lg rounded-md z-10">
                         <a href="{{ route('books.export', ['format' => 'excel']) }}" 
-                           class="block px-4 py-2 text-gray-800 hover:bg-green-100 transition flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                           class="px-4 py-2 text-gray-800 hover:bg-green-100 transition flex items-center text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M4 4h16v16H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M8 4v16M16 4v16M4 8h16M4 16h16M4 12h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Export to Excel
                         </a>
                         <a href="{{ route('books.export', ['format' => 'pdf']) }}" 
-                           class="block px-4 py-2 text-gray-800 hover:bg-red-100 transition flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                           class="px-4 py-2 text-gray-800 hover:bg-red-100 transition flex items-center text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M6 2h12l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M14 2v4h4M9 11h6M9 15h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>

@@ -21,7 +21,7 @@
                                     class="w-20 h-24 object-cover rounded-md shadow-sm me-4">
                             <div class="flex-grow">
                                 <p class="font-semibold text-gray-900 text-lg">
-                                    <a href="{{ route('books.show', $request->book->id) }}" class="hover:underline">
+                                    <a href="{{ route('requests.show', $request) }}" class="hover:underline">
                                         {{ $request->book->title ?? 'Unknown Book' }}
                                     </a>
                                 </p>
@@ -37,7 +37,7 @@
                                     {{ $request->status === 'pending' ? '#facc15' : '' }}
                                     {{ $request->status === 'returned' ? '#10b981' : '' }}
                                     {{ $request->status === 'overdue' ? '#ef4444' : '' }}">
-                                {{ ucfirst($request->status) }}
+                                {{ $request->status === 'pending' ? 'Borrowed' : ucfirst($request->status) }}
                             </div>
                         </li>
                     @empty

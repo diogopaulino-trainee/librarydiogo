@@ -14,7 +14,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
-<body class="font-sans antialiased bg-custom-gradient">
+<body class="font-sans antialiased bg-custom-gradient text-lg">
     @include('navigation-menu')
 
         <div class="wrapper py-10 px-4 lg:px-16 mt-0 flex flex-col justify-start items-center">
@@ -182,12 +182,12 @@
                 </div>
 
                 <button @click="currentIndex = (currentIndex === 0) ? books.length - 1 : currentIndex - 1"
-                        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transition transform duration-200">
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transition duration-200">
                     ❮
                 </button>
 
                 <button @click="currentIndex = (currentIndex === books.length - 1) ? 0 : currentIndex + 1"
-                        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transition transform duration-200">
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transition duration-200">
                     ❯
                 </button>
             </div>

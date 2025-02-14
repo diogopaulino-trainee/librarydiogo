@@ -18,7 +18,7 @@ class AdminController extends Controller
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
-        $users = User::paginate(10);
+        $users = User::orderBy('name', 'asc')->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -28,7 +28,10 @@ class AdminController extends Controller
 
         $requests = $user->requests()->orderBy('created_at', 'desc')->get();
 
-        return view('admin.users.show', compact('user', 'requests'));
+        $previousUser = User::where('id', '<', $user->id)->orderBy('id', 'desc')->first();
+        $nextUser = User::where('id', '>', $user->id)->orderBy('id', 'asc')->first();
+
+        return view('admin.users.show', compact('user', 'requests', 'previousUser', 'nextUser'));
     }
 
     public function changeRole(Request $request, User $user)

@@ -9,18 +9,44 @@
 
                 @auth
                     <button id="favorite-btn" 
-                        class="absolute top-3 right-3 bg-white p-4 rounded-full shadow-xl transition duration-300 group"
+                        class="absolute top-3 right-3 bg-white border border-red-500 p-4 rounded-full shadow-xl transition duration-300 group"
                         onclick="toggleFavorite({{ $book->id }})">
                         <svg id="favorite-icon" xmlns="http://www.w3.org/2000/svg" 
                             class="h-8 w-8 transition duration-300 group-hover:fill-red-600" 
                             viewBox="0 0 24 24" 
                             fill="{{ auth()->user()->favorites->contains($book->id) ? 'red' : 'none' }}" 
-                            stroke="currentColor" stroke-width="2">
+                            stroke="red" stroke-width="1">
                             <path stroke-linecap="round" stroke-linejoin="round" 
                                 d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
                         </svg>
                     </button>
                 @endauth
+
+                <div class="mt-20 flex justify-between items-center">
+                    @if(!empty($previousBook))
+                        <a href="{{ route('books.show', $previousBook->id) }}" 
+                           class="bg-red-500 text-white text-lg px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300 shadow-md flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Previous
+                        </a>
+                    @else
+                        <span class="px-6 py-2 text-gray-400 cursor-not-allowed">← Previous</span>
+                    @endif
+
+                    @if(!empty($nextBook))
+                        <a href="{{ route('books.show', $nextBook->id) }}" 
+                           class="bg-green-500 text-white text-lg px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300 shadow-md flex items-center">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    @else
+                        <span class="px-6 py-2 text-gray-400 cursor-not-allowed">Next →</span>
+                    @endif
+                </div>
 
                 <div class="mb-4 text-center">
                     <img src="{{ asset(str_starts_with($book->cover_image, 'images/') ? $book->cover_image : 'images/' . $book->cover_image) }}" 
@@ -28,20 +54,33 @@
                          class="w-48 h-64 mx-auto object-cover rounded-lg shadow-md">
                 </div>
 
-                <div class="grid grid-cols-1 gap-4 text-gray-800">
+                <div class="grid grid-cols-1 gap-4 text-gray-800 text-lg">
                     <div><strong>ISBN:</strong> {{ $book->isbn }}</div>
                     <div><strong>Title:</strong> {{ $book->title }}</div>
                     <div>
                         <strong>Authors:</strong> 
                         @if($book->authors->isNotEmpty())
                             @foreach ($book->authors as $author)
-                                {{ $author->name }}{{ !$loop->last ? ', ' : '' }}
+                                <a href="{{ route('authors.show', $author->id) }}" 
+                                   class="text-blue-600 font-semibold hover:underline">
+                                    {{ $author->name }}
+                                </a>{{ !$loop->last ? ', ' : '' }}
                             @endforeach
                         @else
                             N/A
                         @endif
                     </div>
-                    <div><strong>Publisher:</strong> {{ $book->publisher->name ?? 'N/A' }}</div>
+                    <div>
+                        <strong>Publisher:</strong> 
+                        @if($book->publisher)
+                            <a href="{{ route('publishers.show', $book->publisher->id) }}" 
+                               class="text-blue-600 font-semibold hover:underline">
+                                {{ $book->publisher->name }}
+                            </a>
+                        @else
+                            N/A
+                        @endif
+                    </div>
                     <div>
                         <strong>Bibliography:</strong>
                         @auth
@@ -70,8 +109,8 @@
                         @elseif(auth()->check() && auth()->user()->hasRole('Admin') && $citizens->isNotEmpty())
                         <form action="{{ route('requests.store.admin', $book) }}" method="POST">
                             @csrf
-                            <label for="citizen_id" class="block text-sm font-medium text-gray-700">Select Citizen:</label>
-                            <select name="citizen_id" id="citizen_id" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                            <label for="citizen_id" class="block text-lg font-medium text-gray-700">Select Citizen:</label>
+                            <select name="citizen_id" id="citizen_id" required class="mt-1 block w-full text-lg p-2 border border-gray-300 rounded-md">
                                 <option value="" disabled selected>Choose a Citizen</option>
                                 @foreach($citizens as $citizen)
                                     @php
@@ -89,7 +128,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 w-full mt-2">
+                            <button type="submit" class="bg-green-500 text-white text-lg font-bold px-4 py-2 rounded hover:bg-green-700 w-full mt-2">
                                 Request for Citizen
                             </button>
                         </form>
@@ -101,10 +140,10 @@
                             </p>
                         @endif
                     @else
-                        <p class="text-red-500 font-bold mt-4">
+                        <p class="text-red-500 text-lg font-bold mt-4">
                             This book is currently unavailable.
                             <br>
-                            <span class="text-gray-700 font-medium">
+                            <span class="text-gray-700 text-lg font-medium">
                                 Expected to be available by: 
                                 <strong>
                                     {{ \Carbon\Carbon::parse($pendingRequest->expected_return_date)->format('d M, Y') }}
@@ -155,23 +194,23 @@
                 @endif
 
                 <div class="mt-6 flex justify-between">
-                    <a href="{{ route('books.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Back to List</a>
+                    <a href="{{ route('books.index') }}" class="bg-blue-500 text-white text-lg px-4 py-2 rounded hover:bg-blue-700">Back to List</a>
                     
                     @auth
                         @if(auth()->user()->hasRole('Admin'))
-                            <a href="{{ route('books.edit', $book) }}" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit Book</a>
+                            <a href="{{ route('books.edit', $book) }}" class="bg-yellow-400 text-white text-lg px-4 py-2 rounded hover:bg-yellow-600">Edit Book</a>
                         @endif
                     @endauth
                 </div>
 
                 @if(auth()->user()->hasRole('Admin'))
                 <div class="mt-6">
-                    <h3 class="text-xl font-semibold text-gray-800">Request History</h3>
+                    <h3 class="text-lg font-semibold text-gray-800">Request History</h3>
                 
                     @if($requests->isEmpty())
                         <p class="text-gray-500">No requests have been made for this book yet.</p>
                     @else
-                        <table class="min-w-full table-auto mt-4 border border-gray-300 rounded-lg shadow-md">
+                        <table class="min-w-full text-lg table-auto mt-4 border border-gray-300 rounded-lg shadow-md">
                             <thead class="bg-blue-600 text-white">
                                 <tr>
                                     <th class="px-4 py-2 border-b text-center">Request Number</th>

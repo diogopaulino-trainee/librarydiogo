@@ -12,35 +12,52 @@ use App\Mail\RequestConfirmationMail;
 
 class RequestController extends Controller
 {
-    public function index()
+    public function index(HttpRequest $request)
     {
         $user = Auth::user();
+        $query = Request::query();
 
-        // Se for Admin, vê todas as requisições; caso contrário, vê só as suas.
-        $requests = $user->hasRole('Admin')
-            ? Request::latest()->paginate(10)
-            : Request::where('user_id', $user->id)->latest()->paginate(10);
-
-        if ($user->hasRole('Admin')) {
-            // Contagem geral para Admin
-            $activeRequests = Request::where('status', 'pending')->count();
-            $last30DaysRequests = Request::where('request_date', '>=', now()->subDays(30))->count();
-            $returnedToday = Request::whereNotNull('actual_return_date')
-            ->whereDate('actual_return_date', now())
-            ->count();
-        } else {
-            // Contagem apenas do Citizen logado
-            $activeRequests = Request::where('user_id', $user->id)->where('status', 'pending')->count();
-            $last30DaysRequests = Request::where('user_id', $user->id)->where('request_date', '>=', now()->subDays(30))->count();
-            $returnedToday = Request::where('user_id', $user->id)
-            ->whereNotNull('actual_return_date')
-            ->whereDate('actual_return_date', now())
-            ->count();
+        if (!$user->hasRole('Admin')) {
+            $query->where('user_id', $user->id);
         }
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($q) use ($search, $user) {
+                $q->whereHas('book', function ($query) use ($search) {
+                    $query->where('title', 'LIKE', "%$search%");
+                });
+
+                if ($user->hasRole('Admin')) {
+                    $q->orWhere('user_name_at_request', 'LIKE', "%$search%")
+                    ->orWhere('user_email_at_request', 'LIKE', "%$search%");
+                }
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $sortBy = $request->input('sort_by', 'created_at');
+        $order = $request->input('order', 'desc');
+
+        $allowedSorts = ['request_number', 'expected_return_date', 'created_at', 'status'];
+        if (!in_array($sortBy, $allowedSorts)) {
+            $sortBy = 'created_at';
+        }
+
+        $requests = $query->orderBy($sortBy, $order)->paginate(10);
+
+        $activeRequests = Request::where('status', 'pending')->count();
+        $last30DaysRequests = Request::where('request_date', '>=', now()->subDays(30))->count();
+        $returnedToday = Request::whereNotNull('actual_return_date')
+                                ->whereDate('actual_return_date', now())
+                                ->count();
 
         return view('requests.index', compact('requests', 'activeRequests', 'last30DaysRequests', 'returnedToday'));
     }
-
 
     public function store(Book $book)
     {
@@ -170,6 +187,31 @@ class RequestController extends Controller
     public function show(Request $request)
     {
         abort_if(!auth()->user()->hasRole('Admin') && auth()->user()->id != $request->user_id, 403, 'Unauthorized access.');
-        return view('requests.show', compact('request'));
+
+        $user = Auth::user();
+
+        // Se for Admin, pode navegar entre todas as requisições
+        if ($user->hasRole('Admin')) {
+            $previousRequest = Request::where('id', '<', $request->id)
+                                      ->orderBy('id', 'desc')
+                                      ->first();
+    
+            $nextRequest = Request::where('id', '>', $request->id)
+                                  ->orderBy('id', 'asc')
+                                  ->first();
+        } else {
+            // Se for Citizen, só vê as suas próprias requisições
+            $previousRequest = Request::where('id', '<', $request->id)
+                                      ->where('user_id', $user->id)
+                                      ->orderBy('id', 'desc')
+                                      ->first();
+    
+            $nextRequest = Request::where('id', '>', $request->id)
+                                  ->where('user_id', $user->id)
+                                  ->orderBy('id', 'asc')
+                                  ->first();
+        }
+
+        return view('requests.show', compact('request', 'previousRequest', 'nextRequest'));
     }
 }

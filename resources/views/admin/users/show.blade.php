@@ -3,13 +3,38 @@
         <h2>{{ __('User Details') }}</h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-6 text-lg">
         <div class="w-full mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-xl sm:rounded-lg p-6 border border-blue-500">
+                <div class="mt-2 flex justify-between items-center mb-8">
+                    @if($previousUser)
+                        <a href="{{ route('admin.users.show', $previousUser->id) }}" 
+                           class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition duration-300 shadow-md flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Previous User
+                        </a>
+                    @else
+                        <span class="px-6 py-2 text-gray-400 cursor-not-allowed">← Previous User</span>
+                    @endif
+                
+                    @if($nextUser)
+                        <a href="{{ route('admin.users.show', $nextUser->id) }}" 
+                           class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300 shadow-md flex items-center">
+                            Next User
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    @else
+                        <span class="px-6 py-2 text-gray-400 cursor-not-allowed">Next User →</span>
+                    @endif
+                </div>
 
-                <div class="mb-6 text-gray-800 flex justify-between items-center bg-blue-50 border-2 border-blue-500 rounded-lg shadow-lg p-6">
+                <div class="mb-4 text-gray-800 flex justify-between items-center bg-blue-50 border-2 border-blue-500 rounded-lg shadow-lg p-6">
                         <div class="space-y-2 flex items-center">
-                        <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="h-24 w-24 rounded-full object-cover mr-4 border-2 border-blue-500">
+                            <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="h-28 w-28 rounded-full object-cover mr-4 border-2 border-blue-500">
                         <div>
                             <p class="text-lg font-semibold flex items-center">
                                 <strong class="mr-2">Name:</strong> {{ $user->name }}
@@ -21,6 +46,10 @@
                             
                             <p class="text-lg flex items-center">
                                 <strong class="mr-2">Role:</strong> {{ $user->roles->pluck('name')->implode(', ') }}
+                            </p>
+
+                            <p class="text-lg flex items-center">
+                                <strong>Registered since:</strong> {{ $user->created_at->diffForHumans() }}
                             </p>
                         </div>
                     </div>
@@ -36,14 +65,14 @@
                         <thead class="bg-blue-600 text-white">
                                 <tr class="border-b">
                                     <th class="px-4 py-2 border-b text-center">Request Number</th>
-                                    <th class="px-4 py-2 border-b text-left">Book</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">Request Date</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">User Photo (At Request Time)</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">User Name (At Request Time)</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">User Email (At Request Time)</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">Expected Return Date</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">Actual Return Date</th>
-                                    <th class="px-4 py-2 border-b whitespace-nowrap text-left">Status</th>
+                                    <th class="px-4 py-2 border-b text-center">Book</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">Request Date</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">User Photo (At Request Time)</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">User Name (At Request Time)</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">User Email (At Request Time)</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">Expected Return Date</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">Actual Return Date</th>
+                                    <th class="px-4 py-2 border-b whitespace-nowrap text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,7 +115,7 @@
                                                 {{ $request->status == 'pending' ? 'bg-yellow-500' : '' }}
                                                 {{ $request->status == 'returned' ? 'bg-green-500' : '' }}
                                                 {{ $request->status == 'overdue' ? 'bg-red-500' : '' }}">
-                                                {{ ucfirst($request->status) }}
+                                                {{ $request->status == 'pending' ? 'Borrowed' : ucfirst($request->status) }}
                                             </span>
                                         </td>
                                     </tr>

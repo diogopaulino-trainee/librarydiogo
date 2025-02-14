@@ -31,7 +31,10 @@ class AuthorController extends Controller
 
     public function show(Author $author)
     {
-        return view('authors.show', compact('author'));
+        $previousAuthor = Author::where('id', '<', $author->id)->orderBy('id', 'desc')->first();
+        $nextAuthor = Author::where('id', '>', $author->id)->orderBy('id', 'asc')->first();
+
+        return view('authors.show', compact('author', 'previousAuthor', 'nextAuthor'));
     }
 
     public function create()

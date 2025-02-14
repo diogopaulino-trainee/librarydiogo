@@ -31,7 +31,10 @@ class PublisherController extends Controller
 
     public function show(Publisher $publisher)
     {
-        return view('publishers.show', compact('publisher'));
+        $previousPublisher = Publisher::where('id', '<', $publisher->id)->orderBy('id', 'desc')->first();
+        $nextPublisher = Publisher::where('id', '>', $publisher->id)->orderBy('id', 'asc')->first();
+
+        return view('publishers.show', compact('publisher', 'previousPublisher', 'nextPublisher'));
     }
 
     public function create()

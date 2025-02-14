@@ -3,11 +3,11 @@
         <h2>{{ ('User Management') }}</h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-6 text-lg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="flex justify-end mb-4">
-                <a href="{{ route('admin.users.create') }}" class="btn btn-primary bg-blue-500 text-white hover:bg-blue-700 transition duration-300 shadow-md">
+                <a href="{{ route('admin.users.create') }}" class="btn btn-primary bg-blue-500 text-white text-lg hover:bg-blue-700 transition duration-300 shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -18,7 +18,7 @@
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 border border-gray-300">
                 
                 @if (session('success'))
-                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                    <div class="max-w-4xl mx-auto mt-2 mb-6 text-lg">
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,9 +36,8 @@
                         </div>
                     </div>
                 @endif
-
                 @if (session('error')) 
-                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                    <div class="max-w-4xl mx-auto mt-2 mb-6 text-lg">
                         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

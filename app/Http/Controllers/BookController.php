@@ -86,7 +86,10 @@ class BookController extends Controller
 
         $requests = $book->requests()->orderBy('created_at', 'desc')->get();
 
-        return view('books.show', compact('book', 'citizens', 'pendingRequest', 'requests'));
+        $previousBook = Book::where('id', '<', $book->id)->orderBy('id', 'desc')->first();
+        $nextBook = Book::where('id', '>', $book->id)->orderBy('id', 'asc')->first();
+
+        return view('books.show', compact('book', 'citizens', 'pendingRequest', 'requests', 'previousBook', 'nextBook'));
     }
 
     public function create()

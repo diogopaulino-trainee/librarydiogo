@@ -3,7 +3,7 @@
         <h2>{{ ('Edit Author') }}</h2>
     </x-slot>
 
-    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg border border-blue-200">
+    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg border border-blue-200 text-lg">
         <form action="{{ route('authors.update', $author->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
@@ -26,7 +26,7 @@
                     class="file-input file-input-bordered w-full bg-blue-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 
                     @error('photo') border-red-500 @enderror" accept="image/*">
                 @if ($author->photo)
-                    <img src="{{ asset(str_starts_with($author->photo, 'images/') ? $author->photo : 'images/' . $author->photo) }}" alt="Current Photo" class="w-32 mt-2 rounded-full shadow-md">
+                    <img src="{{ asset(str_starts_with($author->photo, 'images/') ? $author->photo : 'images/' . $author->photo) }}" alt="Current Photo" class="w-48 mt-8 rounded-full shadow-md">
                 @endif
                 @error('photo')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

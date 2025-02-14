@@ -6,7 +6,7 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex justify-end mb-4">
-                <a href="{{ route('authors.create') }}" class="btn btn-primary bg-blue-500 text-white hover:bg-blue-700 transition duration-300 shadow-md">
+                <a href="{{ route('authors.create') }}" class="btn btn-primary bg-blue-500 text-lg text-white hover:bg-blue-700 transition duration-300 shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -16,7 +16,7 @@
 
             <div class="max-full mx-auto mt-8 p-8 bg-white shadow-md rounded-lg border border-blue-500">
                 @if (session('success'))
-                    <div class="max-w-4xl mx-auto mt-2 mb-4">
+                    <div class="max-w-4xl mx-auto mt-2 mb-6 text-lg">
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,50 +34,69 @@
                         </div>
                     </div>
                 @endif
+                @if (session('error')) 
+                    <div class="max-w-4xl mx-auto mt-2 mb-6 text-lg">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <strong class="font-bold text-red-800">Error!</strong>
+                                <span class="ml-2">{{ session('error') }}</span>
+                            </div>    
+                            <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg class="fill-current h-6 w-6 text-red-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endif
                 <div class="flex justify-between items-center mb-4">
-                    <form action="{{ route('authors.index') }}" method="GET" class="flex items-center space-x-2">
+                    <form action="{{ route('authors.index') }}" method="GET" class="flex items-center space-x-1">
                         <div class="relative">
                             <input type="text" name="search" placeholder="Search by name"
                                    value="{{ request('search') }}"
-                                   class="input input-bordered input-primary w-64 pl-10" />
+                                   class="input input-bordered input-primary w-48 pl-10 text-lg" />
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-lg text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </div>
                         </div>
-                        <button type="submit" class="btn bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
+                        <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             Search
                         </button>
                         
-                        <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             Clear
                         </button>
                     </form>
 
-                    <div class="flex space-x-2">
+                    <div class="flex space-x-1">
                         <a href="{{ route('authors.index', ['sort_by' => 'name', 'order' => 'asc']) }}" 
-                           class="btn btn-sm btn-outline">Sort A-Z</a>
+                           class="btn btn-sm btn-outline text-base">Sort A-Z</a>
                         <a href="{{ route('authors.index', ['sort_by' => 'name', 'order' => 'desc']) }}" 
-                           class="btn btn-sm btn-outline">Sort Z-A</a>
+                           class="btn btn-sm btn-outline text-base">Sort Z-A</a>
                         <a href="{{ route('authors.index', ['sort_by' => 'created_at', 'order' => 'asc']) }}" 
-                           class="btn btn-sm btn-outline">Oldest First</a>
+                           class="btn btn-sm btn-outline text-base">Oldest First</a>
                         <a href="{{ route('authors.index', ['sort_by' => 'created_at', 'order' => 'desc']) }}" 
-                           class="btn btn-sm btn-outline">Newest First</a>
+                           class="btn btn-sm btn-outline text-base">Newest First</a>
                         <a href="{{ route('authors.index', ['sort_by' => 'updated_at', 'order' => 'asc']) }}" 
-                           class="btn btn-sm btn-outline">Least Updated</a>
+                           class="btn btn-sm btn-outline text-base">Least Updated</a>
                         <a href="{{ route('authors.index', ['sort_by' => 'updated_at', 'order' => 'desc']) }}" 
-                           class="btn btn-sm btn-outline">Recently Updated</a>
+                           class="btn btn-sm btn-outline text-base">Recently Updated</a>
                     </div>
                 </div>
 
-                <table class="min-w-full bg-white border border-blue-500 shadow-md rounded-lg">
+                <table class="min-w-full bg-white border border-blue-500 shadow-md rounded-lg text-lg">
                     <thead class="bg-blue-600 text-white">
                         <tr>
                             <th class="px-4 py-2 border-b">Name</th>
@@ -124,21 +143,21 @@
                                     </svg>
                                 </button>
 
-                                <div class="text-lg font-semibold text-blue-700 flex items-center mb-4">
+                                <div class="text-xl font-semibold text-blue-700 flex items-center mb-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11V5a1 1 0 10-2 0v2a1 1 0 102 0zm0 6a1 1 0 11-2 0v-4a1 1 0 112 0v4z" clip-rule="evenodd" />
                                     </svg>
                                     Timestamps
                                 </div>
 
-                                <div class="text-sm text-gray-600">
+                                <div class="text-base text-gray-600">
                                     <p><strong>Created At:</strong> {{ $author->created_at->format('d/m/Y H:i') }}</p>
                                     <p><strong>Updated At:</strong> {{ $author->updated_at->format('d/m/Y H:i') }}</p>
                                 </div>
 
                                 <div class="flex justify-end mt-4">
                                     <button onclick="closeModal('modal-{{ $author->id }}')" 
-                                            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Close</button>
+                                            class="bg-blue-500 text-white text-lg px-4 py-2 rounded-md hover:bg-blue-700">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +171,7 @@
                 
                 <div x-data="{ open: false }" class="relative flex justify-end mt-6">
                     <button @click="open = !open" 
-                            class="btn bg-green-500 text-white hover:bg-green-700 transition duration-300 shadow-md flex items-center px-4 py-2">
+                            class="btn bg-green-500 text-white text-lg hover:bg-green-700 transition duration-300 shadow-md flex items-center px-4 py-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M5 20h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -164,16 +183,16 @@
                          x-transition.origin-bottom
                          class="absolute bottom-14 right-0 w-40 bg-white border border-gray-300 shadow-lg rounded-md z-10">
                         <a href="{{ route('authors.export', ['format' => 'excel']) }}" 
-                           class="block px-4 py-2 text-gray-800 hover:bg-green-100 transition flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                           class="px-4 py-2 text-gray-800 hover:bg-green-100 transition flex items-center text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M4 4h16v16H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M8 4v16M16 4v16M4 8h16M4 16h16M4 12h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Export to Excel
                         </a>
                         <a href="{{ route('authors.export', ['format' => 'pdf']) }}" 
-                           class="block px-4 py-2 text-gray-800 hover:bg-red-100 transition flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                           class="px-4 py-2 text-gray-800 hover:bg-red-100 transition flex items-center text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M6 2h12l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M14 2v4h4M9 11h6M9 15h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
