@@ -5,6 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(auth()->user() && auth()->user()->hasRole('Admin'))
             <div class="flex justify-end mb-4">
                 <a href="{{ route('books.create') }}" class="btn btn-primary bg-blue-500 text-lg text-white hover:bg-blue-700 transition duration-300 shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,6 +14,7 @@
                     Create Book
                 </a>
             </div>
+            @endif
 
             <div class="max-full mx-auto mt-8 p-8 bg-white shadow-md rounded-lg border border-blue-500">
                 @if (session('success'))
@@ -53,20 +55,20 @@
                         </div>
                     </div>
                 @endif
-                <div class="flex items-center w-full justify-between mb-4">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4 w-full">
                     <form id="searchForm" action="{{ route('books.index') }}" method="GET" class="flex items-center w-full">
-                        <div class="flex space-x-2 w-full">
+                        <div class="flex flex-wrap w-full">
                             <select name="availability" onchange="this.form.submit()"
-                                class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg">
+                                class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg mx-1 mt-1">
                                 <option value="">All Books</option>
                                 <option value="available" {{ request('availability') == 'available' ? 'selected' : '' }}>Available</option>
                                 <option value="unavailable" {{ request('availability') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
                             </select>
                 
-                            <div class="relative w-full max-w-[400px]">
+                            <div class="relative flex-grow max-w-[400px] mr-2">
                                 <input type="text" name="search" placeholder="Search by ISBN, Title, Author, or Publisher" 
                                     value="{{ request('search') }}" 
-                                    class="border border-blue-500 px-4 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 py-2 rounded-md shadow-md text-lg" />
+                                    class="border border-blue-500 px-4 py-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 rounded-md shadow-sm text-lg mx-1 mt-1"/>
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
@@ -74,14 +76,14 @@
                                 </div>
                             </div>
                 
-                            <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
+                            <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 Search
                             </button>
                 
-                            <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
+                            <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -91,7 +93,7 @@
                 
                         <div class="w-auto">
                             <select name="filter" onchange="this.form.submit()" 
-                                class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12">
+                                class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12 ml-2 mx-1 mt-1">
                                 <option value="" {{ request('filter') == '' ? 'selected' : '' }}>All</option>
                                 <option value="price_asc" {{ request('filter') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
                                 <option value="price_desc" {{ request('filter') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
@@ -102,8 +104,9 @@
                     </form>
                 </div>
 
-                <table class="min-w-full bg-white text-lg border border-blue-500 shadow-md rounded-lg">
-                    <thead class="bg-blue-600 text-white">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white text-lg border border-blue-500 shadow-md rounded-lg">
+                        <thead class="bg-blue-600 text-white">
                         <tr>
                             @auth
                                 @if(auth()->user()->hasRole('Citizen'))
@@ -285,6 +288,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
 
                 <div class="mt-4">
                     {{ $books->appends(request()->query())->links() }}

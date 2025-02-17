@@ -23,8 +23,8 @@
             </div>
 
                 @if (session('success'))
-                    <div class="w-2/4 mx-auto mt-2 mb-4">
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                    <div class="w-full sm:w-2/4 mx-auto mt-2 mb-4">
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative shadow-md text-center break-words" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
@@ -42,8 +42,8 @@
                     </div>
                 @endif
                 @if (session('error')) 
-                    <div class="w-2/4 mx-auto mt-2 mb-4">
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
+                    <div class="w-full sm:w-2/4 mx-auto mt-2 mb-4">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md text-center break-words" role="alert">
                             <div class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -156,7 +156,7 @@
                             </div>
 
                             <div :id="'request-modal-' + book.id" class="fixed inset-0 bg-blue-900 bg-opacity-55 hidden items-center justify-center z-50">
-                                <div class="bg-white rounded-lg shadow-md border border-blue-200 max-w-sm w-full p-6 relative">
+                                <div class="bg-white rounded-lg shadow-md border border-blue-200 max-w-sm m-auto p-6 relative" style="top: -10%; transform: translateY(-50%);">
                                     <button @click="startRotation(); closeModal(book.id)" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

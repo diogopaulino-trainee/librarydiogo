@@ -122,6 +122,9 @@ class RequestController extends Controller
     {
         $requestData->validate([
             'citizen_id' => 'required|exists:users,id'
+        ], [
+            'citizen_id.required' => 'Please select a citizen to proceed with the book request.',
+            'citizen_id.exists' => 'The selected citizen does not exist in the database.'
         ]);
 
         $citizen = User::find($requestData->citizen_id);

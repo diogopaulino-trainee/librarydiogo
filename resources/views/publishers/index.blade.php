@@ -5,6 +5,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(auth()->user() && auth()->user()->hasRole('Admin'))
             <div class="flex justify-end mb-4">
                 <a href="{{ route('publishers.create') }}" class="btn btn-primary bg-blue-500 text-white text-lg hover:bg-blue-700 transition duration-300 shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,6 +14,7 @@
                     Create Publisher
                 </a>
             </div>
+            @endif
 
             <div class="max-full mx-auto mt-8 p-8 bg-white shadow-md rounded-lg border border-blue-500 text-lg">
                 @if (session('success'))
@@ -53,37 +55,39 @@
                         </div>
                     </div>
                 @endif
-                <div class="flex justify-between items-center mb-4">
-                    <form action="{{ route('publishers.index') }}" method="GET" class="flex items-center space-x-1">
-                        <div class="relative">
-                            <input type="text" name="search" placeholder="Search by name" value="{{ request('search') }}" class="border border-blue-500 px-4 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-48 pl-10 text-lg" />
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
-                                </svg>
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4 w-full">
+                    <form action="{{ route('publishers.index') }}" method="GET" class="flex items-center w-full">
+                        <div class="flex flex-wrap items-center space-x-1">
+                            <div class="relative">
+                                <input type="text" name="search" placeholder="Search by name" value="{{ request('search') }}" class="border border-blue-500 px-4 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-48 pl-10 text-lg mx-1 mt-1" />
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                </div>
                             </div>
+                            <button type="submit" class="btn bg-blue-600 text-white text-lg hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md mx-1 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Search
+                            </button>
+                            <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md mx-1 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Clear
+                            </button>
                         </div>
-                        <button type="submit" class="btn bg-blue-600 text-white text-lg hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                            Search
-                        </button>
-                        <button type="button" onclick="clearSearch()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Clear
-                        </button>
                     </form>
 
-                    <div class="flex space-x-1">
-                        <a href="{{ route('publishers.index', ['sort_by' => 'name', 'order' => 'asc']) }}" class="btn btn-sm btn-outline text-base">Sort A-Z</a>
-                        <a href="{{ route('publishers.index', ['sort_by' => 'name', 'order' => 'desc']) }}" class="btn btn-sm btn-outline text-base">Sort Z-A</a>
-                        <a href="{{ route('publishers.index', ['sort_by' => 'created_at', 'order' => 'asc']) }}" class="btn btn-sm btn-outline text-base">Oldest First</a>
-                        <a href="{{ route('publishers.index', ['sort_by' => 'created_at', 'order' => 'desc']) }}" class="btn btn-sm btn-outline text-base">Newest First</a>
-                        <a href="{{ route('publishers.index', ['sort_by' => 'updated_at', 'order' => 'asc']) }}" class="btn btn-sm btn-outline text-base">Least Updated</a>
-                        <a href="{{ route('publishers.index', ['sort_by' => 'updated_at', 'order' => 'desc']) }}" class="btn btn-sm btn-outline text-base">Recently Updated</a>
+                    <div class="flex flex-wrap w-full">
+                        <a href="{{ route('publishers.index', ['sort_by' => 'name', 'order' => 'asc']) }}" class="btn btn-sm btn-outline text-base mx-1 my-1">Sort A-Z</a>
+                        <a href="{{ route('publishers.index', ['sort_by' => 'name', 'order' => 'desc']) }}" class="btn btn-sm btn-outline text-base mx-1 my-1">Sort Z-A</a>
+                        <a href="{{ route('publishers.index', ['sort_by' => 'created_at', 'order' => 'asc']) }}" class="btn btn-sm btn-outline text-base mx-1 my-1">Oldest First</a>
+                        <a href="{{ route('publishers.index', ['sort_by' => 'created_at', 'order' => 'desc']) }}" class="btn btn-sm btn-outline text-base mx-1 my-1">Newest First</a>
+                        <a href="{{ route('publishers.index', ['sort_by' => 'updated_at', 'order' => 'asc']) }}" class="btn btn-sm btn-outline text-base mx-1 my-1">Least Updated</a>
+                        <a href="{{ route('publishers.index', ['sort_by' => 'updated_at', 'order' => 'desc']) }}" class="btn btn-sm btn-outline text-base mx-1 my-1">Recently Updated</a>
                     </div>
                 </div>
 

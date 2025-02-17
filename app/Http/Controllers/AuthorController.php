@@ -114,7 +114,7 @@ class AuthorController extends Controller
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
         $author->delete();
-        return redirect()->route('authors.index')->with('success', 'author deleted successfully!');
+        return redirect()->route('authors.index')->with('success', 'Author deleted successfully!');
     }
 
     public function export(Request $request)

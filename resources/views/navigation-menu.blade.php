@@ -233,22 +233,21 @@
             @endauth
 
             @guest
-            <div class="flex items-center px-4">
-                <div>
-                    <a href="{{ route('login') }}" class="flex items-center text-gray-800 font-medium">
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link href="{{ route('login') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 rotate-180 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m6-6l-6 6 6 6M21 4v16" />
                         </svg>
                         <span>Login</span>
-                    </a>
-                    <a href="{{ route('register') }}" class="flex items-center text-gray-800 font-medium">
+                    </x-responsive-nav-link>
+                    
+                    <x-responsive-nav-link href="{{ route('register') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5l4 4-11 11H5v-4L16.5 3.5z" />
                         </svg>
                         <span>Register</span>
-                    </a>
+                    </x-responsive-nav-link>
                 </div>
-            </div>
             @endguest
         </div>
     </div>
