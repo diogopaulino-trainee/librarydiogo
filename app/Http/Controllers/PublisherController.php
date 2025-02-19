@@ -39,11 +39,15 @@ class PublisherController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('publishers.create');
     }
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+        
         $request->validate([
             'name' => 'required|unique:publishers,name',
             'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -68,11 +72,15 @@ class PublisherController extends Controller
 
     public function edit(Publisher $publisher)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('publishers.edit', compact('publisher'));
     }
 
     public function update(Request $request, Publisher $publisher)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         $request->validate([
             'name' => 'required|string|max:255',
             'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -96,11 +104,19 @@ class PublisherController extends Controller
 
     public function delete(Publisher $publisher)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
         return view('publishers.delete', compact('publisher'));
     }
     
     public function destroy(Publisher $publisher)
     {
+        abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        if ($publisher->books()->exists()) {
+            return back()->with('error', 'Cannot delete publisher with associated books! Remove the books first.');
+        }
+
         $publisher->delete();
         return redirect()->route('publishers.index')->with('success', 'Publisher deleted successfully!');
     }

@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 text-gray-800 text-lg">
-                    <div><strong>ISBN:</strong> {{ $book->isbn }}</div>
+                    <div><strong>ISBN:</strong> {{ $book->isbn ?? 'Added via external API' }}</div>
                     <div><strong>Title:</strong> {{ $book->title }}</div>
                     <div>
                         <strong>Authors:</strong> 

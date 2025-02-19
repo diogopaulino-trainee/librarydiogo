@@ -199,6 +199,10 @@ class BookController extends Controller
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
+        if ($book->requests()->exists()) {
+            return back()->with('error', 'Cannot delete book with existing requests!');
+        }
+
         $book->authors()->detach();
         $book->delete();
 

@@ -24,8 +24,28 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
+        $this->assignPhoto($admin);
+        $admin->assignRole('Admin');
+
+        $citizen = User::create([
+            'name' => 'John Doe',
+            'email' => 'johndoe@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->assignPhoto($citizen);
+        $citizen->assignRole('Citizen');
+
+        User::factory(20)->create()->each(function ($user) {
+            $this->assignPhoto($user);
+            $user->assignRole('Citizen');
+        });
+    }
+
+    private function assignPhoto($user)
+    {
         $seed = rand(0, 100000);
-        $imageUrl = 'https://picsum.photos/seed/'.$seed.'/500/500';
+        $imageUrl = 'https://picsum.photos/seed/'.$seed.'/3840/2160';
         $imageData = file_get_contents($imageUrl);
 
         $filename = Str::uuid().'.jpg';
@@ -33,26 +53,8 @@ class UserSeeder extends Seeder
 
         Storage::disk('public')->put($path, $imageData);
 
-        $admin->forceFill([
+        $user->forceFill([
             'profile_photo_path' => $path,
         ])->save();
-        $admin->assignRole('Admin');
-
-        User::factory(20)->create()->each(function ($user) {
-            $seed = rand(0, 100000);
-            $imageUrl = 'https://picsum.photos/seed/'.$seed.'/500/500';
-            $imageData = file_get_contents($imageUrl);
-
-            $filename = Str::uuid().'.jpg';
-            $path = 'profile-photos/'.$filename;
-
-            Storage::disk('public')->put($path, $imageData);
-
-            $user->forceFill([
-                'profile_photo_path' => $path,
-            ])->save();
-
-            $user->assignRole('Citizen');
-        });
     }
 }

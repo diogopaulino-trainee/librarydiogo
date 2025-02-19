@@ -113,6 +113,10 @@ class AuthorController extends Controller
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
+        if ($author->books()->exists()) {
+            return back()->with('error', 'Cannot delete author with associated books! Remove the books first.');
+        }
+        
         $author->delete();
         return redirect()->route('authors.index')->with('success', 'Author deleted successfully!');
     }

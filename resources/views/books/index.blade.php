@@ -178,7 +178,7 @@
                                 @endif
                             @endauth
 
-                            <td class="px-4 py-2">{{ $book->isbn }}</td>
+                            <td class="px-4 py-2">{{ $book->isbn ?? 'Added via external API' }}</td>
                             <td class="px-4 py-2">
                                 @if($book)
                                     <a href="{{ route('books.show', $book->id) }}" 

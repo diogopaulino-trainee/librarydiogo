@@ -52,6 +52,15 @@
                             </svg>
                             <span>{{ __('Requests') }}</span>
                         </x-nav-link> 
+
+                        @role('Admin')
+                            <x-nav-link href="{{ route('admin.books.search') }}" :active="request()->routeIs('admin.*')" class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11 2a9 9 0 016.32 14.9l5.388 5.387-1.415 1.415-5.387-5.388A9 9 0 1111 2zm0 2a7 7 0 100 14 7 7 0 000-14z"/>
+                                </svg>
+                                <span>{{ __('Discover & Acquire') }}</span>
+                            </x-nav-link> 
+                        @endrole
                     @endauth
                 </div>
             </div>
@@ -180,6 +189,15 @@
                     </svg>
                     <span>{{ __('Requests') }}</span>
                 </x-responsive-nav-link>
+
+                @role('Admin')
+                    <x-responsive-nav-link href="{{ route('admin.books.search') }}" :active="request()->routeIs('admin.*')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11 2a9 9 0 016.32 14.9l5.388 5.387-1.415 1.415-5.387-5.388A9 9 0 1111 2zm0 2a7 7 0 100 14 7 7 0 000-14z"/>
+                        </svg>
+                        <span>{{ __('Discover & Acquire') }}</span>
+                    </x-responsive-nav-link>
+                @endrole
             @endauth
         </div>      
 

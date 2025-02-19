@@ -23,22 +23,27 @@ class RequestConfirmationMail extends Mailable
 
     public function build()
     {
-        $coverImagePath = public_path('images/' . $this->request->book->cover_image);
-        $coverImageUrl = asset('images/' . $this->request->book->cover_image);
+        $coverImagePath = public_path($this->request->book->cover_image);
+        $coverImageUrl = asset($this->request->book->cover_image);
 
-        return $this->subject('Book Request Confirmation')
+        $email = $this->subject('Book Request Confirmation')
                     ->markdown('emails.request_confirmation')
                     ->with([
-                        'name' => $this->request->user->name,
+                        'name' => optional($this->request->user)->name ?? 'Unknown User',
                         'bookTitle' => $this->request->book->title,
                         'requestDate' => $this->request->request_date->format('Y-m-d'),
                         'expectedReturnDate' => $this->request->expected_return_date->format('Y-m-d'),
                         'coverImage' => $coverImageUrl,
                         'resetUrl' => url('http://librarydiogo.test/forgot-password'),
-                    ])
-                    ->attach($coverImagePath, [
-                        'as' => 'book_cover.jpg',
-                        'mime' => 'image/jpeg',
                     ]);
+
+        if (file_exists($coverImagePath)) {
+            $email->attach($coverImagePath, [
+                'as' => 'book_cover.jpg',
+                'mime' => 'image/jpeg',
+            ]);
+        }
+
+        return $email;
     }
 }

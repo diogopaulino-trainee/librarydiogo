@@ -24,20 +24,25 @@ class ReminderEmail extends Mailable
 
     public function build()
     {
-        $coverImagePath = public_path('images/' . $this->request->book->cover_image);
-        $coverImageUrl = asset('images/' . $this->request->book->cover_image);
+        $coverImagePath = public_path($this->request->book->cover_image);
+        $coverImageUrl = asset($this->request->book->cover_image);
 
-        return $this->subject('Reminder: Book Return Due Tomorrow 📅')
+        $email = $this->subject('Reminder: Book Return Due Tomorrow 📅')
                     ->markdown('emails.reminder')
                     ->with([
-                        'name' => $this->request->user->name,
+                        'name' => optional($this->request->user)->name ?? 'Unknown User',
                         'bookTitle' => $this->request->book->title,
-                        'expectedReturnDate' => Carbon::parse($this->request->expected_return_date)->format('Y-m-d'),
+                        'expectedReturnDate' => optional($this->request->expected_return_date)->format('Y-m-d') ?? 'Unknown Date',
                         'coverImage' => $coverImageUrl,
-                    ])
-                    ->attach($coverImagePath, [
-                        'as' => 'book_cover.jpg',
-                        'mime' => 'image/jpeg',
                     ]);
+
+        if (file_exists($coverImagePath)) {
+            $email->attach($coverImagePath, [
+                'as' => 'book_cover.jpg',
+                'mime' => 'image/jpeg',
+            ]);
+        }
+
+        return $email;
     }
 }

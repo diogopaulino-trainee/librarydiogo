@@ -45,7 +45,7 @@
             @foreach ($books as $book)
                 <tr>
                     <td>{{ $book->title }}</td>
-                    <td>{{ $book->isbn }}</td>
+                    <td>{{ $book->isbn ?? 'Added via external API' }}</td>
                     <td>
                         @foreach ($book->authors as $author)
                             {{ $author->name }}{{ !$loop->last ? ', ' : '' }}

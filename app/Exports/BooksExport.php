@@ -16,7 +16,7 @@ class BooksExport implements FromCollection, WithHeadings, WithStyles
             ->get()
             ->map(function ($book) {
                 return [
-                    'ISBN' => "'" . $book->isbn,
+                    'ISBN' => $book->isbn ? "'" . $book->isbn : 'Added via external API',
                     'Title' => $book->title,
                     'Authors' => $book->authors->pluck('name')->join(', ') ?: 'N/A',
                     'Publisher' => $book->publisher->name ?? 'N/A',

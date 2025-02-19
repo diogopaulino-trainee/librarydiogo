@@ -97,9 +97,9 @@
                             
                             <div class="w-3/4 h-full flex justify-center items-center">
                                 <a :href="'/books/' + book.id" class="block w-full h-full">
-                                    <img :src="(book.cover_image.startsWith('images/') ? 'images/' + book.cover_image : 'images/' + book.cover_image)" 
-                                        alt="Book Cover" 
-                                        class="w-auto h-full object-cover rounded-lg">
+                                    <img :src="book.cover_image.startsWith('http') ? book.cover_image : '/images/' + book.cover_image.replace(/^images\//, '')"
+                                            alt="Book Cover" 
+                                            class="w-auto h-full object-cover rounded-lg">
                                 </a>
                             </div>
 
@@ -107,7 +107,6 @@
                                 <h3 class="text-3xl font-bold text-blue-700 mb-2">
                                     <a :href="'/books/' + book.id" class="hover:underline" x-text="book.title"></a>
                                 </h3>
-                                
                                 <div class="text-lg text-gray-700 space-y-2">
                                     <p><span class="font-semibold">ISBN:</span> <span x-text="book.isbn || 'N/A'"></span></p>
                                     

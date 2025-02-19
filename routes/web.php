@@ -4,10 +4,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\GoogleBooksController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -54,6 +56,10 @@ Route::middleware([
         Route::post('/admin/users/{user}/change-role', [AdminController::class, 'changeRole'])->name('admin.users.change-role');
         Route::get('/admin/users/create', [AdminController::class, 'create'])->name('admin.users.create');
         Route::post('/admin/users/store', [AdminController::class, 'store'])->name('admin.users.store');
+
+        Route::get('/admin/books/search', [GoogleBooksController::class, 'searchPage'])->name('admin.books.search');
+        Route::get('/admin/books/search/results', [GoogleBooksController::class, 'search'])->name('admin.books.search.results');
+        Route::post('/admin/books/store', [GoogleBooksController::class, 'store'])->name('admin.books.store');
     });
 
     // Rotas de Requisições
