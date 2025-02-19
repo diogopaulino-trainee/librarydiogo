@@ -1,7 +1,7 @@
 <nav x-data="{ open: false }" class="relative bg-white border-b border-gray-200">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in">
-    <div class="absolute bottom-0 left-0 w-[62%] h-1 bg-gradient-to-r from-transparent via-blue-700 to-transparent animate-glowing"></div>
+    <div class="absolute bottom-0 left-0 w-[60%] h-1 bg-gradient-to-r from-transparent via-blue-700 to-transparent animate-glowing"></div>
     <style>
         @keyframes glowing {
             0% { transform: translateX(-100%); opacity: 0.3; }

@@ -38,6 +38,14 @@ class BookController extends Controller
             }
         }
 
+        if ($request->has('date_sort')) {
+            if ($request->date_sort == 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
+        }
+
         if ($request->has('filter')) {
             switch ($request->filter) {
                 case 'price_asc':
@@ -57,7 +65,7 @@ class BookController extends Controller
             }
         } else {
             $query->orderBy('title', 'asc');
-        }
+        }        
 
         $books = $query->paginate(10);
         return view('books.index', compact('books'));

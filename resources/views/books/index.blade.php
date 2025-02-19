@@ -90,16 +90,30 @@
                                 Clear
                             </button>
                         </div>
-                
-                        <div class="w-auto">
-                            <select name="filter" onchange="this.form.submit()" 
-                                class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12 ml-2 mx-1 mt-1">
-                                <option value="" {{ request('filter') == '' ? 'selected' : '' }}>All</option>
-                                <option value="price_asc" {{ request('filter') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
-                                <option value="price_desc" {{ request('filter') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
-                                <option value="az" {{ request('filter') == 'az' ? 'selected' : '' }}>Title: A to Z</option>
-                                <option value="za" {{ request('filter') == 'za' ? 'selected' : '' }}>Title: Z to A</option>
-                            </select>
+
+                        <div class="flex flex-wrap md:flex-nowrap items-center">
+                            <button type="button" id="sort-date-btn" onclick="toggleDateSort()" class="transition-transform duration-300 mx-1 mt-1">
+                                <svg id="sort-icon" xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 transition-transform duration-300 hover:scale-110"
+                                    viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="#3B82F6" /> 
+                                    <path d="M16 2v4" stroke="#3B82F6" />
+                                    <path d="M8 2v4" stroke="#3B82F6" />
+                                    <path d="M3 10h18" stroke="#3B82F6" />
+                                    <path d="M10 15l-2 2l-2-2" stroke="#3B82F6" />
+                                    <path d="M14 17l2-2l2 2" stroke="#EF4444" />
+                                </svg>
+                            </button>
+                    
+                            <div class="w-full md:w-auto mt-2 md:mt-0">
+                                <select name="filter" onchange="this.form.submit()" 
+                                    class="border border-blue-500 text-lg rounded-md px-4 py-2 bg-blue-500 text-white shadow-md focus:outline-none h-12 ml-2 mx-1 mt-1">
+                                    <option value="" {{ request('filter') == '' ? 'selected' : '' }}>All</option>
+                                    <option value="price_asc" {{ request('filter') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                                    <option value="price_desc" {{ request('filter') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                                    <option value="az" {{ request('filter') == 'az' ? 'selected' : '' }}>Title: A to Z</option>
+                                    <option value="za" {{ request('filter') == 'za' ? 'selected' : '' }}>Title: Z to A</option>
+                                </select>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -389,5 +403,22 @@
             let form = document.getElementById(`requestForm-${bookId}`);
             form.submit();
         }
+
+        function toggleDateSort() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let sortOrder = urlParams.get('date_sort') === 'oldest' ? 'newest' : 'oldest';
+
+            urlParams.set('date_sort', sortOrder);
+            window.location.search = urlParams.toString();
+
+            document.getElementById('sort-icon').classList.toggle('rotate-180');
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('date_sort') === 'oldest') {
+                document.getElementById('sort-icon').classList.add('rotate-180');
+            }
+        });
     </script>
 </x-app-layout>
