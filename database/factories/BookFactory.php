@@ -22,7 +22,7 @@ class BookFactory extends Factory
             'cover_image' => $this->downloadImage('https://picsum.photos/seed/' . rand(0, 100000) . '/3840/2160'),
             'price' => $this->faker->randomFloat(2, 10, 100),
             'publisher_id' => Publisher::inRandomOrder()->first()?->id,
-            'user_id' => User::inRandomOrder()->first()?->id,
+            'user_id' => 1,
             'status' => 'available',
         ];
     }

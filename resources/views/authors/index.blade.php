@@ -163,7 +163,7 @@
                                     Timestamps
                                 </div>
 
-                                <div class="text-base text-gray-600">
+                                <div class="text-lg text-gray-600">
                                     <p><strong>Created At:</strong> {{ $author->created_at->format('d/m/Y H:i') }}</p>
                                     <p><strong>Updated At:</strong> {{ $author->updated_at->format('d/m/Y H:i') }}</p>
                                 </div>

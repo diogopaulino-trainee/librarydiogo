@@ -119,6 +119,9 @@
                     </div>
                 </div>
             @endforeach
+            <div class="mt-8">
+                <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 text-white px-4 py-3 text-lg rounded hover:bg-blue-700">Back to Dashboard</a>
+            </div>
         </div>
         @else
             <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg border border-blue-200 text-lg">
@@ -200,6 +203,9 @@
                         </div>
                     </div>
                 @endforeach
+                <div class="mt-8">
+                    <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 text-white px-4 py-3 text-lg rounded hover:bg-blue-700">Back to Dashboard</a>
+                </div>
             </div>
         @endif
 
@@ -218,7 +224,7 @@
                 Confirm Book Addition
             </div>
     
-            <div class="text-base text-gray-600">
+            <div class="text-lg text-gray-600">
                 <p><strong>Book:</strong> <span id="modal-book-title"></span></p>
                 <p><strong>Are you sure you want to add this book to the library?</strong></p>
             </div>

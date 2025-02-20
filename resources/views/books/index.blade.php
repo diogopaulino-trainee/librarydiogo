@@ -255,7 +255,7 @@
                                     Confirm Request
                                 </div>
 
-                                <div class="text-base text-gray-600">
+                                <div class="text-lg text-gray-600">
                                     <p><strong>Book:</strong> {{ $book->title }}</p>
                                     <p><strong>Are you sure you want to request this book?</strong></p>
                                 </div>
@@ -289,7 +289,7 @@
                                     Timestamps
                                 </div>
 
-                                <div class="text-base text-gray-600">
+                                <div class="text-lg text-gray-600">
                                     <p><strong>Created At:</strong> {{ $book->created_at->format('d/m/Y H:i') }}</p>
                                     <p><strong>Updated At:</strong> {{ $book->updated_at->format('d/m/Y H:i') }}</p>
                                 </div>

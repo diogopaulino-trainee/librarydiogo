@@ -219,7 +219,7 @@
                         </button>
 
                         <h2 class="text-lg font-semibold text-blue-700 mb-2">Confirm Book Return</h2>
-                        <p class="text-gray-600 mb-4 text-base">Are you sure you want to mark this book as returned?</p>
+                        <p class="text-gray-600 mb-4 text-lg">Are you sure you want to mark this book as returned?</p>
 
                         <div class="flex justify-end space-x-2">
                             <button onclick="closeModal('modal-{{ $request->id }}')" 

@@ -11,7 +11,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Text_LanguageDetect;
 
 class BookController extends Controller
 {
@@ -73,6 +75,8 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
+        $relatedBooks = $this->getRelatedBooks($book);
+
         // Apenas Admins podem ver a lista de cidadãos para solicitar livros
         $citizens = auth()->check() && auth()->user()->hasRole('Admin') 
             ? User::whereHas('roles', function($query) {
@@ -98,7 +102,34 @@ class BookController extends Controller
         $previousBook = Book::where('id', '<', $book->id)->orderBy('id', 'desc')->first();
         $nextBook = Book::where('id', '>', $book->id)->orderBy('id', 'asc')->first();
 
-        return view('books.show', compact('book', 'citizens', 'borrowedRequest', 'requests', 'previousBook', 'nextBook'));
+        // Carregar apenas as reviews aprovadas
+        $book->load(['reviews' => function ($query) {
+            $query->where('status', 'approved')->orderBy('created_at', 'desc');
+        }]);
+
+        // Verificar se o Citizen autenticado pode adicionar uma review
+        $returnedRequest = null;
+        $canReview = false;
+        if (auth()->check() && auth()->user()->hasRole('Citizen')) {
+            $returnedRequest = auth()->user()
+                ->requests()
+                ->where('book_id', $book->id)
+                ->where('status', 'returned')
+                ->latest()
+                ->first();
+
+            // Se existe uma requisição devolvida, o cidadão pode avaliar o livro
+            $canReview = !is_null($returnedRequest);
+        }
+
+        $userReview = auth()->check() 
+            ? $book->reviews()
+                ->where('user_id', auth()->id())
+                ->where('status', '!=', 'rejected')
+                ->first()
+            : null;
+
+        return view('books.show', compact('book', 'citizens', 'borrowedRequest', 'requests', 'previousBook', 'nextBook', 'returnedRequest', 'canReview', 'userReview', 'relatedBooks'));
     }
 
     public function create()
@@ -236,5 +267,91 @@ class BookController extends Controller
             ->whereNotNull('cover_image')
             ->select('id', 'cover_image', 'title', 'isbn', 'status', 'publisher_id')
             ->get());
+    }
+
+    private function extractKeywords($text)
+    {
+        // Normalizar texto (remover pontuação e converter para minúsculas)
+        $text = mb_strtolower(preg_replace('/[^\p{L}\p{N}\s]/u', '', $text));
+
+        // Tokenizar em palavras
+        $words = preg_split('/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+        $ld = new Text_LanguageDetect();
+        $lang = $ld->detectSimple($text);
+
+        $stopwords = [
+            'en' => ['the', 'of', 'and', 'to', 'in', 'is', 'it', 'for', 'with', 'on', 'this', 'that'],
+            'la' => ['et', 'in', 'ad', 'cum', 'non', 'per', 'ex', 'est', 'quod', 'sed', 'neque', 'autem'],
+            'pt' => ['o', 'a', 'de', 'do', 'da', 'um', 'para', 'com', 'por', 'que', 'na', 'no']
+        ];
+
+        $keywords = collect($words)->filter(function ($word) use ($stopwords, $lang) {
+            return strlen($word) > 3 && !is_numeric($word) &&
+                (!isset($stopwords[$lang]) || !in_array($word, $stopwords[$lang] ?? []));
+        })->countBy()->sortDesc()->keys()->take(5);
+
+        return $keywords;
+    }
+
+    private function getRelatedBooks(Book $book)
+    {
+        $keywords = $this->extractKeywords($book->bibliography);
+
+        // Criar estrutura para armazenar os pesos dos livros
+        $bookScores = [];
+
+        // Priorizar Bibliografia Semelhante (Peso: 5)
+        if (!$keywords->isEmpty()) {
+            $query = Book::where('id', '!=', $book->id);
+
+            $hasFullText = collect(DB::select("SHOW INDEX FROM books WHERE Column_name = 'bibliography'"))
+                ->contains(fn ($index) => $index->Index_type === 'FULLTEXT');
+
+            if ($hasFullText) {
+                $query->whereRaw("MATCH(bibliography) AGAINST(? IN BOOLEAN MODE)", [$book->bibliography]);
+            } else {
+                foreach ($keywords as $word) {
+                    $query->orWhere('bibliography', 'LIKE', "%{$word}%");
+                }
+            }
+
+            $similarBooks = $query->orderByRaw("LENGTH(bibliography) DESC")->limit(8)->get();
+            
+            foreach ($similarBooks as $related) {
+                $bookScores[$related->id] = ($bookScores[$related->id] ?? 0) + 5;
+            }
+        }
+
+        // Depois, buscar livros do mesmo autor (Peso: 3)
+        $authorBooks = Book::where('id', '!=', $book->id)
+            ->whereHas('authors', fn ($query) => $query->whereIn('authors.id', $book->authors->pluck('id')))
+            ->limit(8)
+            ->get();
+        foreach ($authorBooks as $related) {
+            $bookScores[$related->id] = ($bookScores[$related->id] ?? 0) + 3;
+        }
+
+        // Finalmente, livros da mesma editora (Peso: 2)
+        $publisherBooks = Book::where('id', '!=', $book->id)
+            ->where('publisher_id', $book->publisher_id)
+            ->limit(8)
+            ->get();
+        foreach ($publisherBooks as $related) {
+            $bookScores[$related->id] = ($bookScores[$related->id] ?? 0) + 2;
+        }
+
+        arsort($bookScores);
+
+        $relatedBooks = collect(Book::whereIn('id', array_keys($bookScores))->get())
+            ->sortByDesc(fn ($book) => $bookScores[$book->id])
+            ->take(9)
+            ->shuffle();
+
+        return [
+            'similar' => $relatedBooks->where(fn ($book) => isset($bookScores[$book->id]) && $bookScores[$book->id] >= 5)->take(3),
+            'authors' => $relatedBooks->where(fn ($book) => isset($bookScores[$book->id]) && $bookScores[$book->id] == 3)->take(3),
+            'publishers' => $relatedBooks->where(fn ($book) => isset($bookScores[$book->id]) && $bookScores[$book->id] == 2)->take(3),
+        ];
     }
 }

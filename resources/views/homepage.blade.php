@@ -169,7 +169,7 @@
                                         Confirm Request
                                     </div>
                             
-                                    <div class="text-base text-gray-600">
+                                    <div class="text-lg text-gray-600">
                                         <p><strong>Book:</strong> <span x-text="book.title"></span></p>
                                         <p><strong>Are you sure you want to request this book?</strong></p>
                                     </div>

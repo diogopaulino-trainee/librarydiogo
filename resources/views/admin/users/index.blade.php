@@ -140,6 +140,9 @@
                     <div class="mt-4">
                         {{ $users->links() }}
                     </div>
+                    <div class="mt-8">
+                        <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 text-white px-4 py-3 text-lg rounded hover:bg-blue-700">Back to Dashboard</a>
+                    </div>
             </div>
         </div>
     </div>

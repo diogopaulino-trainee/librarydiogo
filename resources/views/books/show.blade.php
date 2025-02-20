@@ -215,7 +215,62 @@
                     @endif
                 </div>
 
-                <div class="mt-6 flex justify-between">
+                <div class="mt-8">
+                    @if ($relatedBooks['authors']->isNotEmpty() || $relatedBooks['publishers']->isNotEmpty() || $relatedBooks['similar']->isNotEmpty())
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Related Books</h3>
+
+                        @if ($relatedBooks['similar']->isNotEmpty())
+                            <h4 class="text-xl font-semibold text-gray-700 mt-6 mb-4">With similar Bibliography</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach ($relatedBooks['similar'] as $related)
+                                    <div class="bg-white shadow-md p-4 rounded-lg" style="transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;" 
+                                    onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.15)';" 
+                                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 5px rgba(0, 0, 0, 0.1)';">
+                                        <a href="{{ route('books.show', $related->id) }}">
+                                            <img src="{{ asset('images/' . $related->cover_image) }}" alt="Cover" class="w-full h-48 object-cover rounded-lg">
+                                            <h4 class="text-lg font-semibold mt-2">{{ $related->title }}</h4>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        @if ($relatedBooks['authors']->isNotEmpty())
+                            <h4 class="text-xl font-semibold text-gray-700 mt-6 mb-4">By the same Author(s)</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach ($relatedBooks['authors'] as $related)
+                                    <div class="bg-white shadow-md p-4 rounded-lg" style="transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;" 
+                                    onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.15)';" 
+                                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 5px rgba(0, 0, 0, 0.1)';">
+                                        <a href="{{ route('books.show', $related->id) }}">
+                                            <img src="{{ asset('images/' . $related->cover_image) }}" alt="Cover" class="w-full h-48 object-cover rounded-lg">
+                                            <h4 class="text-lg font-semibold mt-2">{{ $related->title }}</h4>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        @if ($relatedBooks['publishers']->isNotEmpty())
+                            <h4 class="text-xl font-semibold text-gray-700 mt-6 mb-4">From the same Publisher</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach ($relatedBooks['publishers'] as $related)
+                                    <div class="bg-white shadow-md p-4 rounded-lg" style="transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;" 
+                                    onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.15)';" 
+                                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 5px rgba(0, 0, 0, 0.1)';">
+                                        <a href="{{ route('books.show', $related->id) }}">
+                                            <img src="{{ asset('images/' . $related->cover_image) }}" alt="Cover" class="w-full h-48 object-cover rounded-lg">
+                                            <h4 class="text-lg font-semibold mt-2">{{ $related->title }}</h4>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        
+                    @endif
+                </div>
+
+                <div class="mt-8 flex justify-between">
                     <a href="{{ route('books.index') }}" class="bg-blue-500 text-white text-lg px-4 py-2 rounded hover:bg-blue-700">Back to List</a>
                     
                     @auth
@@ -227,7 +282,7 @@
 
                 @if(auth()->check() && auth()->user()->hasRole('Admin'))
                 <div class="mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800">Request History</h3>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Request History</h3>
                 
                     @if($requests->isEmpty())
                         <p class="text-gray-500">No requests have been made for this book yet.</p>
@@ -271,6 +326,86 @@
                     @endif
                 </div>
                 @endif
+
+                <x-section-border />
+
+                <div class="mt-6">
+                    @if(auth()->check() && auth()->user()->hasRole('Citizen'))
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                            <h3 class="text-2xl font-semibold text-gray-800 border-b pb-2 mb-4">Leave a Review</h3>
+                
+                            @if(!$returnedRequest)
+                                <div class="bg-red-100 text-red-600 p-4 rounded-md text-center">
+                                    <p class="text-lg font-medium">You need to read this book before leaving a review.</p>
+                                </div>
+                            @elseif($userReview)
+                                <div class="bg-green-100 text-green-600 p-4 rounded-md text-center">
+                                    <p class="text-lg font-medium">You have already submitted a review for this book.</p>
+                                </div>
+                                <button class="bg-gray-400 text-white px-4 py-2 rounded mt-4 w-full cursor-not-allowed" disabled>
+                                    Review Submitted
+                                </button>
+                            @else
+                                <form action="{{ route('reviews.store') }}" method="POST" class="mt-4">
+                                    @csrf
+                                    <input type="hidden" name="book_id" value="{{ $book->id }}">
+                
+                                    <label class="block text-gray-700 font-semibold mb-2">Rating</label>
+                                    <div class="flex space-x-1">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="rating" value="{{ $i }}" class="hidden peer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 transition duration-200 fill-gray-300 hover:fill-yellow-400 peer-checked:fill-yellow-500"
+                                                    viewBox="0 0 24 24">
+                                                    <path d="M12 17.3l-6.2 3.7 1.6-6.9L2 9.2l7-.6L12 2l3 6.6 7 .6-5.4 4.9 1.6 6.9z"/>
+                                                </svg>
+                                            </label>
+                                        @endfor
+                                    </div>
+                
+                                    <label class="block text-gray-700 font-semibold mt-4">Your Review</label>
+                                    <textarea name="comment" class="w-full border p-2 rounded-md" rows="4" placeholder="Write your review here..."></textarea>
+                
+                                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mt-4 w-full">
+                                        Submit Review
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    @endif
+                
+                    <div class="mt-8 bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-gray-800 border-b pb-2 mb-4">User Reviews</h3>
+                
+                        @if($book->reviews->isEmpty())
+                            <p class="text-gray-500 text-center text-lg">No reviews yet. Be the first to review this book!</p>
+                        @else
+                            <div class="space-y-4">
+                                @foreach($book->reviews as $review)
+                                <div class="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200" 
+                                    style="transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;" 
+                                    onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.15)';" 
+                                    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 5px rgba(0, 0, 0, 0.1)';">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xl font-semibold text-gray-800">{{ $review->user->name }}</span>
+                                            <span class="ml-2 text-yellow-500">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $review->rating)
+                                                        ★
+                                                    @else
+                                                        ☆
+                                                    @endif
+                                                @endfor
+                                            </span>
+                                        </div>
+                                        <p class="text-lg text-gray-800 mt-2">{{ $review->comment }}</p>
+                                        <span class="text-sm italic text-gray-500">Reviewed on {{ $review->created_at->format('d M, Y') }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -291,5 +426,21 @@
             })
             .catch(error => console.error('Erro ao marcar/desmarcar favorito:', error));
         }
+
+        document.querySelectorAll('input[name="rating"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                let selectedValue = this.value;
+                document.querySelectorAll('input[name="rating"]').forEach(star => {
+                    let starSVG = star.nextElementSibling;
+                    if (star.value <= selectedValue) {
+                        starSVG.classList.remove("fill-gray-300", "hover:fill-yellow-400");
+                        starSVG.classList.add("fill-yellow-500");
+                    } else {
+                        starSVG.classList.remove("fill-yellow-500");
+                        starSVG.classList.add("fill-gray-300");
+                    }
+                });
+            });
+        });
     </script>
 </x-app-layout>

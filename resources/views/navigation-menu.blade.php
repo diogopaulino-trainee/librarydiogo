@@ -52,15 +52,6 @@
                             </svg>
                             <span>{{ __('Requests') }}</span>
                         </x-nav-link> 
-
-                        @role('Admin')
-                            <x-nav-link href="{{ route('admin.books.search') }}" :active="request()->routeIs('admin.*')" class="flex items-center space-x-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M11 2a9 9 0 016.32 14.9l5.388 5.387-1.415 1.415-5.387-5.388A9 9 0 1111 2zm0 2a7 7 0 100 14 7 7 0 000-14z"/>
-                                </svg>
-                                <span>{{ __('Discover & Acquire') }}</span>
-                            </x-nav-link> 
-                        @endrole
                     @endauth
                 </div>
             </div>
@@ -104,11 +95,11 @@
                             <div class="border-t border-gray-200"></div>
 
                             @role('Admin') 
-                            <x-dropdown-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">
+                            <x-dropdown-link href="{{ route('admin.dashboard') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5s-3 1.34-3 3 1.34 3 3 3zm8 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zM8 13c-2.67 0-8 1.34-8 4v2h6v-2c0-2.66 5.33-4 8-4h-6z" />
+                                    <path d="M3 12h4v8H3v-8Zm7-5h4v13h-4V7Zm7-3h4v16h-4V4Z"/>
                                 </svg>
-                                <span>{{ __('Manage Users') }}</span>
+                                <span>{{ __('Dashboard') }}</span>
                             </x-dropdown-link>
                             @endrole
 
@@ -189,15 +180,6 @@
                     </svg>
                     <span>{{ __('Requests') }}</span>
                 </x-responsive-nav-link>
-
-                @role('Admin')
-                    <x-responsive-nav-link href="{{ route('admin.books.search') }}" :active="request()->routeIs('admin.*')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M11 2a9 9 0 016.32 14.9l5.388 5.387-1.415 1.415-5.387-5.388A9 9 0 1111 2zm0 2a7 7 0 100 14 7 7 0 000-14z"/>
-                        </svg>
-                        <span>{{ __('Discover & Acquire') }}</span>
-                    </x-responsive-nav-link>
-                @endrole
             @endauth
         </div>      
 
@@ -227,11 +209,11 @@
                 </x-responsive-nav-link>
 
                 @role('Admin') 
-                <x-responsive-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')">
+                <x-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5s-3 1.34-3 3 1.34 3 3 3zm8 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zM8 13c-2.67 0-8 1.34-8 4v2h6v-2c0-2.66 5.33-4 8-4h-6z" />
+                        <path d="M3 13h4v8H3v-8Zm7-5h4v13h-4V8Zm7-3h4v16h-4V5Z"/>
                     </svg>
-                    <span>{{ __('Manage Users') }}</span>
+                    <span>{{ __('Dashboard') }}</span>
                 </x-responsive-nav-link>
                 @endrole
 

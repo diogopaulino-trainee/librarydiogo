@@ -7,8 +7,10 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GoogleBooksController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -50,6 +52,10 @@ Route::middleware([
         Route::get('publishers/{publisher}/delete', [PublisherController::class, 'delete'])->name('publishers.delete');
         Route::resource('publishers', PublisherController::class)->except(['index', 'show']);
 
+        Route::get('/admin/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('admin.dashboard');
+
         // Rotas para administração de utilizadores (Admin apenas)
         Route::get('/admin/users', [AdminController::class, 'index'])->name('admin.users.index');
         Route::get('admin/users/{user}/show', [AdminController::class, 'show'])->name('admin.users.show');
@@ -71,6 +77,14 @@ Route::middleware([
         Route::post('/{request}/confirm-return', [RequestController::class, 'confirmReturn'])->name('requests.confirm_return');
         Route::get('/citizens/search', [RequestController::class, 'searchCitizens'])->name('citizens.search');
     });
+
+    Route::prefix('admin/reviews')->group(function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('admin.reviews.index');
+        Route::get('/reviews/{review}', [ReviewController::class, 'show'])->name('reviews.show');
+        Route::put('/admin/reviews/{review}/update-status', [ReviewController::class, 'update'])->name('admin.reviews.update-status');
+    });
+
+    Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
 
     // Exportação de dados - Disponível para todos os utilizadores autenticados
     Route::get('/books/export', [BookController::class, 'export'])->name('books.export');
