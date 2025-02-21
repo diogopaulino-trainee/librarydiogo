@@ -13,13 +13,35 @@ use Illuminate\Support\Facades\Mail;
 
 class ReviewController extends Controller
 {
-    public function index()
+    public function index(HttpRequest $request)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
-        $pendingReviews = Review::where('status', 'suspended')->paginate(10);
-        $historyReviews = Review::whereIn('status', ['approved', 'rejected'])->orderBy('updated_at', 'desc')->paginate(10);
+        $status = $request->input('status');
+        $search = $request->input('search');
 
+        $historyQuery = Review::whereIn('status', ['approved', 'rejected'])->orderBy('updated_at', 'desc');
+
+        if ($status) {
+            $historyQuery->where('status', $status);
+        }
+
+        if ($search) {
+            $historyQuery->where(function ($query) use ($search) {
+                $query->whereHas('book', function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%");
+                })
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('rating', 'like', "%{$search}%");
+            });
+        }
+
+        $historyReviews = $historyQuery->paginate(10)->appends($request->query());
+
+        $pendingReviews = Review::where('status', 'suspended')->paginate(10);
+        
         $averageRating = Review::where('status', 'approved')->avg('rating');
 
         return view('admin.reviews.index', compact('pendingReviews', 'historyReviews', 'averageRating'));

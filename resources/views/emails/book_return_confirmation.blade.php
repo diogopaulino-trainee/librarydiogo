@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Availability Notification</title>
+    <title>Book Return Confirmation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,13 +26,6 @@
         p {
             font-size: 16px;
             color: #333;
-        }
-        .cover-image {
-            width: 200px;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            margin-bottom: 15px;
         }
         .btn {
             display: inline-block;
@@ -58,21 +51,14 @@
     <div class="container">
         <h2>Hello, {{ $name }}!</h2>
         
-        <p>The book you requested to be notified about is now available!</p>
+        <p>Your book return has been successfully recorded.</p>
         
         <p><strong>Book:</strong> {{ $bookTitle }}</p>
 
-        <p>
-            <img src="{{ $coverImage }}" alt="Book Cover" style="max-width: 150px; height: auto; display: block; margin: 10px auto;">
-        </p>
+        <p>You can view the book details <a href="{{ $bookUrl }}">here</a>.</p>
 
-        <p><em>If the cover image is not displayed, please check the attached file.</em></p>
-
-        <p>You can now request this book from the library.</p>
-
-        <p><a href="{{ $requestUrl }}" class="btn">Go to Book Page</a></p>
-
-        <p>If you no longer want to receive notifications about this book, you can cancel your subscription on the book's page.</p>
+        <p>If you haven't reviewed the book yet, we'd love to hear your thoughts!</p>
+        <p><a href="{{ $bookUrl }}" class="btn">Leave a Review</a></p>
 
         <p class="footer">Best regards,<br><strong>Library Paulino</strong></p>
     </div>

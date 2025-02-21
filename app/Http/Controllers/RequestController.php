@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Mail\BookAvailableNotification;
+use App\Mail\BookReturnConfirmation;
 use App\Mail\RequestConfirmationMail;
 use App\Models\Book;
 use App\Models\BookNotification;
 use App\Models\Request;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
@@ -210,6 +212,19 @@ class RequestController extends Controller
                 route('books.show', $book)
             ));
         }
+
+        // Verificar se o utilizador já fez review
+            $hasReviewed = Review::where('user_id', $request->user_id)
+            ->where('book_id', $book->id)
+            ->exists();
+
+        // Enviar email ao cidadão confirmando a devolução e incentivando a review
+        Mail::to($request->user->email)->send(new BookReturnConfirmation(
+            $request->user->name,
+            $book->title,
+            route('books.show', $book),
+            route('books.show', $book)
+        ));
 
         return back()->with('success', 'Book return confirmed and notifications sent.');
     }

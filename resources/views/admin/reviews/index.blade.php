@@ -92,6 +92,37 @@
                 @endif
             </div>
 
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 w-full">
+                <form id="searchForm" action="{{ route('admin.reviews.index') }}" method="GET" class="flex items-center w-full">
+                    <div class="flex flex-wrap w-full">
+                        <select name="status" onchange="this.form.submit()"
+                            class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg mx-1 mt-1">
+                            <option value="">All Reviews</option>
+                            <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                        </select>
+
+                        <div class="relative flex-grow max-w-[400px] mr-2">
+                            <input type="text" name="search" placeholder="Search by Book, User, or Rating" 
+                                value="{{ request('search') }}" 
+                                class="border border-blue-500 px-4 py-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 rounded-md shadow-sm text-lg mx-1 mt-1"/>
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="bg-white shadow-md rounded-lg p-6 border border-blue-300">
                 <h3 class="text-3xl font-semibold text-blue-700 mb-6">Review History</h3>
                 @if($historyReviews->isEmpty())

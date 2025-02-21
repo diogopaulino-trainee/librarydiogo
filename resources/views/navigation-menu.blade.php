@@ -95,11 +95,19 @@
                             <div class="border-t border-gray-200"></div>
 
                             @role('Admin') 
+                                @php
+                                    $pendingReviews = \App\Models\Review::where('status', 'suspended')->count();
+                                @endphp
                             <x-dropdown-link href="{{ route('admin.dashboard') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M3 12h4v8H3v-8Zm7-5h4v13h-4V7Zm7-3h4v16h-4V4Z"/>
                                 </svg>
                                 <span>{{ __('Dashboard') }}</span>
+                                @if($pendingReviews > 0)
+                                    <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        {{ $pendingReviews }}
+                                    </span>
+                                @endif
                             </x-dropdown-link>
                             @endrole
 
@@ -214,6 +222,11 @@
                         <path d="M3 13h4v8H3v-8Zm7-5h4v13h-4V8Zm7-3h4v16h-4V5Z"/>
                     </svg>
                     <span>{{ __('Dashboard') }}</span>
+                    @if($pendingReviews > 0)
+                        <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                            {{ $pendingReviews }}
+                        </span>
+                    @endif
                 </x-responsive-nav-link>
                 @endrole
 

@@ -19,7 +19,7 @@
 
         <div class="wrapper py-10 px-4 lg:px-16 mt-0 flex flex-col justify-start items-center">
             <div class="text-center flex-grow">
-                <h2 class="text-3xl font-bold mb-20 mt-8">Welcome to the Library Paulino</h2>
+                <h2 class="text-3xl font-bold mb-20 mt-8">Welcome to Library Paulino</h2>
             </div>
 
                 @if (session('success'))
