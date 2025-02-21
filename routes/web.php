@@ -76,6 +76,7 @@ Route::middleware([
         Route::get('/{request}', [RequestController::class, 'show'])->name('requests.show');
         Route::post('/{request}/confirm-return', [RequestController::class, 'confirmReturn'])->name('requests.confirm_return');
         Route::get('/citizens/search', [RequestController::class, 'searchCitizens'])->name('citizens.search');
+        Route::post('/books/{book}/notify', [BookController::class, 'notifyMe'])->name('books.notify');
     });
 
     Route::prefix('admin/reviews')->group(function () {

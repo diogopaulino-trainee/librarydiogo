@@ -85,4 +85,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Request::class, 'user_id');
     }
+
+    public function isSubscribedToNotification($bookId)
+    {
+        return $this->notifications()->where('book_id', $bookId)->exists();
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(BookNotification::class);
+    }
 }

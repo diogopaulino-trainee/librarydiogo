@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Library Management</title>
+    <title>Library Paulino</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -19,7 +19,7 @@
 
         <div class="wrapper py-10 px-4 lg:px-16 mt-0 flex flex-col justify-start items-center">
             <div class="text-center flex-grow">
-                <h2 class="text-3xl font-bold mb-20 mt-8">Welcome to the Library Management System</h2>
+                <h2 class="text-3xl font-bold mb-20 mt-8">Welcome to the Library Paulino</h2>
             </div>
 
                 @if (session('success'))

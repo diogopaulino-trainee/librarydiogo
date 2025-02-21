@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\BooksExport;
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\BookNotification;
 use App\Models\Publisher;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -353,5 +354,23 @@ class BookController extends Controller
             'authors' => $relatedBooks->where(fn ($book) => isset($bookScores[$book->id]) && $bookScores[$book->id] == 3)->take(3),
             'publishers' => $relatedBooks->where(fn ($book) => isset($bookScores[$book->id]) && $bookScores[$book->id] == 2)->take(3),
         ];
+    }
+
+    public function notifyMe(Request $request, $bookId)
+    {
+        abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Only Citizens can request notifications.');
+
+        $exists = BookNotification::where('book_id', $bookId)
+            ->where('user_id', auth()->id())
+            ->exists();
+
+        if (!$exists) {
+            BookNotification::create([
+                'book_id' => $bookId,
+                'user_id' => auth()->id(),
+            ]);
+        }
+
+        return back()->with('success', 'You will be notified when this book is available.');
     }
 }

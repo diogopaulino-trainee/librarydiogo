@@ -161,7 +161,7 @@
 
                 <div class="mt-6">
                     @if(!$borrowedRequest) 
-                    @if(auth()->check() && auth()->user()->hasRole('Citizen'))
+                        @if(auth()->check() && auth()->user()->hasRole('Citizen'))
                             <form action="{{ route('requests.store', $book) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 w-full">
@@ -169,31 +169,25 @@
                                 </button>
                             </form>
                         @elseif(auth()->check() && auth()->user()->hasRole('Admin') && $citizens->isNotEmpty())
-                        <form action="{{ route('requests.store.admin', $book) }}" method="POST">
-                            @csrf
-                            <label for="citizen_id" class="block text-lg font-medium text-gray-700">Select Citizen:</label>
-                            <select name="citizen_id" id="citizen_id" class="mt-1 block w-full text-lg p-2 border border-gray-300 rounded-md">
-                                <option value="" disabled selected>Choose a Citizen</option>
-                                @foreach($citizens as $citizen)
-                                    @php
-                                        $textColor = '';
-                                        if ($citizen->requests_left == 0 || $citizen->requests_left == 1) {
-                                            $textColor = 'text-red-500';
-                                        } elseif ($citizen->requests_left == 2) {
-                                            $textColor = 'text-orange-500';
-                                        } elseif ($citizen->requests_left == 3) {
-                                            $textColor = 'text-green-500';
-                                        }
-                                    @endphp
-                                    <option value="{{ $citizen->id }}" class="{{ $textColor }}">
-                                        {{ $citizen->name }} ({{ $citizen->requests_left }} request{{ $citizen->requests_left > 1 ? 's' : '' }} remaining)
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="bg-green-500 text-white text-lg font-bold px-4 py-2 rounded hover:bg-green-700 w-full mt-2">
-                                Request for Citizen
-                            </button>
-                        </form>
+                            <form action="{{ route('requests.store.admin', $book) }}" method="POST">
+                                @csrf
+                                <label for="citizen_id" class="block text-lg font-medium text-gray-700">Select Citizen:</label>
+                                <select name="citizen_id" id="citizen_id" class="mt-1 block w-full text-lg p-2 border border-gray-300 rounded-md">
+                                    <option value="" disabled selected>Choose a Citizen</option>
+                                    @foreach($citizens as $citizen)
+                                        @php
+                                            $textColor = $citizen->requests_left == 0 || $citizen->requests_left == 1 ? 'text-red-500' : 
+                                                         ($citizen->requests_left == 2 ? 'text-orange-500' : 'text-green-500');
+                                        @endphp
+                                        <option value="{{ $citizen->id }}" class="{{ $textColor }}">
+                                            {{ $citizen->name }} ({{ $citizen->requests_left }} request{{ $citizen->requests_left > 1 ? 's' : '' }} remaining)
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="bg-green-500 text-white text-lg font-bold px-4 py-2 rounded hover:bg-green-700 w-full mt-2">
+                                    Request for Citizen
+                                </button>
+                            </form>
                         @elseif(auth()->check())
                             <p class="text-gray-500 italic">No citizens available for selection.</p>
                         @else
@@ -212,6 +206,28 @@
                                 </strong>
                             </span>
                         </p>
+                
+                        @if(auth()->check() && auth()->user()->hasRole('Citizen'))
+                            @php
+                                $alreadySubscribed = auth()->user()->isSubscribedToNotification($book->id);
+                                $hasBorrowedBook = $borrowedRequest && $borrowedRequest->user_id == auth()->id();
+                            @endphp
+
+                            @if($hasBorrowedBook)
+                                <button class="mt-4 bg-gray-400 cursor-not-allowed text-white px-4 py-2 rounded w-full" disabled>
+                                    You currently have this book
+                                </button>
+                            @else
+                                <form action="{{ route('books.notify', $book) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" 
+                                        class="mt-4 {{ $alreadySubscribed ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700' }} text-white px-4 py-2 rounded w-full" 
+                                        {{ $alreadySubscribed ? 'disabled' : '' }}>
+                                        {{ $alreadySubscribed ? 'Already subscribed for notification' : 'Notify me when available' }}
+                                    </button>
+                                </form>
+                            @endif
+                        @endif
                     @endif
                 </div>
 

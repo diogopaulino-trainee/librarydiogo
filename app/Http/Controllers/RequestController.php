@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookAvailableNotification;
+use App\Mail\RequestConfirmationMail;
 use App\Models\Book;
+use App\Models\BookNotification;
 use App\Models\Request;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\RequestConfirmationMail;
 
 class RequestController extends Controller
 {
@@ -197,7 +199,22 @@ class RequestController extends Controller
         $book = $request->book;
         $book->update(['status' => 'available']);
 
-        return back()->with('success', 'Book return confirmed.');
+        $notifications = BookNotification::where('book_id', $book->id)->get();
+
+        foreach ($notifications as $notification) {
+            Mail::to($notification->user->email)->send(new BookAvailableNotification(
+                $notification->user->name,
+                $book->title,
+                asset('images/' . $book->cover_image),
+                public_path('images/' . $book->cover_image),
+                route('books.show', $book)
+            ));
+        }
+
+        // Remover notificações após envio do email
+        BookNotification::where('book_id', $book->id)->delete();
+
+        return back()->with('success', 'Book return confirmed and notifications sent.');
     }
 
     public function show(Request $request)
