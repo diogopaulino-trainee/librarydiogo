@@ -373,4 +373,15 @@ class BookController extends Controller
 
         return back()->with('success', 'You will be notified when this book is available.');
     }
+
+    public function cancelNotification(Book $book)
+    {
+        abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Only Citizens can cancel notifications.');
+
+        BookNotification::where('book_id', $book->id)
+            ->where('user_id', auth()->id())
+            ->delete();
+
+        return back()->with('success', 'Notification subscription cancelled.');
+    }
 }

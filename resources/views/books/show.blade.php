@@ -217,13 +217,19 @@
                                 <button class="mt-4 bg-gray-400 cursor-not-allowed text-white px-4 py-2 rounded w-full" disabled>
                                     You currently have this book
                                 </button>
+                            @elseif($alreadySubscribed)
+                                <form action="{{ route('books.cancel_notify', $book) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded w-full">
+                                        Cancel Notification
+                                    </button>
+                                </form>
                             @else
                                 <form action="{{ route('books.notify', $book) }}" method="POST">
                                     @csrf
-                                    <button type="submit" 
-                                        class="mt-4 {{ $alreadySubscribed ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700' }} text-white px-4 py-2 rounded w-full" 
-                                        {{ $alreadySubscribed ? 'disabled' : '' }}>
-                                        {{ $alreadySubscribed ? 'Already subscribed for notification' : 'Notify me when available' }}
+                                    <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
+                                        Notify me when available
                                     </button>
                                 </form>
                             @endif

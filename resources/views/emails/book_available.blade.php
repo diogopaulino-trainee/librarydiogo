@@ -72,6 +72,10 @@
 
         <p><a href="{{ $requestUrl }}" class="btn">Request This Book</a></p>
 
+        <p>If you no longer want to receive notifications about this book, you can cancel your subscription on the book's page.</p>
+
+        <p><a href="{{ $requestUrl }}" class="btn">Go to Book Page</a></p>
+
         <p class="footer">Best regards,<br><strong>Library Paulino</strong></p>
     </div>
 </body>

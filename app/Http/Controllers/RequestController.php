@@ -211,9 +211,6 @@ class RequestController extends Controller
             ));
         }
 
-        // Remover notificações após envio do email
-        BookNotification::where('book_id', $book->id)->delete();
-
         return back()->with('success', 'Book return confirmed and notifications sent.');
     }
 
