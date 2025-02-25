@@ -100,7 +100,7 @@
                     </thead>
                     <tbody>
                         @foreach ($publishers as $publisher)
-                        <tr class="hover:bg-blue-500 hover:text-white group">
+                        <tr class="border-b border-gray-300 last:border-b-2 last:border-blue-500 hover:bg-blue-500 hover:text-white group">
                             <td class="px-4 py-2">
                                 @if($publisher)
                                     <a href="{{ route('publishers.show', $publisher->id) }}" 

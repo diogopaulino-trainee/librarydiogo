@@ -207,63 +207,75 @@
                 <div class="grid gap-6 lg:grid-cols-4 lg:gap-8 fade-in">
                     <x-panel>
                         <a href="{{ route('books.index') }}" class="flex flex-col items-center justify-center text-center space-y-4 h-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-blue-600 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h7a2 2 0 012 2v12a2 2 0 00-2-2H3V5zm11 0h7v12h-7a2 2 0 00-2 2V7a2 2 0 012-2z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-blue-600 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 7v14"/>
+                                <path d="M16 12h2"/>
+                                <path d="M16 8h2"/>
+                                <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
+                                <path d="M6 12h2"/>
+                                <path d="M6 8h2"/>
                             </svg>
                             <h2 class="text-3xl font-semibold text-blue-700 group-hover:text-blue-800 transition duration-300 hover:translate-y-[-4px]">Books</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">Explore, add, and manage the library's collection of books.</span>
                                 <span x-data="{ text: '', fullText: 'Explore, add, and manage the library\'s collection of books.', i: 0 }"
-                                      x-init="let interval = setInterval(() => { 
-                                          if (i < fullText.length) { 
-                                              text += fullText[i]; i++; 
-                                          } else { 
-                                              clearInterval(interval); 
-                                          } 
-                                      }, 40)"
-                                      x-text="text"></span>
+                                    x-init="let interval = setInterval(() => { 
+                                        if (i < fullText.length) { 
+                                            text += fullText[i]; i++; 
+                                        } else { 
+                                            clearInterval(interval); 
+                                        } 
+                                    }, 40)"
+                                    x-text="text"></span>
                             </p>
                         </a>
                     </x-panel>
     
                     <x-panel>
                         <a href="{{ route('authors.index') }}" class="flex flex-col items-center justify-center text-center space-y-4 h-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-green-600 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 00-8 0v2H6a2 2 0 00-2 2v7h16v-7a2 2 0 00-2-2h-2V7z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-green-600 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
                             </svg>
                             <h2 class="text-3xl font-semibold text-green-700 group-hover:text-green-800 transition duration-300 hover:translate-y-[-4px]">Authors</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">Manage information about book authors and their works.</span>
                                 <span x-data="{ text: '', fullText: 'Manage information about book authors and their works.', i: 0 }"
-                                      x-init="let interval = setInterval(() => { 
-                                          if (i < fullText.length) { 
-                                              text += fullText[i]; i++; 
-                                          } else { 
-                                              clearInterval(interval); 
-                                          } 
-                                      }, 40)"
-                                      x-text="text"></span>
+                                    x-init="let interval = setInterval(() => { 
+                                        if (i < fullText.length) { 
+                                            text += fullText[i]; i++; 
+                                        } else { 
+                                            clearInterval(interval); 
+                                        } 
+                                    }, 40)"
+                                    x-text="text"></span>
                             </p>
                         </a>
                     </x-panel>
     
                     <x-panel>
                         <a href="{{ route('publishers.index') }}" class="flex flex-col items-center justify-center text-center space-y-4 h-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-purple-600 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 21V8h6v13M6 21v-6h3v6M15 21v-4h3v4M3 21v-2h18v2M9 8h6M9 12h6M9 16h6" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-purple-600 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+                                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+                                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+                                <path d="M10 6h4"/>
+                                <path d="M10 10h4"/>
+                                <path d="M10 14h4"/>
+                                <path d="M10 18h4"/>
                             </svg>
                             <h2 class="text-3xl font-semibold text-purple-700 group-hover:text-purple-800 transition duration-300 hover:translate-y-[-4px]">Publishers</h2>
                             <p class="text-gray-600 min-h-[48px] relative">
                                 <span class="invisible absolute">View and manage publisher details for library resources.</span>
                                 <span x-data="{ text: '', fullText: 'View and manage publisher details for library resources.', i: 0 }"
-                                      x-init="let interval = setInterval(() => { 
-                                          if (i < fullText.length) { 
-                                              text += fullText[i]; i++; 
-                                          } else { 
-                                              clearInterval(interval); 
-                                          } 
-                                      }, 40)"
-                                      x-text="text"></span>
+                                    x-init="let interval = setInterval(() => { 
+                                        if (i < fullText.length) { 
+                                            text += fullText[i]; i++; 
+                                        } else { 
+                                            clearInterval(interval); 
+                                        } 
+                                    }, 40)"
+                                    x-text="text"></span>
                             </p>
                         </a>
                     </x-panel>

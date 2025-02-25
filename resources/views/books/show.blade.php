@@ -118,7 +118,7 @@
 
                 <div class="grid grid-cols-1 gap-4 text-gray-800 text-lg">
                     <div><strong>ISBN:</strong> {{ $book->isbn ?? 'Added via external API' }}</div>
-                    <div><strong>Title:</strong> {{ $book->title }}</div>
+                    <div><strong>Title:</strong> <span id="bookTitle">{{ $book->title }}</span></div>
                     <div>
                         <strong>Authors:</strong> 
                         @if($book->authors->isNotEmpty())
@@ -153,20 +153,26 @@
                             <span class="text-gray-500 italic">Available only for registered users</span>
                         @endguest
                     </div>
-                    <div><strong>Price:</strong> {{ number_format($book->price, 2, ',', '.') }} €</div>
+                    <div><strong>Price:</strong> <span id="bookPrice">{{ number_format($book->price, 2, ',', '.') }} €</span></div>
                     <div class="text-sm italic text-gray-600">
                         <strong>Added By:</strong> {{ $book->user->name }}
                     </div>
                 </div>
 
                 <div class="mt-6">
-                    @if(!$borrowedRequest) 
+                    @if(!$borrowedRequest && $book->status !== 'unavailable')
                         @if(auth()->check() && auth()->user()->hasRole('Citizen'))
                             <form action="{{ route('requests.store', $book) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 w-full">
-                                    Request This Book
-                                </button>
+                                <button type="submit" class="text-lg font-semibold px-6 py-3 rounded-lg shadow-md flex items-center justify-center transition w-full 
+                                bg-green-500 hover:bg-green-700 text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5V6a2 2 0 0 1 2-2h6v14H6a2 2 0 0 0-2 1.5z" />
+                                    <path d="M20 19.5V6a2 2 0 0 0-2-2h-6v14h6a2 2 0 0 1 2 1.5z" />
+                                </svg>
+                                
+                                Request This Book
+                            </button>
                             </form>
                         @elseif(auth()->check() && auth()->user()->hasRole('Admin') && $citizens->isNotEmpty())
                             <form action="{{ route('requests.store.admin', $book) }}" method="POST">
@@ -184,28 +190,101 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <button type="submit" class="bg-green-500 text-white text-lg font-bold px-4 py-2 rounded hover:bg-green-700 w-full mt-2">
+                                <button type="submit" class="text-lg font-semibold px-6 py-3 rounded-lg shadow-md flex items-center justify-center transition w-full 
+                                bg-green-500 hover:bg-green-700 text-white mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="4" />
+                                    <path d="M6 20a6 6 0 0112 0" />
+                                </svg>
                                     Request for Citizen
                                 </button>
                             </form>
                         @elseif(auth()->check())
                             <p class="text-gray-500 italic">No citizens available for selection.</p>
-                        @else
+                        @endif
+                
+                        @if(auth()->check() && auth()->user()->hasRole('Citizen') && $book->status === 'available')
+                        @php
+                            $isInCart = auth()->user()->cartItems()->where('book_id', $book->id)->exists();
+                        @endphp
+                        <div class="mt-6">
+                            <form id="addToCartForm" action="{{ route('cart.add', $book->id) }}" method="POST">
+                                @csrf
+                                <p class="text-gray-700 mb-2">
+                                    This book is also available for purchase. Click below to add it to your cart.
+                                </p>
+                                <button type="submit" id="addToCartBtn"
+                                    class="text-lg font-semibold px-6 py-3 rounded-lg shadow-md flex items-center justify-center transition w-full
+                                        {{ $isInCart ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-700 text-white' }}" 
+                                    {{ $isInCart ? 'disabled' : '' }}>
+
+                                    <span id="loadingSpinner" class="hidden animate-spin mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2v20m8-8H4"></path>
+                                        </svg>
+                                    </span>
+
+                                    <svg id="cartIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 3h2l3 10h11l3-7H6"></path>
+                                        <circle cx="9" cy="20" r="2"></circle>
+                                        <circle cx="18" cy="20" r="2"></circle>
+                                    </svg>
+
+                                    <span id="btnText">{{ $isInCart ? 'Already in Cart' : 'Add to Cart' }}</span>
+                                </button>
+                            </form>
+                        </div>
+                        @endif
+
+                        <!-- Carrinho Lateral -->
+                        <div id="cartSidebar" class="fixed top-0 right-0 w-80 h-full bg-white shadow-xl transform translate-x-full transition-transform ease-in-out duration-300">
+                            <div class="p-4 flex justify-between items-center border-b">
+                                <h2 class="text-lg font-bold">Shopping Cart</h2>
+                                <button id="closeCart" class="text-gray-500 hover:text-gray-700">✖</button>
+                            </div>
+                            <div class="p-4" id="cartItems">
+                                <!-- Itens do carrinho serão adicionados aqui -->
+                            </div>
+                            <div class="p-4 border-t flex flex-col gap-2">
+                                <!-- See and Edit -->
+                                <a href="{{ route('cart.index') }}" 
+                                    class="bg-gray-300 text-black w-full py-2 rounded-md text-lg text-center flex items-center justify-center gap-2 hover:bg-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
+                                        <path d="M12 20h9"/>
+                                        <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                                    </svg>
+                                    See and Edit
+                                </a>
+                            
+                                <!-- Checkout -->
+                                <a href="{{ route('orders.create') }}" 
+                                    class="bg-orange-500 text-white w-full py-2 rounded-md text-lg text-center flex items-center justify-center gap-2 hover:bg-orange-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart">
+                                        <circle cx="8" cy="21" r="1"/>
+                                        <circle cx="19" cy="21" r="1"/>
+                                        <path d="M2.5 2.5h2l3.6 9.9a1 1 0 0 0 1 .7h7.9a1 1 0 0 0 1-.7L21 5H5"/>
+                                    </svg>
+                                    Checkout
+                                </a>
+                            </div>
+                        </div>
+                
+                        @if(!auth()->check())
                             <p class="text-gray-500 italic">
-                                Please <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-700">log in</a> to make a request.
+                                Please <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-700">log in</a> to request or purchase this book.
+                            </p>
+                        @elseif($borrowedRequest && $borrowedRequest->expected_return_date)
+                            <p class="text-red-500 text-lg font-bold mt-4">
+                                This book is currently unavailable.
+                                <br>
+                                <span class="text-gray-700 text-lg font-medium">
+                                    Expected to be available by: 
+                                    <strong>
+                                        {{ \Carbon\Carbon::parse($borrowedRequest->expected_return_date)->format('d M, Y') }}
+                                    </strong>
+                                </span>
                             </p>
                         @endif
-                    @else
-                        <p class="text-red-500 text-lg font-bold mt-4">
-                            This book is currently unavailable.
-                            <br>
-                            <span class="text-gray-700 text-lg font-medium">
-                                Expected to be available by: 
-                                <strong>
-                                    {{ \Carbon\Carbon::parse($borrowedRequest->expected_return_date)->format('d M, Y') }}
-                                </strong>
-                            </span>
-                        </p>
                 
                         @if(auth()->check() && auth()->user()->hasRole('Citizen'))
                             @php
@@ -217,21 +296,23 @@
                                 <button class="mt-4 bg-gray-400 cursor-not-allowed text-white px-4 py-2 rounded w-full" disabled>
                                     You currently have this book
                                 </button>
-                            @elseif($alreadySubscribed)
-                                <form action="{{ route('books.cancel_notify', $book) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded w-full">
-                                        Cancel Notification
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('books.notify', $book) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
-                                        Notify me when available
-                                    </button>
-                                </form>
+                            @elseif($book->status === 'unavailable') {{-- Só mostrar quando está indisponível --}}
+                                @if($alreadySubscribed)
+                                    <form action="{{ route('books.cancel_notify', $book) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded w-full">
+                                            Cancel Notification
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('books.notify', $book) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
+                                            Notify me when available
+                                        </button>
+                                    </form>
+                                @endif
                             @endif
                         @endif
                     @endif
@@ -353,12 +434,18 @@
 
                 <div class="mt-6">
                     @if(auth()->check() && auth()->user()->hasRole('Citizen'))
+                    @php
+                        $hasPurchasedBook = auth()->user()->orders()
+                            ->whereHas('items', function ($query) use ($book) {
+                                $query->where('book_id', $book->id);
+                            })->exists();
+                    @endphp
                         <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                             <h3 class="text-2xl font-semibold text-gray-800 border-b pb-2 mb-4">Leave a Review</h3>
                 
-                            @if(!$returnedRequest)
+                            @if(!$returnedRequest && !$hasPurchasedBook)
                                 <div class="bg-red-100 text-red-600 p-4 rounded-md text-center">
-                                    <p class="text-lg font-medium">You need to read this book before leaving a review.</p>
+                                    <p class="text-lg font-medium">You need to read or purchase this book before leaving a review.</p>
                                 </div>
                             @elseif($userReview)
                                 <div class="bg-green-100 text-green-600 p-4 rounded-md text-center">
@@ -463,6 +550,95 @@
                     }
                 });
             });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const addToCartForm = document.getElementById("addToCartForm");
+            const addToCartBtn = document.getElementById("addToCartBtn");
+            const loadingSpinner = document.getElementById("loadingSpinner");
+            const cartIcon = document.getElementById("cartIcon");
+            const btnText = document.getElementById("btnText");
+            const cartSidebar = document.getElementById("cartSidebar");
+            const closeCart = document.getElementById("closeCart");
+            const cartItemsContainer = document.getElementById("cartItems");
+
+            function loadCartItems() {
+                fetch("/cart/items")
+                    .then(response => response.json())
+                    .then(data => {
+                        cartItemsContainer.innerHTML = "";
+
+                        if (data.cartItems.length === 0) {
+                            cartItemsContainer.innerHTML = `<p class="text-gray-500 text-center">Your cart is empty.</p>`;
+                        } else {
+                            data.cartItems.forEach(item => {
+                                cartItemsContainer.innerHTML += `
+                                    <div class="flex py-2 border-b items-center justify-between">
+                                        <div class="flex-1 flex items-start gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5 text-blue-600 flex-shrink-0"
+                                                viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M9 4.804a.517.517 0 00-.76-.435C7.29 4.77 5.851 5 4.4 5H4a1 1 0 00-1 1v10a1 1 0 001 1h.4c1.451 0 2.89.23 3.84.63a.517.517 0 00.76-.435v-12.59zM10 4a1 1 0 00-1 1v10a1 1 0 001 1h5a1 1 0 001-1V6a2 2 0 00-2-2h-5z"/>
+                                            </svg>
+                                            <div class="leading-tight">
+                                                <p class="font-semibold text-gray-800">
+                                                    ${item.title}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <span class="font-bold text-gray-800 whitespace-nowrap">
+                                            ${item.price}
+                                        </span>
+                                    </div>
+                                `;
+                            });
+                        }
+                    })
+                    .catch(error => console.error("Error loading cart items:", error));
+            }
+
+            if (addToCartForm) {
+                addToCartForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    loadingSpinner.classList.remove("hidden");
+                    cartIcon.classList.add("hidden");
+                    btnText.innerText = "Adding...";
+
+                    fetch(this.action, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            btnText.innerText = "Already in Cart";
+                            addToCartBtn.classList.add("bg-gray-400", "text-gray-700", "cursor-not-allowed");
+                            addToCartBtn.disabled = true;
+
+                            loadCartItems();
+
+                            cartSidebar.classList.remove("translate-x-full");
+                        }
+                    })
+                    .catch(error => console.error("Error adding to cart:", error))
+                    .finally(() => {
+                        loadingSpinner.classList.add("hidden");
+                        cartIcon.classList.remove("hidden");
+                    });
+                });
+            }
+
+            closeCart.addEventListener("click", function () {
+                cartSidebar.classList.add("translate-x-full");
+            });
+
+            loadCartItems();
         });
     </script>
 </x-app-layout>

@@ -141,7 +141,7 @@
                     </thead>
                     <tbody>
                         @foreach ($books as $book)
-                        <tr class="hover:bg-blue-500 hover:text-white group">
+                        <tr class="border-b border-gray-300 last:border-b-2 last:border-blue-500 hover:bg-blue-500 hover:text-white group">
                             @auth
                                 @if(auth()->user()->hasRole('Citizen'))
                                     <td class="px-4 py-2 text-center">

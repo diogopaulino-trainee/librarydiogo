@@ -109,7 +109,7 @@
                     </thead>
                     <tbody>
                         @foreach ($authors as $author)
-                        <tr class="hover:bg-blue-500 hover:text-white group">
+                        <tr class="border-b border-gray-300 last:border-b-2 last:border-blue-500 hover:bg-blue-500 hover:text-white group">
                             <td class="px-4 py-2">
                                 @if($author)
                                     <a href="{{ route('authors.show', $author->id) }}" 

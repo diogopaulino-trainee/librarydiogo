@@ -147,7 +147,7 @@
                     </thead>
                     <tbody>
                         @foreach ($requests as $request)
-                        <tr class="hover:bg-blue-500 hover:text-white group">
+                        <tr class="border-b border-gray-300 last:border-b-2 last:border-blue-500 hover:bg-blue-500 hover:text-white group">
                             <td class="px-4 py-2 text-center">{{ $request->request_number }}</td>
                             <td class="px-4 py-2 whitespace-nowrap text-left">
                                 @if($request->book)

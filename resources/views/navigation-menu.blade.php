@@ -25,38 +25,77 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 4v16c0 .55.45 1 1 1h13v-2H8V4H6zm3 0v14h11V4H9zM4 2h13c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H4V2z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2"/>
+                            <path d="M7 7v10"/>
+                            <path d="M11 7v10"/>
+                            <path d="m15 7 2 10"/>
                         </svg>
                         <span>{{ __('Books') }}</span>
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('authors.index') }}" :active="request()->routeIs('authors.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 12c2.67 0 8 1.34 8 4v2H4v-2c0-2.66 5.33-4 8-4zm0-2a4 4 0 100-8 4 4 0 000 8z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284"/>
+                            <path d="M3 21h18"/>
                         </svg>
                         <span>{{ __('Authors') }}</span>
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('publishers.index') }}" :active="request()->routeIs('publishers.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 6V2H18V6H21C22.1 6 23 6.9 23 8V16C23 17.1 22.1 18 21 18H18V22H6V18H3C1.9 18 1 17.1 1 16V8C1 6.9 1.9 6 3 6H6ZM6 8H18V4H6V8ZM3 16H6V12H18V16H21V8H3V16ZM16 14H8V20H16V14Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                            <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/>
+                            <rect x="6" y="14" width="12" height="8" rx="1"/>
                         </svg>
                         <span>{{ __('Publishers') }}</span>
                     </x-nav-link>
                     
                     @auth
-                        <x-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')" class="flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M9 2L2 7v14h20V7l-7-5H9zm0 2h6l5 3H4l5-3zm-5 5h16v10H4V9zm7 1v6h2v-6h-2zm-4 0v6h2v-6H7zm8 0v6h2v-6h-2z"/>
-                            </svg>
-                            <span>{{ __('Requests') }}</span>
-                        </x-nav-link> 
+                    <x-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')" class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15 11-1 9"/>
+                            <path d="m19 11-4-7"/>
+                            <path d="M2 11h20"/>
+                            <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+                            <path d="M4.5 15.5h15"/>
+                            <path d="m5 11 4-7"/>
+                            <path d="m9 11 1 9"/>
+                        </svg>
+                        <span>{{ __('Requests') }}</span>
+                    </x-nav-link>
                     @endauth
+
+                    @role('Citizen')
+                        <x-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.*')" class="flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-open"><path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/></svg>
+                            <span>{{ __('Orders') }}</span>
+                        </x-nav-link>
+                    @endrole
+
                 </div>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                @role('Citizen')
+                    @php
+                        $cartItemCount = Auth::check() ? \App\Models\CartItem::where('user_id', Auth::id())->count() : 0;
+                    @endphp
+
+                    <div class="relative cursor-pointer">
+                        <a href="{{ route('cart.index') }}" class="relative">
+                            <svg id="cartIconBtn" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 hover:text-blue-700 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3h2l3 10h11l3-7H6"></path>
+                                <circle cx="9" cy="20" r="2"></circle>
+                                <circle cx="18" cy="20" r="2"></circle>
+                            </svg>
+                            
+                            <span id="cartItemCount" class="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full leading-none">
+                                {{ $cartItemCount }}
+                            </span>
+                        </a>
+                    </div>
+                @endrole
                 <!-- Settings Dropdown -->
                 <div class="ms-3 relative">
                     @auth
@@ -131,15 +170,18 @@
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link href="{{ route('login') }}" class="flex items-center space-x-2">
                             <span>{{ __('Login') }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m6-6l-6 6 6 6M21 4v16" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                                <polyline points="10 17 15 12 10 7"/>
+                                <line x1="15" x2="3" y1="12" y2="12"/>
                             </svg>
                         </x-nav-link>
 
                         <x-nav-link href="{{ route('register') }}" class="flex items-center space-x-2">
                             <span>{{ __('Register') }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5l4 4-11 11H5v-4L16.5 3.5z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M12 20h9"/>
+                                <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/>
                             </svg>
                         </x-nav-link>
                     </div>
@@ -162,33 +204,58 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 4v16c0 .55.45 1 1 1h13v-2H8V4H6zm3 0v14h11V4H9zM4 2h13c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H4V2z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2"/>
+                    <path d="M7 7v10"/>
+                    <path d="M11 7v10"/>
+                    <path d="m15 7 2 10"/>
                 </svg>
                 <span>{{ __('Books') }}</span>
             </x-responsive-nav-link>
 
             <x-responsive-nav-link href="{{ route('authors.index') }}" :active="request()->routeIs('authors.*')">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.67 0 8 1.34 8 4v2H4v-2c0-2.66 5.33-4 8-4zm0-2a4 4 0 100-8 4 4 0 000 8z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284"/>
+                    <path d="M3 21h18"/>
                 </svg>
                 <span>{{ __('Authors') }}</span>
             </x-responsive-nav-link>
 
             <x-responsive-nav-link href="{{ route('publishers.index') }}" :active="request()->routeIs('publishers.*')">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 6V2H18V6H21C22.1 6 23 6.9 23 8V16C23 17.1 22.1 18 21 18H18V22H6V18H3C1.9 18 1 17.1 1 16V8C1 6.9 1.9 6 3 6H6ZM6 8H18V4H6V8ZM3 16H6V12H18V16H21V8H3V16ZM16 14H8V20H16V14Z"/>                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                    <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/>
+                    <rect x="6" y="14" width="12" height="8" rx="1"/>
+                </svg>
                 <span>{{ __('Publishers') }}</span>
             </x-responsive-nav-link>
 
             @auth
-                <x-responsive-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 2L2 7v14h20V7l-7-5H9zm0 2h6l5 3H4l5-3zm-5 5h16v10H4V9zm7 1v6h2v-6h-2zm-4 0v6h2v-6H7zm8 0v6h2v-6h-2z"/>
-                    </svg>
-                    <span>{{ __('Requests') }}</span>
-                </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 11-1 9"/>
+                    <path d="m19 11-4-7"/>
+                    <path d="M2 11h20"/>
+                    <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+                    <path d="M4.5 15.5h15"/>
+                    <path d="m5 11 4-7"/>
+                    <path d="m9 11 1 9"/>
+                </svg>
+                <span>{{ __('Requests') }}</span>
+            </x-responsive-nav-link>
             @endauth
+
+            @role('Citizen')
+                <x-responsive-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.*')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22v-9"/>
+                        <path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/>
+                        <path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/>
+                        <path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>
+                    </svg>
+                    <span>{{ __('Orders') }}</span>
+                </x-responsive-nav-link>
+            @endrole
         </div>      
 
         <!-- Responsive Settings Options -->
@@ -248,15 +315,18 @@
             @guest
                 <div class="mt-3 space-y-1">
                     <x-responsive-nav-link href="{{ route('login') }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 rotate-180 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m6-6l-6 6 6 6M21 4v16" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                            <polyline points="10 17 15 12 10 7"/>
+                            <line x1="15" x2="3" y1="12" y2="12"/>
                         </svg>
                         <span>Login</span>
                     </x-responsive-nav-link>
                     
                     <x-responsive-nav-link href="{{ route('register') }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5l4 4-11 11H5v-4L16.5 3.5z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M12 20h9"/>
+                            <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/>
                         </svg>
                         <span>Register</span>
                     </x-responsive-nav-link>
@@ -264,4 +334,16 @@
             @endguest
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/cart/count")
+                .then(response => response.json())
+                .then(data => {
+                    const cartItemCount = document.getElementById("cartItemCount");
+                    cartItemCount.textContent = data.count;
+                    cartItemCount.classList.remove("hidden");
+                })
+                .catch(error => console.error("Error fetching cart count:", error));
+        });
+    </script>
 </nav>

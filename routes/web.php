@@ -1,15 +1,21 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GoogleBooksController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 
 
@@ -66,6 +72,35 @@ Route::middleware([
         Route::get('/admin/books/search', [GoogleBooksController::class, 'searchPage'])->name('admin.books.search');
         Route::get('/admin/books/search/results', [GoogleBooksController::class, 'search'])->name('admin.books.search.results');
         Route::post('/admin/books/store', [GoogleBooksController::class, 'store'])->name('admin.books.store');
+    });
+
+    // Gestão do Carrinho de Compras
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::post('/add/{book}', [CartController::class, 'addToCart'])->name('cart.add');
+        Route::delete('/remove/{cartItem}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+        Route::post('/update/{cartItem}', [CartController::class, 'updateQuantity'])->name('cart.update');
+
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+        Route::get('/items', [CartController::class, 'getCartItems'])->name('cart.items');
+        Route::get('/count', [CartController::class, 'count'])->name('cart.count');
+    });
+
+    // Gestão das Encomendas (Citizens)
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('/store', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/{order}/payment', [OrderController::class, 'payment'])->name('orders.payment');
+        Route::get('/{order}/success', [OrderController::class, 'success'])->name('orders.success');
+    });
+
+    // Gestão de Encomendas (Admins)
+    Route::prefix('admin/orders')->middleware('auth')->group(function () {
+        Route::get('/', [AdminOrderController::class, 'index'])->name('admin.orders.index');  
+        Route::get('/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');  
+        Route::put('/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update-status');  
     });
 
     // Rotas de Requisições
