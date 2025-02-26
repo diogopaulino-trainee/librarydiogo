@@ -78,10 +78,19 @@ class RequestController extends Controller
 
     public function store(Book $book)
     {
+        // Se o livro não for encontrado, devolve um erro 422 (Validação)
+        if (!$book) {
+            return response()->json(['error' => 'Book not found'], 422);
+        }
+
         $user = Auth::user();
 
         // Verifica se o livro já está emprestado
-        if (Request::where('book_id', $book->id)->where('status', 'borrowed')->exists()) {
+        if ($book->status === 'unavailable' || Request::where('book_id', $book->id)->where('status', 'borrowed')->exists()) {
+            // Retorna um erro 422 para o teste ou a API
+            return response()->json(['error' => 'This book is currently unavailable.'], 422);
+            
+            // Para o frontend, continua com o comportamento de redirecionamento com a mensagem de erro
             return back()->with('error', 'This book is currently unavailable.');
         }
 

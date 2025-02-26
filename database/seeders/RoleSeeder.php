@@ -10,7 +10,12 @@ class RoleSeeder extends Seeder
 {
     public function run()
     {
-        Role::create(['name' => 'Admin']);
-        Role::create(['name' => 'Citizen']);
+        if (!Role::where('name', 'Admin')->exists()) {
+            Role::create(['name' => 'Admin']);
+        }
+        
+        if (!Role::where('name', 'Citizen')->exists()) {
+            Role::create(['name' => 'Citizen']);
+        }
     }
 }
