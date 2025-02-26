@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="relative bg-white border-b border-gray-200">
+<nav x-data="{ open: false }" class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-20 overflow-visible">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 fade-in">
     <div class="absolute bottom-0 left-0 w-[60%] h-1 bg-gradient-to-r from-transparent via-blue-700 to-transparent animate-glowing"></div>
@@ -51,55 +51,27 @@
                         <span>{{ __('Publishers') }}</span>
                     </x-nav-link>
                     
-                    @auth
-                    <x-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')" class="flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m15 11-1 9"/>
-                            <path d="m19 11-4-7"/>
-                            <path d="M2 11h20"/>
-                            <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
-                            <path d="M4.5 15.5h15"/>
-                            <path d="m5 11 4-7"/>
-                            <path d="m9 11 1 9"/>
-                        </svg>
-                        <span>{{ __('Requests') }}</span>
-                    </x-nav-link>
-                    @endauth
-
-                    @role('Citizen')
-                        <x-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.*')" class="flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-open"><path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/></svg>
-                            <span>{{ __('Orders') }}</span>
-                        </x-nav-link>
-                    @endrole
-
                 </div>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 @role('Citizen')
-                    @php
-                        $cartItemCount = Auth::check() ? \App\Models\CartItem::where('user_id', Auth::id())->count() : 0;
-                    @endphp
-
                     <div class="relative cursor-pointer">
-                        <a href="{{ route('cart.index') }}" class="relative">
-                            <svg id="cartIconBtn" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 hover:text-blue-700 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <button id="cartIconBtn" class="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 hover:text-blue-700 transition mt-2" 
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M3 3h2l3 10h11l3-7H6"></path>
                                 <circle cx="9" cy="20" r="2"></circle>
                                 <circle cx="18" cy="20" r="2"></circle>
                             </svg>
-                            
-                            <span id="cartItemCount" class="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full leading-none">
-                                {{ $cartItemCount }}
-                            </span>
-                        </a>
+                        </button>
                     </div>
                 @endrole
+
                 <!-- Settings Dropdown -->
-                <div class="ms-3 relative">
+                <div class="ms-3 relative z-50">
                     @auth
-                    <x-dropdown align="right" width="48">
+                    <x-dropdown align="right" width="48" class="relative z-50">
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                 <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -133,10 +105,44 @@
                         
                             <div class="border-t border-gray-200"></div>
 
+                            <!-- Requests Link -->
+                            @auth
+                            <x-dropdown-link href="{{ route('requests.index') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m15 11-1 9"/>
+                                    <path d="m19 11-4-7"/>
+                                    <path d="M2 11h20"/>
+                                    <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+                                    <path d="M4.5 15.5h15"/>
+                                    <path d="m5 11 4-7"/>
+                                    <path d="m9 11 1 9"/>
+                                </svg>
+                                <span>{{ __('Requests') }}</span>
+                            </x-dropdown-link>
+
+                            <div class="border-t border-gray-200"></div>
+                            @endauth
+
+                            <!-- Orders Link -->
+                            @role('Citizen')
+                            <x-dropdown-link href="{{ route('orders.index') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22v-9"/>
+                                    <path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/>
+                                    <path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/>
+                                    <path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>
+                                </svg>
+                                <span>{{ __('Orders') }}</span>
+                            </x-dropdown-link>
+
+                            <div class="border-t border-gray-200"></div>
+                            @endrole
+
                             @role('Admin') 
                                 @php
                                     $pendingReviews = \App\Models\Review::where('status', 'suspended')->count();
                                 @endphp
+
                             <x-dropdown-link href="{{ route('admin.dashboard') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 inline mr-2" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M3 12h4v8H3v-8Zm7-5h4v13h-4V7Zm7-3h4v16h-4V4Z"/>
@@ -148,10 +154,10 @@
                                     </span>
                                 @endif
                             </x-dropdown-link>
-                            @endrole
 
                             <div class="border-t border-gray-200"></div>
-                        
+                            @endrole
+
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}" x-data>
                                 @csrf
@@ -229,33 +235,6 @@
                 </svg>
                 <span>{{ __('Publishers') }}</span>
             </x-responsive-nav-link>
-
-            @auth
-            <x-responsive-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m15 11-1 9"/>
-                    <path d="m19 11-4-7"/>
-                    <path d="M2 11h20"/>
-                    <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
-                    <path d="M4.5 15.5h15"/>
-                    <path d="m5 11 4-7"/>
-                    <path d="m9 11 1 9"/>
-                </svg>
-                <span>{{ __('Requests') }}</span>
-            </x-responsive-nav-link>
-            @endauth
-
-            @role('Citizen')
-                <x-responsive-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.*')">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22v-9"/>
-                        <path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/>
-                        <path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/>
-                        <path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>
-                    </svg>
-                    <span>{{ __('Orders') }}</span>
-                </x-responsive-nav-link>
-            @endrole
         </div>      
 
         <!-- Responsive Settings Options -->
@@ -275,6 +254,21 @@
             </div>
 
             <div class="mt-3 space-y-1">
+
+                @role('Citizen')
+                    <x-responsive-nav-link href="#" class="relative cursor-pointer">
+                        <button id="cartIconBtn" class="flex items-center relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3h2l3 10h11l3-7H6"></path>
+                                <circle cx="9" cy="20" r="2"></circle>
+                                <circle cx="18" cy="20" r="2"></circle>
+                            </svg>
+                            <span class="ml-2 text-blue-500">{{ __('Cart') }}</span>
+                        </button>
+                    </x-responsive-nav-link>
+                @endrole
+
                 <!-- Account Management -->
                 <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="currentColor">
@@ -282,6 +276,35 @@
                     </svg>
                     <span>{{ __('Profile') }}</span>
                 </x-responsive-nav-link>
+
+                <!-- Requests Link -->
+                @auth
+                <x-responsive-nav-link href="{{ route('requests.index') }}" :active="request()->routeIs('requests.*')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m15 11-1 9"/>
+                        <path d="m19 11-4-7"/>
+                        <path d="M2 11h20"/>
+                        <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/>
+                        <path d="M4.5 15.5h15"/>
+                        <path d="m5 11 4-7"/>
+                        <path d="m9 11 1 9"/>
+                    </svg>
+                    <span>{{ __('Requests') }}</span>
+                </x-responsive-nav-link>
+                @endauth
+
+                <!-- Orders Link -->
+                @role('Citizen')
+                <x-responsive-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.*')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22v-9"/>
+                        <path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/>
+                        <path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/>
+                        <path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/>
+                    </svg>
+                    <span>{{ __('Orders') }}</span>
+                </x-responsive-nav-link>
+                @endrole
 
                 @role('Admin') 
                 <x-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
@@ -334,16 +357,4 @@
             @endguest
         </div>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch("/cart/count")
-                .then(response => response.json())
-                .then(data => {
-                    const cartItemCount = document.getElementById("cartItemCount");
-                    cartItemCount.textContent = data.count;
-                    cartItemCount.classList.remove("hidden");
-                })
-                .catch(error => console.error("Error fetching cart count:", error));
-        });
-    </script>
 </nav>

@@ -51,12 +51,12 @@
     <div class="container">
         <h2>Hello, {{ $name }}!</h2>
 
-        <p>We noticed that you added books to your cart but haven't completed your purchase yet.</p>
+        <p>We noticed that you have an order that has not been completed yet.</p>
 
         <p><strong>Order ID:</strong> {{ $orderId }}</p>
         <p><strong>Total:</strong> €{{ number_format($orderTotal, 2, ',', '.') }}</p>
 
-        <p>Some items in your cart may no longer be available. Complete your order soon to secure your selection.</p>
+        <p>Some items in your order may no longer be available. Complete your order soon to secure your selection.</p>
 
         <p>Would you like to complete your order now?</p>
 

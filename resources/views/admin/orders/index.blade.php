@@ -68,6 +68,46 @@
                         </div>
                     </div>
                 @endif
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4 w-full">
+                    <form id="searchForm" action="{{ route('admin.orders.index') }}" method="GET" class="flex items-center w-full">
+                        <div class="flex flex-wrap w-full">
+                            <select name="status" onchange="this.form.submit()"
+                                class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg mx-1 mt-1">
+                                <option value="">All Orders</option>
+                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
+                                <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                            </select>
+                
+                            <div class="relative flex-grow max-w-[400px] mr-2">
+                                <input type="text" name="search" placeholder="Search by Order # or User Name"
+                                    value="{{ request('search') }}"
+                                    class="border border-blue-500 px-4 py-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 rounded-md shadow-sm text-lg mx-1 mt-1" />
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                
+                            <button type="submit"
+                                class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Search
+                            </button>
+                
+                            <button type="button" onclick="clearFilters()"
+                                class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Clear
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full mt-4 text-lg table-auto border border-gray-300 rounded-lg shadow-md">
                         <thead class="bg-blue-600 text-white uppercase tracking-wider">
@@ -125,4 +165,9 @@
             </div>
         </div>
     </div>
+    <script>
+        function clearFilters() {
+            window.location.href = "{{ route('admin.orders.index') }}";
+        }
+    </script>
 </x-app-layout>

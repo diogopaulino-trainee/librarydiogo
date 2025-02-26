@@ -68,11 +68,11 @@ class CartController extends Controller
 
     public function getCartItems()
     {
-        abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Access denied.');
-
         if (!Auth::check()) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+    
+        abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Access denied.');
 
         $cartItems = CartItem::where('user_id', Auth::id())->with('book')->get();
 
@@ -87,20 +87,14 @@ class CartController extends Controller
         ]);
     }
 
-    public function count()
+    public function clearCart()
     {
-        if (!auth()->check()) {
-            return response()->json(['count' => 0]);
+        if (!auth()->check() || !auth()->user()->hasRole('Citizen')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $user = auth()->user();
+        CartItem::where('user_id', auth()->id())->delete();
 
-        if (!$user->hasRole('Citizen')) {
-            abort(403);
-        }
-
-        $cartCount = CartItem::where('user_id', $user->id)->count();
-
-        return response()->json(['count' => $cartCount]);
+        return response()->json(['success' => true, 'message' => 'Cart cleared successfully']);
     }
 }

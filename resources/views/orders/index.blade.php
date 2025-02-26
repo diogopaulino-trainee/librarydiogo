@@ -76,6 +76,41 @@
                         </a>
                     </p>
                 @else
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4 w-full">
+                        <form id="searchForm" action="{{ route('orders.index') }}" method="GET" class="flex items-center w-full">
+                            <div class="flex flex-wrap w-full">
+                                <select name="status" onchange="this.form.submit()" class="border border-blue-500 text-blue-600 bg-white px-8 py-2 rounded-md shadow-sm focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out text-lg mx-1 mt-1">
+                                    <option value="">All Orders</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
+                                    <option value="canceled" {{ request('status') == 'canceled' ? 'selected' : '' }}>Canceled</option>
+                                </select>
+
+                                <div class="relative flex-grow max-w-[400px] mr-2">
+                                    <input type="text" name="search" placeholder="Search by Order #" value="{{ request('search') }}" class="border border-blue-500 px-4 py-2 focus:ring-blue-400 focus:border-blue-400 transition duration-200 ease-in-out w-full pl-10 pr-4 rounded-md shadow-sm text-lg mx-1 mt-1">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn bg-blue-600 text-lg text-white hover:bg-blue-700 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    Search
+                                </button>
+
+                                <button type="button" onclick="clearFilters()" class="btn bg-red-500 text-white text-lg hover:bg-red-600 px-4 py-2 rounded-md flex items-center shadow-md min-w-[120px] mx-1 mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Clear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full mt-4 text-lg border rounded-lg shadow-md">
                             <thead class="bg-blue-600 text-white uppercase tracking-wider">
@@ -90,15 +125,15 @@
                             <tbody class="divide-y divide-gray-200 bg-white">
                                 @foreach($orders as $order)
                                     <tr class="border-b border-gray-300 last:border-b-2 last:border-blue-500 hover:bg-blue-500 hover:text-white group">
-                                        <td class="px-4 py-2 font-semibold text-gray-800 group-hover:text-white">
+                                        <td class="px-4 py-2 font-semibold text-gray-800 group-hover:text-white whitespace-nowrap">
                                             #{{ $order->id }}
                                         </td>
-                                    
-                                        <td class="px-4 py-2 text-right text-gray-700 group-hover:text-white">
+                                        
+                                        <td class="px-4 py-2 text-right text-gray-700 group-hover:text-white whitespace-nowrap">
                                             {{ number_format($order->total_price, 2, ',', '.') }} €
                                         </td>
-                                    
-                                        <td class="px-4 py-2 text-center">
+                                        
+                                        <td class="px-4 py-2 text-center whitespace-nowrap">
                                             @php
                                                 $bgColor = match($order->status) {
                                                     'paid'     => 'bg-green-100 text-green-600 group-hover:bg-green-500 group-hover:text-white',
@@ -111,12 +146,12 @@
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
-                                    
-                                        <td class="px-4 py-2 text-right text-gray-700 group-hover:text-white">
+                                        
+                                        <td class="px-4 py-2 text-right text-gray-700 group-hover:text-white whitespace-nowrap">
                                             {{ $order->created_at->format('d M, Y') }}
                                         </td>
-                                    
-                                        <td class="px-4 py-2 text-right">
+                                        
+                                        <td class="px-4 py-2 text-right whitespace-nowrap">
                                             <a href="{{ route('orders.show', $order->id) }}"
                                                 class="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700 transition">
                                                 Details
@@ -134,4 +169,10 @@
             </div>
         </div>
     </div>
+    <script>
+        function clearFilters() {
+            document.getElementById("searchForm").reset();
+            window.location.href = "{{ route('orders.index') }}";
+        }
+    </script>
 </x-app-layout>

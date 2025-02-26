@@ -13,11 +13,23 @@ use Stripe\Checkout\Session;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Access denied.');
 
-        $orders = Order::where('user_id', Auth::id())->with('items.book')->get();
+        $query = Order::where('user_id', Auth::id())->with('items.book');
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('id', 'like', "%$search%");
+        }
+
+        if ($request->has('status') && in_array($request->status, ['pending', 'paid', 'canceled'])) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->get();
+
         return view('orders.index', compact('orders'));
     }
 

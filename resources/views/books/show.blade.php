@@ -235,39 +235,6 @@
                             </form>
                         </div>
                         @endif
-
-                        <!-- Carrinho Lateral -->
-                        <div id="cartSidebar" class="fixed top-0 right-0 w-80 h-full bg-white shadow-xl transform translate-x-full transition-transform ease-in-out duration-300">
-                            <div class="p-4 flex justify-between items-center border-b">
-                                <h2 class="text-lg font-bold">Shopping Cart</h2>
-                                <button id="closeCart" class="text-gray-500 hover:text-gray-700">✖</button>
-                            </div>
-                            <div class="p-4" id="cartItems">
-                                <!-- Itens do carrinho serão adicionados aqui -->
-                            </div>
-                            <div class="p-4 border-t flex flex-col gap-2">
-                                <!-- See and Edit -->
-                                <a href="{{ route('cart.index') }}" 
-                                    class="bg-gray-300 text-black w-full py-2 rounded-md text-lg text-center flex items-center justify-center gap-2 hover:bg-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
-                                        <path d="M12 20h9"/>
-                                        <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                                    </svg>
-                                    See and Edit
-                                </a>
-                            
-                                <!-- Checkout -->
-                                <a href="{{ route('orders.create') }}" 
-                                    class="bg-orange-500 text-white w-full py-2 rounded-md text-lg text-center flex items-center justify-center gap-2 hover:bg-orange-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart">
-                                        <circle cx="8" cy="21" r="1"/>
-                                        <circle cx="19" cy="21" r="1"/>
-                                        <path d="M2.5 2.5h2l3.6 9.9a1 1 0 0 0 1 .7h7.9a1 1 0 0 0 1-.7L21 5H5"/>
-                                    </svg>
-                                    Checkout
-                                </a>
-                            </div>
-                        </div>
                 
                         @if(!auth()->check())
                             <p class="text-gray-500 italic">
@@ -296,7 +263,7 @@
                                 <button class="mt-4 bg-gray-400 cursor-not-allowed text-white px-4 py-2 rounded w-full" disabled>
                                     You currently have this book
                                 </button>
-                            @elseif($book->status === 'unavailable') {{-- Só mostrar quando está indisponível --}}
+                            @elseif($book->status === 'unavailable')
                                 @if($alreadySubscribed)
                                     <form action="{{ route('books.cancel_notify', $book) }}" method="POST">
                                         @csrf
@@ -561,24 +528,40 @@
             const cartSidebar = document.getElementById("cartSidebar");
             const closeCart = document.getElementById("closeCart");
             const cartItemsContainer = document.getElementById("cartItems");
+            const cartItemCount = document.getElementById("cartItemCount");
 
             function loadCartItems() {
                 fetch("/cart/items")
                     .then(response => response.json())
                     .then(data => {
                         cartItemsContainer.innerHTML = "";
-
+                        let total = 0;
+            
                         if (data.cartItems.length === 0) {
                             cartItemsContainer.innerHTML = `<p class="text-gray-500 text-center">Your cart is empty.</p>`;
                         } else {
                             data.cartItems.forEach(item => {
+                                let itemPrice = parseFloat(item.price.replace(",", "."));
+
+                                total += itemPrice;
+            
                                 cartItemsContainer.innerHTML += `
                                     <div class="flex py-2 border-b items-center justify-between">
                                         <div class="flex-1 flex items-start gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-5 w-5 text-blue-600 flex-shrink-0"
-                                                viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M9 4.804a.517.517 0 00-.76-.435C7.29 4.77 5.851 5 4.4 5H4a1 1 0 00-1 1v10a1 1 0 001 1h.4c1.451 0 2.89.23 3.84.63a.517.517 0 00.76-.435v-12.59zM10 4a1 1 0 00-1 1v10a1 1 0 001 1h5a1 1 0 001-1V6a2 2 0 00-2-2h-5z"/>
+                                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                                class="h-6 w-6 text-blue-600 flex-shrink-0" 
+                                                viewBox="0 0 24 24" 
+                                                fill="none" 
+                                                stroke="currentColor" 
+                                                stroke-width="2" 
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round">
+                                                <path d="M12 7v14"/>
+                                                <path d="M16 12h2"/>
+                                                <path d="M16 8h2"/>
+                                                <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
+                                                <path d="M6 12h2"/>
+                                                <path d="M6 8h2"/>
                                             </svg>
                                             <div class="leading-tight">
                                                 <p class="font-semibold text-gray-800">
@@ -586,16 +569,30 @@
                                                 </p>
                                             </div>
                                         </div>
-
+            
                                         <span class="font-bold text-gray-800 whitespace-nowrap">
-                                            ${item.price}
+                                            €${item.price}
                                         </span>
                                     </div>
                                 `;
                             });
                         }
+            
+                        document.getElementById("cartTotal").textContent = `€${total.toFixed(2)}`;
+            
                     })
                     .catch(error => console.error("Error loading cart items:", error));
+            }
+
+            function toggleCartSidebar() {
+                const isClosed = cartSidebar.classList.contains("translate-x-full");
+
+                if (isClosed) {
+                    cartSidebar.classList.remove("translate-x-full");
+                    loadCartItems();
+                } else {
+                    cartSidebar.classList.add("translate-x-full");
+                }
             }
 
             if (addToCartForm) {
@@ -632,13 +629,9 @@
                         cartIcon.classList.remove("hidden");
                     });
                 });
+            } else {
+                console.error("Elemento 'addToCartForm' não encontrado no DOM!");
             }
-
-            closeCart.addEventListener("click", function () {
-                cartSidebar.classList.add("translate-x-full");
-            });
-
-            loadCartItems();
         });
     </script>
 </x-app-layout>

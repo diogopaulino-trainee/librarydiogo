@@ -102,36 +102,17 @@
                                     </div>
                                 </div>
                             @endif
-                            @if ($errors->any())
-                                <div class="max-w-4xl mx-auto mt-12 mb-2">
-                                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-md" role="alert">
-                                        <div class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
-                                            <strong class="font-bold text-red-800">Validation Error</strong>
-                                        </div>
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                        <button onclick="this.parentElement.style.display='none'" class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                                            <svg class="fill-current h-6 w-6 text-red-700" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                <title>Close</title>
-                                                <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 10-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 101.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            @endif
+                            
                             @csrf
 
                             <div class="mt-4">
                                 <label class="block text-lg font-medium text-gray-700">Street</label>
-                                <input type="text" name="street" class="w-full text-lg border p-2 rounded">
+                                <input type="text" name="street" value="{{ old('street') }}" class="w-full text-lg border p-2 rounded">
+                                @error('street')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
-
+                        
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-lg font-medium text-gray-700">City</label>
@@ -141,6 +122,9 @@
                                            pattern="[A-Za-z\s]+"
                                            title="Only letters are allowed"
                                            value="{{ old('city') }}">
+                                    @error('city')
+                                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
                                 <div>
                                     <label for="zip_code" class="block text-lg font-medium text-gray-700">Zip Code</label>
@@ -153,9 +137,12 @@
                                         pattern="^\d{4}-\d{3}$"
                                         title="Use the format 0000-000"
                                         value="{{ old('zip_code') }}">
+                                    @error('zip_code')
+                                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </div>
-
+                        
                             <div>
                                 <label class="block text-lg font-medium text-gray-700">Country</label>
                                 <input type="text" 
@@ -164,8 +151,11 @@
                                        pattern="[A-Za-z\s]+"
                                        title="Only letters are allowed"
                                        value="{{ old('country') }}">
+                                @error('country')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
-
+                        
                             <div class="flex justify-end pt-4">
                                 <button type="submit" class="bg-green-500 text-white text-lg px-6 py-2 rounded hover:bg-green-700">
                                     Place Order

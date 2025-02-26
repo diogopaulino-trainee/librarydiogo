@@ -14,13 +14,6 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
-
-
-
-
-
-
-
 // Página inicial acessível a todos
 Route::get('/', function () {
     return view('homepage');
@@ -80,11 +73,11 @@ Route::middleware([
         Route::post('/add/{book}', [CartController::class, 'addToCart'])->name('cart.add');
         Route::delete('/remove/{cartItem}', [CartController::class, 'removeFromCart'])->name('cart.remove');
         Route::post('/update/{cartItem}', [CartController::class, 'updateQuantity'])->name('cart.update');
+        Route::delete('/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
         Route::get('/items', [CartController::class, 'getCartItems'])->name('cart.items');
-        Route::get('/count', [CartController::class, 'count'])->name('cart.count');
     });
 
     // Gestão das Encomendas (Citizens)

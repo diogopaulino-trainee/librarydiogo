@@ -8,11 +8,28 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
-        $orders = Order::with('user', 'items.book')->orderBy('created_at', 'desc')->get();
+        $query = Order::with('user', 'items.book')->orderBy('created_at', 'desc');
+
+        if ($request->has('status') && in_array($request->status, ['pending', 'paid', 'canceled'])) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id', $search)
+                ->orWhereHas('user', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', "%$search%");
+                });
+            });
+        }
+
+        $orders = $query->get();
+
         return view('admin.orders.index', compact('orders'));
     }
 
