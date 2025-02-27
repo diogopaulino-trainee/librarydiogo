@@ -104,6 +104,30 @@
                 </div>
             </div>
 
+             {{-- Gerir Logs --}}
+             <div class="flex flex-col h-full">
+                <x-panel class="shadow-lg flex-grow transform hover:scale-105 transition duration-300">
+                    <a href="{{ route('admin.logs.index') }}" 
+                       class="flex flex-col items-center justify-center text-center space-y-6 h-full group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-indigo-600 group-hover:text-indigo-800 transition duration-300 hover:translate-y-[-4px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M3 9h18"/>
+                            <path d="M3 13h18"/>
+                            <path d="M3 17h18"/>
+                            <path d="M5 5h14"/>
+                            <path d="M5 21h14"/>
+                        </svg>
+                        <h2 class="text-3xl font-bold text-indigo-700 group-hover:text-indigo-800 transition duration-300">
+                            Manage Logs
+                        </h2>
+                        <p class="text-gray-600 min-h-[48px]">View and manage system logs.</p>
+                    </a>
+                </x-panel>
+                <div class="mt-4 p-6 bg-white shadow-md rounded-lg text-center h-full">
+                    <h3 class="text-xl font-semibold text-gray-700">Total Logs</h3>
+                    <p class="text-5xl font-bold text-indigo-600">{{ \App\Models\Log::count() }}</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </x-app-layout>

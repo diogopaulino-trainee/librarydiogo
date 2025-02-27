@@ -15,12 +15,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Text_LanguageDetect;
+use App\Traits\Loggable;
 
 class BookController extends Controller
 {
+    use Loggable;
+
     public function index(Request $request)
     {
         $query = Book::with(['authors', 'publisher']);
+
+        // Verificando se o usuário está autenticado antes de registrar o log
+        if (auth()->check()) {
+            $this->logAction('Book', 'Viewing book list', 'Accessing the book list with filters.', 0);
+        }
 
         if ($request->has('search') && $request->search != '') {
             $query->where('title', 'like', '%' . $request->search . '%')
@@ -75,7 +83,12 @@ class BookController extends Controller
     }
 
     public function show(Book $book)
-    {
+    {        
+        if (auth()->check()) {
+            // Logando a ação de visualizar o livro
+            $this->logAction('Book', 'Viewing book details', 'Viewed details for book with title: ' . $book->title, $book->id);
+        }
+
         $relatedBooks = $this->getRelatedBooks($book);
 
         // Apenas Admins podem ver a lista de cidadãos para solicitar livros
@@ -139,6 +152,10 @@ class BookController extends Controller
 
         $authors = Author::all();
         $publishers = Publisher::all();
+
+        // Logando o acesso à página de criação de livro
+        $this->logAction('Book', 'Accessing create book form', 'Accessed the create book form.', 0);
+        
         return view('books.create', compact('authors', 'publishers'));
     }
 
@@ -176,12 +193,18 @@ class BookController extends Controller
 
         $book->authors()->attach($request->authors);
 
+        // Logando a criação do livro
+        $this->logAction('Book', 'Creating book', 'Created a new book with title: ' . $request->title, $book->id);
+
         return redirect()->route('books.index')->with('success', 'Book created successfully!');
     }
 
     public function edit(Book $book)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        // Logando a edição de um livro
+        $this->logAction('Book', 'Editing book', 'Editing book with title: ' . $book->title, $book->id);
 
         $authors = Author::all();
         $publishers = Publisher::all();
@@ -191,6 +214,9 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        // Guardar o título do livro antes da atualização para usá-lo no log
+        $previousTitle = $book->title;
 
         $request->validate([
             'isbn' => 'required|unique:books,isbn,' . $book->id,
@@ -225,12 +251,18 @@ class BookController extends Controller
 
         $book->authors()->sync($request->authors);
 
+        // Logando a atualização do livro
+        $this->logAction('Book', 'Updated book details', "Updated book details for '{$previousTitle}' to '{$book->title}'", $book->id);
+
         return redirect()->route('books.index')->with('success', 'Book updated successfully!');
     }
 
     public function delete(Book $book)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        // Logando o acesso à página de deletação do livro
+        $this->logAction('Book', 'Accessing book deletion page', "Accessing delete page for book '{$book->title}'", $book->id);
 
         return view('books.delete', compact('book'));
     }
@@ -239,6 +271,9 @@ class BookController extends Controller
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
+        // Logando a tentativa de exclusão do livro
+        $this->logAction('Book', 'Deleting book', "Attempting to delete book '{$book->title}' with ID {$book->id}", $book->id);
+
         if ($book->requests()->exists()) {
             return back()->with('error', 'Cannot delete book with existing requests!');
         }
@@ -246,12 +281,18 @@ class BookController extends Controller
         $book->authors()->detach();
         $book->delete();
 
+        // Registar a exclusão com detalhes
+        $this->logAction('Book', 'Book deleted', "Book '{$book->title}' with ID {$book->id} deleted successfully.", $book->id);
+
         return redirect()->route('books.index')->with('success', 'Book deleted successfully!');
     }
 
     public function export(Request $request)
     {
         $format = $request->query('format', 'excel');
+
+        // Logando a ação de exportação antes de realizar a exportação
+        $this->logAction('Book', 'Exporting books', "Exporting books in {$format} format.", 0);
 
         if ($format === 'pdf') {
             $books = Book::with(['authors', 'publisher'])->get();
@@ -369,6 +410,11 @@ class BookController extends Controller
                 'book_id' => $bookId,
                 'user_id' => auth()->id(),
             ]);
+            // Logando a criação da notificação
+            $this->logAction('Book Notification', 'User requested notification for book availability', 'Notification created for book ' . $bookId, $bookId);
+        } else {
+            // Logando que a notificação já existe
+            $this->logAction('Book Notification', 'User requested notification for book availability', 'Notification already exists for book ' . $bookId, $bookId);
         }
 
         return back()->with('success', 'You will be notified when this book is available.');
@@ -381,6 +427,9 @@ class BookController extends Controller
         BookNotification::where('book_id', $book->id)
             ->where('user_id', auth()->id())
             ->delete();
+
+        // Logando a ação de cancelamento da notificação
+        $this->logAction('Book Notification', 'User cancelled notification for book availability', 'Notification cancelled for book ' . $book->id, $book->id);
 
         return back()->with('success', 'Notification subscription cancelled.');
     }

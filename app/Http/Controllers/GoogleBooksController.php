@@ -9,12 +9,18 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Traits\Loggable;
 
 class GoogleBooksController extends Controller
 {
+    use Loggable;
+
     public function searchPage()
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        // Logando a pesquisa do administrador
+        $this->logAction('GoogleBooks', 'Searching for books on Google API', 'Admin searched for books using Google Books API.');
 
         $client = new Client();
         $suggestions = [];
@@ -65,6 +71,13 @@ class GoogleBooksController extends Controller
         $client = new Client();
         $books = [];
         $suggestions = [];
+
+        // Logando a busca
+        $this->logAction(
+            'GoogleBooks', 
+            'Searching for books using Google API', 
+            "Admin searched for books. Search query: " . $query
+        );
 
         try {
             if (empty($query)) {
@@ -188,6 +201,7 @@ class GoogleBooksController extends Controller
 
             $existingBook = $query->first();
             if ($existingBook) {
+                $this->logAction('Book', 'Attempted to add a book', 'Book with this title and author already exists: ' . $bookData['title'], $existingBook->id);
                 return back()->with([
                     'error' => 'Book with this title and author already exists!',
                     'isbn' => 'N/A'
@@ -222,11 +236,16 @@ class GoogleBooksController extends Controller
                 $book->authors()->attach($author->id);
             }
 
+            // Logando a adição do livro
+            $this->logAction('Book', 'Added new book', 'Book added: ' . $book->title, $book->id);
+
             return back()->with([
                 'success' => 'Book successfully added!',
                 'isbn' => $book->isbn ?? 'N/A'
             ]);
         } catch (\Exception $e) {
+            // Logando falha ao adicionar o livro
+            $this->logAction('Book', 'Failed to add book', 'Error: ' . $e->getMessage(), 0);
             return back()->with([
                 'error' => 'Failed to add book: ' . $e->getMessage(),
                 'isbn' => $bookData['isbn'] ?? 'N/A'

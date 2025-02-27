@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Traits\Loggable;
 
 class AdminController extends Controller
 {
+    use Loggable;
+
     public function index(Request $request)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
@@ -36,6 +39,9 @@ class AdminController extends Controller
 
         $users = $query->orderBy('name', 'asc')->paginate(10);
 
+        // Logando o acesso ao módulo
+        $this->logAction('Admin', 'Viewing users list', 'Accessing users list.', 0);
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -47,6 +53,9 @@ class AdminController extends Controller
 
         $previousUser = User::where('id', '<', $user->id)->orderBy('id', 'desc')->first();
         $nextUser = User::where('id', '>', $user->id)->orderBy('id', 'asc')->first();
+
+        // Logando o acesso ao módulo de visualização de usuário
+        $this->logAction('Admin', 'Viewing user details', 'Accessing details for user ID: ' . $user->id, $user->id);
 
         return view('admin.users.show', compact('user', 'requests', 'previousUser', 'nextUser'));
     }
@@ -71,6 +80,9 @@ class AdminController extends Controller
 
         $user->syncRoles([$request->role]);
 
+        // Logando a mudança de role
+        $this->logAction('Admin', 'Changing user role', 'Changed role for user ID: ' . $user->id . ' to ' . $request->role, $user->id);
+
         Mail::to($user->email)->send(new RoleChangedMail($user, $request->role));
 
         return back()->with('success', 'User role updated successfully.');
@@ -79,6 +91,9 @@ class AdminController extends Controller
     public function create()
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        // Logando o acesso ao módulo de criação de Admin
+        $this->logAction('Admin', 'Creating new admin', 'Accessing the create admin form.', 0);
 
         return view('admin.users.create');
     }
@@ -109,6 +124,9 @@ class AdminController extends Controller
         } else {
             $this->downloadPlaceholderImage($admin);
         }
+
+         // Logando a criação de novo admin
+        $this->logAction('Admin', 'Creating new admin', 'User created a new admin with email ' . $request->email, $admin->id);
 
         Mail::to($admin->email)->send(new AdminCreatedMail($admin, $request->password));
 

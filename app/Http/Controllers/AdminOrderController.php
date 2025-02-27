@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Traits\Loggable;
 
 class AdminOrderController extends Controller
 {
+    use Loggable;
+
     public function index(Request $request)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
@@ -30,6 +33,9 @@ class AdminOrderController extends Controller
 
         $orders = $query->get();
 
+        // Logando o acesso ao módulo de pedidos
+        $this->logAction('Admin', 'Viewing orders list', 'Accessing the orders list.');
+
         return view('admin.orders.index', compact('orders'));
     }
 
@@ -38,6 +44,9 @@ class AdminOrderController extends Controller
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
         $order->load('user', 'items.book', 'address');
+
+        // Logando a visualização do pedido específico
+        $this->logAction('Admin', 'Viewing order details', 'Accessing order details for order ID ' . $order->id, $order->id);
 
         return view('admin.orders.show', compact('order'));
     }
@@ -56,6 +65,12 @@ class AdminOrderController extends Controller
 
         // Guardar o status anterior
         $previousStatus = $order->status;
+
+        // Descrição detalhada para o log
+        $logDescription = "Changing order status from {$previousStatus} to {$request->status}.";
+
+        // Logando a mudança de status da encomenda
+        $this->logAction('Admin', 'Updating order status', $logDescription, $order->id);
 
         if ($request->status === 'cancelled' && $previousStatus === 'paid') {
             // Se a encomenda foi paga e agora é cancelada, verifica se os livros ainda estão indisponíveis

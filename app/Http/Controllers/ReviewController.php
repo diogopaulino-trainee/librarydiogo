@@ -10,15 +10,32 @@ use Illuminate\Http\Request as HttpRequest;
 use App\Models\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Traits\Loggable;
 
 class ReviewController extends Controller
 {
+    use Loggable;
+
     public function index(HttpRequest $request)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
 
         $status = $request->input('status');
         $search = $request->input('search');
+
+        // Logando a ação de acesso a revisão
+        $logDescription = 'Admin accessed review history';
+
+        if ($status) {
+            $logDescription .= ' with status filter: ' . $status;
+        }
+        
+        if ($search) {
+            $logDescription .= ' and search query: ' . $search;
+        }
+
+        // Logando a ação
+        $this->logAction('Review', 'Admin accessed review history', $logDescription);
 
         $historyQuery = Review::whereIn('status', ['approved', 'rejected'])->orderBy('updated_at', 'desc');
 
@@ -87,6 +104,10 @@ class ReviewController extends Controller
             'status' => 'suspended',
         ]);
 
+        // Logando após a criação da review
+        $logDescription = "User {$user->name} submitted a review for book ID {$bookId}, rating: {$review->rating}. Comment: {$review->comment}";
+        $this->logAction('Review', 'New review submitted', $logDescription, $bookId);
+
         // Enviar email para os admins informando da nova review
         $adminEmails = User::whereHas('roles', function ($query) {
             $query->where('name', 'Admin');
@@ -109,10 +130,17 @@ class ReviewController extends Controller
             'admin_justification' => 'nullable|string|max:1000',
         ]);
 
+        // Guardar o status anterior da revisão
+        $previousStatus = $review->status;
+
         $review->update([
             'status' => $request->status,
             'admin_justification' => $request->status === 'rejected' ? $request->admin_justification : null,
         ]);
+
+        // Logando a alteração de status
+        $logDescription = "Review status updated for book ID {$review->book_id} by Admin. Status changed from {$previousStatus} to {$review->status}.";
+        $this->logAction('Review', 'Review status updated', $logDescription, $review->book_id);
 
         Mail::to($review->user->email)->send(new ReviewStatusNotification($review));
 
@@ -122,6 +150,9 @@ class ReviewController extends Controller
     public function show(Review $review)
     {
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Access denied.');
+
+        // Logando a visualização da revisão
+        $this->logAction('Review', 'Viewing review details', 'Admin viewed review details for book ID ' . $review->book_id, $review->book_id);
         
         return view('admin.reviews.show', compact('review'));
     }

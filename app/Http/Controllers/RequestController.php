@@ -13,13 +13,19 @@ use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Traits\Loggable;
 
 class RequestController extends Controller
 {
+    use Loggable;
+
     public function index(HttpRequest $request)
     {
         $user = Auth::user();
         $query = Request::query();
+
+         // Logando o acesso ao módulo
+        $this->logAction('Request', 'Accessing the request list', 'Admin or Citizen accessed the request list.', $user->id);
 
         if (!$user->hasRole('Admin')) {
             $query->where('user_id', $user->id);
@@ -87,6 +93,9 @@ class RequestController extends Controller
 
         // Verifica se o livro já está emprestado
         if ($book->status === 'unavailable' || Request::where('book_id', $book->id)->where('status', 'borrowed')->exists()) {
+            // Logando a tentativa de requisição de livro indisponível
+            $this->logAction('Request', 'Attempting to borrow a book', 'Book is currently unavailable or borrowed.', $user->id);
+        
             // Retorna um erro 422 para o teste ou a API
             return response()->json(['error' => 'This book is currently unavailable.'], 422);
             
@@ -113,6 +122,9 @@ class RequestController extends Controller
             'user_email_at_request' => $user->email,
             'user_photo_at_request' => $photoPath,
         ]);
+
+        // Logando a criação de uma nova requisição
+        $this->logAction('Request', 'Book request created', 'Book borrowed successfully.', $user->id);
 
         $book->update(['status' => 'unavailable']);
 
@@ -162,6 +174,9 @@ class RequestController extends Controller
             'user_photo_at_request' => $photoPath,
         ]);
 
+        // Logando a criação de uma requisição pelo admin
+        $this->logAction('Request', 'Book requested on behalf of citizen', "Book requested for citizen {$citizen->name}.", Auth::id());
+
         $book->update(['status' => 'unavailable']);
 
         $adminEmails = User::whereHas('roles', function ($query) {
@@ -201,6 +216,9 @@ class RequestController extends Controller
         abort_if(!auth()->user()->hasRole('Admin'), 403, 'Only Admins can confirm book returns.');
 
         $request = Request::findOrFail($id);
+
+        // Logando a confirmação de devolução do livro
+        $this->logAction('Request', 'Book return confirmed', 'Book return confirmed for request #' . $request->request_number, Auth::id());
 
         $request->update([
             'actual_return_date' => now(),
@@ -243,6 +261,13 @@ class RequestController extends Controller
         abort_if(!auth()->user()->hasRole('Admin') && auth()->user()->id != $request->user_id, 403, 'Unauthorized access.');
 
         $user = Auth::user();
+
+        // Logando a visualização de requisição
+        if ($user->hasRole('Admin')) {
+            $this->logAction('Request', 'Admin viewed request', 'Admin viewed request #' . $request->id, $request->id);
+        } else {
+            $this->logAction('Request', 'Citizen viewed their request', 'Citizen viewed request #' . $request->id, $request->id);
+        }
 
         // Se for Admin, pode navegar entre todas as requisições
         if ($user->hasRole('Admin')) {

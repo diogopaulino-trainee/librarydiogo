@@ -6,14 +6,21 @@ use App\Models\Book;
 use App\Models\CartItem;
 use App\Models\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\Loggable;
 
 class CartController extends Controller
 {
+    use Loggable;
+
     public function index()
     {
         abort_if(!auth()->user()->hasRole('Citizen'), 403, 'Access denied.');
 
         $cartItems = CartItem::where('user_id', Auth::id())->with('book')->get();
+
+        // Logando o acesso ao carrinho de compras
+        $this->logAction('Cart', 'Accessing cart', 'User accessed their shopping cart.', 0);
+
         return view('cart.index', compact('cartItems'));
     }
 
@@ -45,6 +52,9 @@ class CartController extends Controller
             ], 400);
         }
 
+        // Logando a adição do livro ao carrinho
+        $this->logAction('Cart', 'Adding book to cart', 'User added a book to their cart.', $bookId);
+
         CartItem::create([
             'user_id' => Auth::id(),
             'book_id' => $bookId,
@@ -62,6 +72,9 @@ class CartController extends Controller
 
         $cartItem = CartItem::where('id', $cartItemId)->where('user_id', Auth::id())->firstOrFail();
         $cartItem->delete();
+
+        // Logando a remoção do livro do carrinho
+        $this->logAction('Cart', 'Removing book from cart', 'User removed a book from their cart.', $cartItem->book_id);
 
         return redirect()->route('cart.index')->with('success', 'Book removed from cart successfully.');
     }
@@ -92,6 +105,9 @@ class CartController extends Controller
         if (!auth()->check() || !auth()->user()->hasRole('Citizen')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
+
+         // Logando a ação de limpar o carrinho
+        $this->logAction('Cart', 'Clearing cart', 'User cleared their cart.', 0);
 
         CartItem::where('user_id', auth()->id())->delete();
 

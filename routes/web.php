@@ -7,6 +7,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GoogleBooksController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\RequestController;
@@ -14,8 +15,24 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
+
 // Página inicial acessível a todos
 Route::get('/', function () {
+    // Logando o acesso à homepage
+    if (auth()->check()) {
+        $user = auth()->user();
+        $userId = $user->id;
+        $userName = $user->name;
+
+        $logController = app(LogController::class);
+        $logController->logAction(
+            'Homepage', 
+            'Accessing homepage', 
+            'User ' . $userName . ' accessed the homepage.',
+            $userId
+        );
+    }
+
     return view('homepage');
 })->name('homepage');
 
@@ -52,6 +69,22 @@ Route::middleware([
         Route::resource('publishers', PublisherController::class)->except(['index', 'show']);
 
         Route::get('/admin/dashboard', function () {
+
+            // Logando o acesso ao Dashboard
+            if (auth()->check()) {
+                $user = auth()->user();
+                $userId = $user->id;
+                $userName = $user->name;
+
+                $logController = app(LogController::class);
+                $logController->logAction(
+                    'Dashboard', 
+                    'Accessing dashboard', 
+                    'User ' . $userName . ' accessed the admin dashboard.',
+                    $userId
+                );
+            }
+
             return view('admin.dashboard');
         })->name('admin.dashboard');
 
@@ -94,6 +127,12 @@ Route::middleware([
         Route::get('/', [AdminOrderController::class, 'index'])->name('admin.orders.index');  
         Route::get('/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');  
         Route::put('/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update-status');  
+    });
+
+    // Gestão de logs (Admins)
+    Route::prefix('admin/logs')->middleware('auth')->group(function () {
+        Route::get('/', [LogController::class, 'index'])->name('admin.logs.index');
+        Route::get('/{log}', [LogController::class, 'show'])->name('admin.logs.show');
     });
 
     // Rotas de Requisições
