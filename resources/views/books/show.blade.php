@@ -160,19 +160,19 @@
                 </div>
 
                 <div class="mt-6">
-                    @if(!$borrowedRequest && $book->status !== 'unavailable')
+                    @if($book->status !== 'unavailable')
                         @if(auth()->check() && auth()->user()->hasRole('Citizen'))
                             <form action="{{ route('requests.store', $book) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="text-lg font-semibold px-6 py-3 rounded-lg shadow-md flex items-center justify-center transition w-full 
                                 bg-green-500 hover:bg-green-700 text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 19.5V6a2 2 0 0 1 2-2h6v14H6a2 2 0 0 0-2 1.5z" />
-                                    <path d="M20 19.5V6a2 2 0 0 0-2-2h-6v14h6a2 2 0 0 1 2 1.5z" />
-                                </svg>
-                                
-                                Request This Book
-                            </button>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 19.5V6a2 2 0 0 1 2-2h6v14H6a2 2 0 0 0-2 1.5z" />
+                                        <path d="M20 19.5V6a2 2 0 0 0-2-2h-6v14h6a2 2 0 0 1 2 1.5z" />
+                                    </svg>
+                
+                                    Request This Book
+                                </button>
                             </form>
                         @elseif(auth()->check() && auth()->user()->hasRole('Admin') && $citizens->isNotEmpty())
                             <form action="{{ route('requests.store.admin', $book) }}" method="POST">
@@ -183,7 +183,7 @@
                                     @foreach($citizens as $citizen)
                                         @php
                                             $textColor = $citizen->requests_left == 0 || $citizen->requests_left == 1 ? 'text-red-500' : 
-                                                         ($citizen->requests_left == 2 ? 'text-orange-500' : 'text-green-500');
+                                                        ($citizen->requests_left == 2 ? 'text-orange-500' : 'text-green-500');
                                         @endphp
                                         <option value="{{ $citizen->id }}" class="{{ $textColor }}">
                                             {{ $citizen->name }} ({{ $citizen->requests_left }} request{{ $citizen->requests_left > 1 ? 's' : '' }} remaining)
@@ -192,18 +192,32 @@
                                 </select>
                                 <button type="submit" class="text-lg font-semibold px-6 py-3 rounded-lg shadow-md flex items-center justify-center transition w-full 
                                 bg-green-500 hover:bg-green-700 text-white mt-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="8" r="4" />
-                                    <path d="M6 20a6 6 0 0112 0" />
-                                </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="8" r="4" />
+                                        <path d="M6 20a6 6 0 0112 0" />
+                                    </svg>
                                     Request for Citizen
                                 </button>
                             </form>
                         @elseif(auth()->check())
                             <p class="text-gray-500 italic">No citizens available for selection.</p>
                         @endif
+                    @elseif($book->status === 'requested' && $borrowedRequest && $borrowedRequest->expected_return_date)
+                        <p class="text-red-500 text-lg font-bold mt-4">
+                            This book has been requested.
+                            <br>
+                            <span class="text-gray-700 text-lg font-medium">
+                                Expected to be available by: 
+                                <strong>
+                                    {{ \Carbon\Carbon::parse($borrowedRequest->expected_return_date)->format('d M, Y') }}
+                                </strong>
+                            </span>
+                        </p>
+                    @elseif($book->status === 'unavailable' && !$borrowedRequest)
+                        <!-- Livro comprado, não exibe nada -->
+                    @endif
                 
-                        @if(auth()->check() && auth()->user()->hasRole('Citizen') && $book->status === 'available')
+                    @if(auth()->check() && auth()->user()->hasRole('Citizen') && $book->status === 'available')
                         @php
                             $isInCart = auth()->user()->cartItems()->where('book_id', $book->id)->exists();
                         @endphp
@@ -217,69 +231,68 @@
                                     class="text-lg font-semibold px-6 py-3 rounded-lg shadow-md flex items-center justify-center transition w-full
                                         {{ $isInCart ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-700 text-white' }}" 
                                     {{ $isInCart ? 'disabled' : '' }}>
-
+                
                                     <span id="loadingSpinner" class="hidden animate-spin mr-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M12 2v20m8-8H4"></path>
                                         </svg>
                                     </span>
-
+                
                                     <svg id="cartIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M3 3h2l3 10h11l3-7H6"></path>
                                         <circle cx="9" cy="20" r="2"></circle>
                                         <circle cx="18" cy="20" r="2"></circle>
                                     </svg>
-
+                
                                     <span id="btnText">{{ $isInCart ? 'Already in Cart' : 'Add to Cart' }}</span>
                                 </button>
                             </form>
                         </div>
-                        @endif
+                    @endif
                 
-                        @if(!auth()->check())
-                            <p class="text-gray-500 italic">
-                                Please <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-700">log in</a> to request or purchase this book.
-                            </p>
-                        @elseif($borrowedRequest && $borrowedRequest->expected_return_date)
-                            <p class="text-red-500 text-lg font-bold mt-4">
-                                This book is currently unavailable.
-                                <br>
-                                <span class="text-gray-700 text-lg font-medium">
-                                    Expected to be available by: 
-                                    <strong>
-                                        {{ \Carbon\Carbon::parse($borrowedRequest->expected_return_date)->format('d M, Y') }}
-                                    </strong>
-                                </span>
-                            </p>
-                        @endif
+                    @if(!auth()->check())
+                        <p class="text-gray-500 italic">
+                            Please <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-700">log in</a> to request or purchase this book.
+                        </p>
+                    @elseif($borrowedRequest && $borrowedRequest->expected_return_date)
+                        <p class="text-red-500 text-lg font-bold mt-4">
+                            This book is currently unavailable.
+                            <br>
+                            <span class="text-gray-700 text-lg font-medium">
+                                Expected to be available by: 
+                                <strong>
+                                    {{ \Carbon\Carbon::parse($borrowedRequest->expected_return_date)->format('d M, Y') }}
+                                </strong>
+                            </span>
+                        </p>
+                    @endif
                 
-                        @if(auth()->check() && auth()->user()->hasRole('Citizen'))
-                            @php
-                                $alreadySubscribed = auth()->user()->isSubscribedToNotification($book->id);
-                                $hasBorrowedBook = $borrowedRequest && $borrowedRequest->user_id == auth()->id();
-                            @endphp
-
-                            @if($hasBorrowedBook)
-                                <button class="mt-4 bg-gray-400 cursor-not-allowed text-white px-4 py-2 rounded w-full" disabled>
-                                    You currently have this book
-                                </button>
-                            @elseif($book->status === 'unavailable')
-                                @if($alreadySubscribed)
-                                    <form action="{{ route('books.cancel_notify', $book) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded w-full">
-                                            Cancel Notification
-                                        </button>
-                                    </form>
-                                @else
-                                    <form action="{{ route('books.notify', $book) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
-                                            Notify me when available
-                                        </button>
-                                    </form>
-                                @endif
+                    @if(auth()->check() && auth()->user()->hasRole('Citizen'))
+                        @php
+                            $alreadySubscribed = auth()->user()->isSubscribedToNotification($book->id);
+                            $hasBorrowedBook = $borrowedRequest && $borrowedRequest->user_id == auth()->id();
+                        @endphp
+                
+                        @if($hasBorrowedBook)
+                            <button class="mt-4 bg-gray-400 cursor-not-allowed text-white px-4 py-2 rounded w-full" disabled>
+                                You currently have this book
+                            </button>
+                        @elseif($book->status === 'unavailable')
+                            @if($alreadySubscribed)
+                                <form action="{{ route('books.cancel_notify', $book) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="mt-4 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded w-full">
+                                        Cancel Notification
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('books.notify', $book) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">
+                                        Notify me when available
+                                    </button>
+                                </form>
                             @endif
                         @endif
                     @endif
