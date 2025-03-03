@@ -17,9 +17,9 @@ jobs:
        - name: Sync files
          uses: SamKirkland/FTPDeploy-Action@v4.3.4
          with:
-           server: $ vars.PROD_FTP_HOST
-           username: $ secrets.PROD_FTP_USERNAME
-           password: $ secrets.PROD_FTP_PASSWORD
+           server: ${{ vars.PROD_FTP_HOST }}
+           username: ${{ secrets.PROD_FTP_USERNAME }}
+           password: ${{ secrets.PROD_FTP_PASSWORD }}
            protocol: ftp
            #dry-run: true
  
