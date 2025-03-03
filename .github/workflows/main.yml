@@ -1,21 +1,24 @@
 name: Deploy to production
-on:
- push:
- branches:
- - master
-jobs:
- web-deploy:
- name: Deploy
- runs-on: ubuntu-latest
- steps:
- - name: Get latest code
- uses: actions/checkout@v4
 
- - name: Sync files
- uses: SamKirkland/FTPDeploy-Action@v4.3.4
- with:
- server:  $ vars.PROD_FTP_HOST
- username: $ secrets.PROD_FTP_USERNAME
- password: $ secrets.PROD_FTP_PASSWORD
- protocol: ftp
- #dry-run: true
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+
+      - name: Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ftp.diogo-library.iwork.pt
+          username: ${{ secrets.PROD_FTP_USERNAME }}
+          password: ${{ secrets.PROD_FTP_PASSWORD }}
+          protocol: ftp
+          #dry-run: true
