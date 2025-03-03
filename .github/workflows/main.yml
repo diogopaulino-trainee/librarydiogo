@@ -17,7 +17,7 @@ jobs:
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ftp.diogo-library.iwork.pt
+          server: ${{ vars.PROD_FTP_HOST }}
           username: ${{ secrets.PROD_FTP_USERNAME }}
           password: ${{ secrets.PROD_FTP_PASSWORD }}
           protocol: ftp
