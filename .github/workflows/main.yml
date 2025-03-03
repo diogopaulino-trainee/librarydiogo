@@ -21,3 +21,4 @@ jobs:
           username: ${{ secrets.PROD_FTP_USERNAME }}
           password: ${{ secrets.PROD_FTP_PASSWORD }}
           protocol: ftp
+          server-dir: /home/diogolib/public_html/
