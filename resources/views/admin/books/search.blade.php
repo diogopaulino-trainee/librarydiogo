@@ -32,7 +32,6 @@
             </div>
         </form>
     </div>
-
     @if(isset($books) && is_array($books) && count($books) > 0)
         <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg border border-blue-200 text-lg">
             @if (session('success'))
